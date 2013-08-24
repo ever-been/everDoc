@@ -121,18 +121,37 @@ BEEN provides several APIs for user-written tasks:
 
 Every tasks has a key-value property storage. These properties can be set from various places: From the XML descriptor, from the user when submitting, inherited from a task context, set from a benchmark when it generates a task context. To access these values, you can use the `getProperty` method of the `Task` class:
 
+	int numberOfClients = Integer.parseInt(this.getProperty("numberOfClients"));
 
+These properties are inherited, in the sense that that when a task context has a property, the task can see it as well. But when a task has the same property with a different value, the task's value will be override the previous one.
 
 ### Persisting Results
 
-XXX TODO
+The persistence layer provided by BEEN is capable of storing user-supplied types and classes. To create a class that can be persisted, simply create a subclass of `Result` and ensure that all contained fields are serializable and public. Also make sure to include a default non-parameterized constructor so that the object can be deserialized.
 
-Persisting a result:
+Each storable type is identified with an `EntityID` object, which specified its group and kind. We recommend to create a constant describing your type. An example result type can look like this:
+
+	public class SampleResult extends Result {
+		public static final EntityID RESULT_ENTITY_ID = new EntityID().withKind("result").withGroup("helloworld");
+
+		public int data;
+
+		public SampleResult() {}
+	}
+
+Persisting a result is then only a simple mean of creating the appropriate object, instantiating the `ResultPersister` class through the supplied `results` field and calling `persist` on it:
 
 	SampleResult result = ...;
-	EntityID eid = new EntityID().withKind("result").withGroup("sample");
-	ResultPersister rp = results.createResultPersister(eid));
+	ResultPersister rp = results.createResultPersister(SampleResult.RESULT_ENTITY_ID));
 	rp.persist(result);
+
+Note that the `ResultPersister` object is `AutoCloseable`, which means you need to ensure its `close` method is called when you no longer need the object. The best way to achive this is by enclosing the instantiation inside a try-catch block:
+
+	try (ResultPersister rp = results.createResultPersister(...)) {
+		...
+	} catch (DAOException e) {
+		...
+	}
 
 ### Checkpoints and Latches
 
