@@ -87,7 +87,7 @@ This is generally not an issue with NoSQL databases or document-oriented stores,
 * **User type versions** - Should the version of this user-type library change, you will need to restart the *Storage* before running any new tasks on EverBEEN. Restarting EverBEEN will likely result in the dysfunction of tasks using an older version of the user-type library
 
 
-##### <a id="user.persistence.extension.storage.overview>Override implementation overview</a>
+##### <a id="user.persistence.extension.storage.overview">Override implementation overview</a>
 If your intention is not to use ORM for *Storage* implementation, or you have really thought the consequences through, keep reading. To successfully replace the *Storage* implementation, you'll need to implement the following:
 
 * [Storage](#)
