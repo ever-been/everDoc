@@ -1,26 +1,26 @@
-## <a id="user.persistence">Persistence layer</a>
+## Persistence layer {#user.persistence}
 EverBEEN persistence layer functions as a bridge between EverBEEN distributed memory and a database of choice, rather than a direct storage component. This enables EverBEEN to run without a persistence layer, at the cost of heap space and a risk of data loss in case of an unexpected cluster-wide shutdown. EverBEEN doesn't *need* a persistence layer per-se at any given point in time. User tasks, however, might attempt to work with previously acquired results. Such attempts will result in task-scope failures if the persistence layer is not running. Log archives, too, will be made unavailable if the persistence layer is offline.
 
 
 
-### <a id="user.persistence.characteristics">Characteristics</a>
+### Characteristics {#user.persistence.characteristics}
 Follows an overview of the main characteristics of EverBEEN's persistence layer.
 
 
 
-#### <a id="user.persistence.characteristics.bridging">Bridging</a>
+#### Bridging {#user.persistence.characteristics.bridging}
 The EverBEEN persistence layer doesn't offer any means of storing the objects per se. It only functions as an abstract access layer to an existing storage component (e.g. a database). EverBEEN comes with a default implementation of this bridge for the MongoDB database, but it is possible to port it to a different database (see [extension point](#user.persistence.extension) notes for more details). The user is responsible for setting up, running and maintaining the actual storage software.
 
 
 
-#### <a id="user.persistence.characteristics.eventual">Eventual persistence</a>
+#### Eventual persistence {#user.persistence.characteristics.eventual}
 As mentioned above, object-persisting commands (result stores, logging) do not, by themselves, execute insertions into the persistence layer. They submit objects into EverBEEN's distributed memory. When a persistence layer node is running, it continually drains this distributed memory, enacting the actual persistence of drained objects. This offers the advantage of being able to pursue persisting operations even in case the persistence layer is currently unavailable.
 
 The downside of the bridging approach is that persisted objects might not find their way into the actual persistence layer immediately. It also means that should a cluster-wide shutdown occur while some objects are still in the shared memory, these objects will get lost. All that can be guaranteed is that submitted objects will eventually be persisted, provided that some data nodes and a persistence layer are running. This being said, experience shows that the transport of objects through the cluster and to the persistence layer is a matter of fractions of a second.
 
 
 
-#### <a id="user.persistence.characteristics.scalability">Scalability</a>
+#### Scalability {#user.persistence.characteristics.scalability}
 As mentioned above, EverBEEN does not strictly rely on the existence of a persistence node for running user code, only to present the user with the data he requires. That being said, EverBEEN can also run multiple persistence nodes. In such case, it is the user's responsibility to set up these nodes in a way that makes sense.
 
 While running multiple nodes, please keep in mind that these storage components will be draining the shared data structures concurrently and independently. It is entirely possible to setup EverBEEN to run two persistence nodes on two completely separate databases, but it will probably not result in any sensibly expectable behavior, as potentially related data will be scattered randomly across two isolated database instances.
@@ -34,12 +34,12 @@ Additional use-cases may arise if you decide to write your own database adapter.
 
 
 
-#### <a id="user.persistence.characteristics.cleanup">Automatic cleanup</a>
+#### Automatic cleanup {#user.persistence.characteristics.cleanup}
 To prevent superfluous information from clogging the data storage, the Object Repository runs a Janitor component that performs database cleanup on a regular basis. The idea is to clean all old data for failed jobs and all metadata for successful jobs after a certain lifecycle period has passed. For lifecycle period and cleanup frequency adjustment, see the [janitor configuration](#user.configuration.objectrepo.janitor) section.
 
 
 
-### <a id="user.persistence.components">Components</a>
+### Components {#user.persistence.components}
 Follows a brief description of components that contribute to forming the EverBEEN persistence layer.
 
 * [Object Repository](#user.persistence.components.objectrepo)
@@ -48,34 +48,34 @@ Follows a brief description of components that contribute to forming the EverBEE
 
 
 
-#### <a id="user.persistence.components.objectrepo">Object Repository</a>
+#### Object Repository {#user.persistence.components.objectrepo}
 It goes without saying that EverBEEN needs some place to store all the data your tasks will produce. That's what the Object Repository is for. Each time a task issues a command to submit a result, or logs a message, this information gets dispatched to the cluster, along with the associated object. The Object Repository provides a functional endpoint for this information. It effectively concentrates distributed data to its intended destination (a database, most likely). In addition, the Object Repository is also in charge of dispatching requested user data back.
 
 
 
-#### <a id="user.persistence.components.storage">Storage</a>
+#### Storage {#user.persistence.components.storage}
 The Storage component supplies the concrete database connector implementation. All communication between the Object Repository and the database is done through the Storage API.
 
 The Storage component gets loaded dynamically by the Object Repository at startup. If you want to use a different database than MongoDB, this is the component you'll be replacing (along with the MapStore, potentially).
 
 
 
-#### <a id="user.persistence.components.mapstore">MapStore</a>
+#### MapStore {#user.persistence.components.mapstore}
 Where the ObjectRepository stores user data, the MapStore is used to map EverBEEN cluster memory to a persistent storage, which enables EverBEEN to preserve job state memory through cluster-wide restarts. The MapStore runs on all *data nodes* (see [deployment](#user.deployment.nodes.types) for more information on node types).
 
 
 
-### <a id="user.persistence.extension">Persistence extension points</a>
+### Persistence extension points {#user.persistence.extension}
 As mentioned above, EverBEEN comes with a default persistence solution for MongoDB. We realize, however, that this might not be the ideal use-case for everyone. Therefore, the MongoDB persistence layer is fully replaceable if you provide your own database implementation.
 
-There are two components you might want to override - the [Storage](#user.persistence.extension.storage) and the [MapStore](#user.persistence.extension.mapstore).
+There are two components you might want to override - the [Storage](#user.persistence.storageex) and the [MapStore](#user.persistence.extension.mapstore).
 
-If your goal is to relocate EverBEEN user data (benchmark results, logs etc.) to your own database and don't mind running a MongoDB as well for EverBEEN service data, you'll be fine just overriding the [Storage](#user.persistence.extension.storage). If you want to completely port all of EverBEEN's persistence, you'll have to override the [MapStore](#user.persistence.extension.mapstore) as well.
+If your goal is to relocate EverBEEN user data (benchmark results, logs etc.) to your own database and don't mind running a MongoDB as well for EverBEEN service data, you'll be fine just overriding the [Storage](#user.persistence.storageex). If you want to completely port all of EverBEEN's persistence, you'll have to override the [MapStore](#user.persistence.extension.mapstore) as well.
 
-#### <a id="user.persistence.extension.storage">Storage</a>
+### Storage extension {#user.persistence.storageex}
 As declared above, the *Storage* component is fully replacable by a different implementation than the default MongoDB adapter. However, we don't feel comfortable with letting you plunge into this extension point override without a few warnings first.
 
-##### <a id="user.persistence.extension.storage.warning">Override warning</a>
+#### Override warning {#user.persistence.storageex.warning}
  The issue with *Storage* implementation is that the persistence layer is designed to be completely devoid of any type knowledge. The reason for this is that *Storage* is used to persist and retrieve objects from user tasks. Should the *Storage* have any RTTI knowledge of the objects it works with, imagine what problems could arise when two tasks using two different versions of the same objects would attempt to use the same *Storage*.
 
 To avoid this, the *Storage* only receives the object JSON and some information about the object's placement. This being said, the *Storage* still needs to perform effective querying based on some attributes of the objects it is storing.
@@ -87,7 +87,7 @@ This is generally not an issue with NoSQL databases or document-oriented stores,
 * **User type versions** - Should the version of this user-type library change, you will need to restart the *Storage* before running any new tasks on EverBEEN. Restarting EverBEEN will likely result in the dysfunction of tasks using an older version of the user-type library
 
 
-##### <a id="user.persistence.extension.storage.overview">Override implementation overview</a>
+#### Override implementation overview {#user.persistence.storageex.overview}
 If your intention is not to use ORM for *Storage* implementation, or you have really thought the consequences through, keep reading. To successfully replace the *Storage* implementation, you'll need to implement the following:
 
 * [Storage](#)
@@ -104,17 +104,17 @@ We also strongly recommend that you implement these as well:
 The general idea is for you to implement the *Storage* component and to provide the *StorageBuilder* service, which configures and instantiates your *Storage* implementation. The **META-INF/services** entry is for the *ServiceLoader* EverBEEN uses to recognize your *StorageBuilder* implementation on the classpath. EverBEEN will then pass the *Properties* from the *been.conf* file (see [configuration](#user.configuration)) to your *StorageBuilder*. That way, you can use the common property file for your *Storage*'s configuration.
 
 <!-- TODO javadoc link -->
-The [Storage](#) interface is the main gateway between the [Object Repository]("user.persistence.components.objectrepo") and the database. When overriding the Storage, there will be two major use-cases you'll have to implement: the [asynchronous persist](#user.persistence.extension.storage.asyncper) and the [synchronous query](#user.persistence.extension.storage.qa).
+The [Storage](#) interface is the main gateway between the [Object Repository]("user.persistence.components.objectrepo") and the database. When overriding the Storage, there will be two major use-cases you'll have to implement: the [asynchronous persist](#user.persistence.storageex.asyncper) and the [synchronous query](#user.persistence.storageex.qa).
 
-##### <a id="user.persistence.extension.storage.asyncper">Asynchronous persist</a>
+#### Asynchronous persist {#user.persistence.storageex.asyncper}
 <!-- TODO javadoc link -->
 All *persist* requests in EverBEEN are funneled through the [store](#) method. You'll receive two parameters in this method:
 
-<a id="user.persistence.extension.storage.asyncper.eid">***entityId***</a>
-The *entityId* is meant to determine the location of the stored entity. For example, if you're writing an SQL adapter, it should determine the table where the entity will be stored. For more information on the *entityId*, see [persistent object info](#user.persistence.extension.storage.objectinfo)
+<a id="user.persistence.storageex.asyncper.eid">***entityId***</a>
+The *entityId* is meant to determine the location of the stored entity. For example, if you're writing an SQL adapter, it should determine the table where the entity will be stored. For more information on the *entityId*, see [persistent object info](#user.persistence.storageex.objectinfo)
 
 
-<a id="user.persistence.extension.storage.asyncper.json">***JSON***</a>
+<a id="user.persistence.storageex.asyncper.json">***JSON***</a>
 A serialized JSON representation of the object to be stored.
 
 Generally, you'll need to decide where to put the object based on its *entityId* and then somehow map and store it using its *JSON*.
@@ -122,10 +122,18 @@ Generally, you'll need to decide where to put the object based on its *entityId*
 <!-- TODO javadoc link -->
 The [store](#) method is asynchronous. It doesn't return any outcome information, but be sure to throw a *DAOException* when the persist attempt fails. That way, you'll make sure the *ObjectRepository* knows that the operation failed and will take action to prevent data loss.
 
-##### <a id="user.persistence.extension.storage.qa">Query / Answer</a>
+#### Query / Answer {#user.persistence.storageex.qa}
 <!-- TODO AQL explanation -->
+<!-- TODO javadoc link -->
+The other type of requests that *Storage* supports are queries. They are synchronous and a *Query* is always answered with a *QueryAnswer*. In order to support queries, you could implement all the querying mechanics by yourself (if you wish to do that, see the [Task API](#user.taskapi.querying) for more details), but that's not necessary. The [QueryTranslator](#) adaptor is designed to help you interpret queries without having to go through all of the query structure.
 
-##### <a id="user.persistence.extension.storage.objectinfo">General persistent object info</a>
+<!-- TODO javadoc link -->
+The preferred way of interpreting queries is to create a [QueryRedactor](#) and implementation (or several, in fact). The *QueryRedactor* class designed to help you construct database-specific query interpretations using callbacks. This way, you instantiate the *QueryTranslator*, call its *interpret* method passing it your instance of the *QueryRedactor* and the *QueryTranslator* calls the appropriate methods on your *QueryRedactor*. Once configured, your *QueryRedactor* can be used to assemble and perform the expected query. There are additional interfaces that can help you in the process ([QueryRedactorFactory](), [QueryExecutor]() and [QueryExecutorFactory]()).
+
+<!-- TODO javadoc link -->
+Once you execute the query, you will need to synthesize a [QueryAnswer](), which you can do using the [QueryAnswerFactory](). If there is data associated with the result of the query, you need to create a *data answer* using `QueryAnswerFactory#fetched(...)`. The other *QueryAnswerFactory* methods are used to indicate the query status. See the method in-code comments for more detail about available answer types.
+
+#### General persistent object info {#user.persistence.storageex.objectinfo}
 Although the *Storage* doesn't implicitly know any RTTI on the object it's working with, there are some safe assumptions you can make based on the *entityId* that comes with the object.
 
 The *entityId* is composed of *kind* and *group*. The *kind* is supposed to represent what the persisted object actually is (e.g. a log message). These kinds are currently recognized by EverBEEN:
@@ -140,11 +148,11 @@ The *entityId* is composed of *kind* and *group*. The *kind* is supposed to repr
 
 The *group* is supposed to provide a more granular grouping of objects and depends entirely on the object's *kind*.
 
-If you need more detail on objects that you can encounter, be sure to also read the [ORM special](#user.persistence.extension.storage.ormspecial), which denotes what EverBEEN classes can be expected where and what *entityIds* can carry user types.
+If you need more detail on objects that you can encounter, be sure to also read the [ORM special](#user.persistence.storageex.ormspecial), which denotes what EverBEEN classes can be expected where and what *entityIds* can carry user types.
 
-##### <a id="user.persistence.extension.storage.ormspecial">The ORM special</a>
+#### The ORM special {#user.persistence.storageex.ormspecial}
 <!-- TODO list needed mav modules -->
 <!-- TODO list mapping to EverBEEN classes -->
 
-#### <a id="user.persistence.extension.mapstore">MapStore</a>
+### MapStore extension {#user.persistence.mapstoreex}
 <!-- TODO describe extension point -->
