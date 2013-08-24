@@ -253,7 +253,7 @@ The layer can be configured to accommodate different needs:
 * change implementation
 * write-through and write-back modes
 
-Detailed description of configuration can be found at [Confiuration](#user.configuration).
+Detailed description of configuration can be found at [Configuration](#user.configuration).
 
 ### <a id="devel.services.webinterface">Web Interface</a>
 * why it's not actually a service (but more like a client)
