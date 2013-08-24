@@ -13,7 +13,7 @@ The team that worked on the project created the whole architecture and individua
 
 The second incarnation of this project was called *WillBEEN* and it mainly continued development of the original project. Its goal was to extend BEEN, mainly focusing on adding support for non-Java user tasks (scripts) and creating a modular results repository component. 
 
-This project was supervised by Petr Tuma and developed by Andrej Podzimek, Jiri Svoboda, Jan Tattermusch and Jiri Tauber. During the development, several components were redesigned and reimplemented and the project integrated several new technologies, such as JAXB and Derby database.
+This project was supervised by Petr Tuma and developed by Andrej Podzimek, Jiri Svoboda, Jan Tattermusch and Jiri Tauber. The team started working in 2009 and finished the project in March 2013. During the development, several components were redesigned and reimplemented and the project integrated several new technologies, such as JAXB and Derby database.
 
 ### State of WillBEEN in 2012
 
