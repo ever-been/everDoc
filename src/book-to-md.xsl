@@ -20,6 +20,7 @@
 	</xsl:template>
 
 	<xsl:template match="book">
+		cat src/book/markdown/_info.md
 		<xsl:apply-templates/>
 	</xsl:template>
 
