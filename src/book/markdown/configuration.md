@@ -18,25 +18,19 @@ It is essential that cluster nodes use the same configuration for these options,
 :	Group to which the nodes belong. Nodes with different group will not form a cluster.
 
 `been.cluster.password`=*dev-pass*
-:	Password for the group. If different password is used among nodes the will not for a cluster.
+:	Password for the group. If different password is used among nodes they will not form a cluster.
 
 `been.cluster.join`=*multicast*
-:	Manages how nodes form the cluster. Two values are possible:
-
-	* *multicast* - only `been.cluster.multicast.*` options will be used
-	* *tcp* - only  `been.cluster.tcp.members` option will be used
-
+:	Manages how nodes form the cluster. Two values are possible: `multicast` which means only `been.cluster.multicast.*` options will be used, and `tcp` which means only  `been.cluster.tcp.members` option will be used.
 
 `been.cluster.multicast.group`=*224.2.2.3*
 :	Specifies multicast group to use
-
 
 `been.cluster.multicast.port`=*54327*
 :	Specifies multicast port to use
 
 `been.cluster.tcp.members`=*localhost:5701*
 :	Semicolon separated list of `[ip|host][:port]` nodes to connect to.
-
 
 `been.cluster.port`=*5701*
 :	Port on which the node will listen to.
@@ -47,20 +41,17 @@ It is essential that cluster nodes use the same configuration for these options,
 `been.cluster.preferIPv4Stack`=*true*
 :	Whether to prefer IPv4 stack over IPv6
 
-
 `been.cluster.backup.count`=*1*
-: How many backups should the cluster keep.
-
+:	How many backups should the cluster keep.
 
 `been.cluster.logging`=*false*
-: Enables/Disables logging of Hazelcast messages. Note that if enabled messages will not appear among service logs.
-
+:	Enables/Disables logging of Hazelcast messages. Note that if enabled messages will not appear among service logs.
 
 `been.cluster.mapstore.use`=*true*
 :	Wheather to use [MapStore](#devel.services.mapstore) to persist cluster runtime information
 
 `been.cluster.mapstore.write.delay`=*0*
-: Delay in seconds with which to write to the [MapStore](#devel.services.mapstore). *0* means *write-through*, values bigger than zero mean *write-back*. MapStore implementation can optimize *write-back* mode. 
+:	Delay in seconds with which to write to the [MapStore](#devel.services.mapstore). *0* means *write-through*, values bigger than zero mean *write-back*. MapStore implementation can optimize *write-back* mode. 
 
 `been.cluster.mapstore.factory`=*cz.cuni.mff.d3s.been.mapstore.mongodb.MongoMapStoreFactory*
 :	Implementation of the [MapStore](#devel.services.mapstore), must be on the classpath when starting a node.
@@ -84,7 +75,7 @@ Task Manager configuration options are used to tune the [Task Manager](#devel.se
 :	Maximum number of resubmits of a failed benchmark task the Task Manager will allow.
 
 `been.tm.scanner.period`=*30*
-: Period in second of the Task Manager's [local key scanner](#devel.services.taskmanager.errors)
+:	Period in second of the Task Manager's [local key scanner](#devel.services.taskmanager.errors)
 
 `been.tm.scanner.delay`=*15*
 :	Initial delay in seconds of the Task Manager's [local key scanner](#devel.services.taskmanager.errors)
@@ -115,7 +106,7 @@ Configuration for persistence layer janitor component. See [Persistence](#user.p
 Host Runtime monitoring configuration options.
 
 `been.monitoring.interval`=*5000*
-: Interval of Host Runtime system monitoring samples, in milliseconds.
+:	Interval of Host Runtime system monitoring samples, in milliseconds.
 
 #### Host Runtime Configuration {#user.configuration.hostruntime}
 [Host Runtime](#user.hostruntime) configuration options
@@ -151,10 +142,10 @@ Host Runtime monitoring configuration options.
 Configuration options for the MongoDB based [Object storage](#user.persistence).
 
 `mongodb.hostname`=*localhost*
-: Hostname (full connection string including port). If no port is specified, default port is used.
+:	Hostname (full connection string including port). If no port is specified, default port is used.
 	
 `mongodb.dbname`=*BEEN*
-: Name of the database instance to use.
+:	Name of the database instance to use.
 
 `mongodb.username`=*null*
 :	User name to use to connect to the database.
@@ -166,7 +157,7 @@ Configuration options for the MongoDB based [Object storage](#user.persistence).
 Configuration for the [Software Repository](#user.swrepository)
 
 `swrepository.port`=*8000*
-: Port on which the Software Repository should listen for requests.
+:	Port on which the Software Repository should listen for requests.
 
 #### File System Based Store Configuration {#user.configuration.fsbasedstorage}
 
@@ -177,4 +168,4 @@ Configuration for the [Software Repository](#user.swrepository)
 :	Default storage directory for Software Repository server, relative to the working directory of a node.
 
 `hostruntime.swcache.maxSize`=*1024*
-: Maximum size of the software cache in MBytes.	
+:	Maximum size of the software cache in MBytes.	
