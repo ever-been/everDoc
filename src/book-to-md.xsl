@@ -10,11 +10,14 @@
 	</xsl:template>
 
 	<xsl:template match="chapter">
+		echo
 		echo "# <xsl:value-of select="title"/>"
+		echo
 		<xsl:apply-templates/>
 	</xsl:template>
 
 	<xsl:template match="section">
+		echo
 		cat src/book/markdown/<xsl:value-of select="id"/>.md
 		echo
 	</xsl:template>
