@@ -65,7 +65,7 @@ Where the ObjectRepository stores user data, the MapStore is used to map EverBEE
 
 
 
-### Persistence extension points {#user.persistence.extension}
+### Extension points overview {#user.persistence.extension}
 As mentioned above, EverBEEN comes with a default persistence solution for MongoDB. We realize, however, that this might not be the ideal use-case for everyone. Therefore, the MongoDB persistence layer is fully replaceable if you provide your own database implementation.
 
 There are two components you might want to override - the [Storage](#user.persistence.storageex) and the [MapStore](#user.persistence.extension.mapstore).
@@ -88,10 +88,33 @@ This is generally not an issue with NoSQL databases or document-oriented stores,
 
 
 #### Override implementation overview {#user.persistence.storageex.overview}
-If your intention is not to use ORM for *Storage* implementation, or you have really thought the consequences through, keep reading. To successfully replace the *Storage* implementation, you'll need to implement the following:
+If your intention is not to use ORM for *Storage* implementation, or you have really thought the consequences through, keep reading. It is highly recommended that you use Apache Maven to build your implementation. You'll need to check out the EverBEEN project and install the artifacts to your local repository:
+
+	git clone git@github.com:ever-been/everBeen.git
+	mvn install
+
+You will need to import the following EverBEEN modules to provide a *Storage* implementation, as follows:
+
+	<dependency>
+	        <groupId>cz.cuni.mff.d3s.been</groupId>
+	        <artifactId>core-data</artifactId>
+	        <version>${been.version}</version>
+	</dependency>
+	
+	<dependency>
+	        <groupId>cz.cuni.mff.d3s.been</groupId>
+	        <artifactId>storage</artifactId>
+	        <version>${been.version}</version>
+	</dependency>
+
+Then create a **been.version** property in your Maven module that corresponds to the EverBEEN version you checked out and installed.
+
+Now that you have your project set up, you can begin to actually code implementation. To successfully replace the *Storage* implementation, you'll need to implement the following:
+<!-- TODO javadoc link -->
 
 * [Storage](#)
 * [StorageBuilder](#)
+
 
 <!-- TODO javadoc link -->
 Additionally, you'll need to create a **META-INF/services** folder in the jar with your implementation, and place a file named **cz.cuni.mff.d3s.been.storage.StorageBuilder** in it. You'll need to put a single line in that file, containing the full class name of your [StorageBuilder](#) implementation.
@@ -123,7 +146,6 @@ Generally, you'll need to decide where to put the object based on its *entityId*
 The [store](#) method is asynchronous. It doesn't return any outcome information, but be sure to throw a *DAOException* when the persist attempt fails. That way, you'll make sure the *ObjectRepository* knows that the operation failed and will take action to prevent data loss.
 
 #### Query / Answer {#user.persistence.storageex.qa}
-<!-- TODO AQL explanation -->
 <!-- TODO javadoc link -->
 The other type of requests that *Storage* supports are queries. They are synchronous and a *Query* is always answered with a *QueryAnswer*. In order to support queries, you could implement all the querying mechanics by yourself (if you wish to do that, see the [Task API](#user.taskapi.querying) for more details), but that's not necessary. The [QueryTranslator](#) adaptor is designed to help you interpret queries without having to go through all of the query structure.
 

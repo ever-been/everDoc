@@ -13,7 +13,7 @@ BEEN works with three different concepts of user-supplied code and configuration
 
 All these three concepts can be submitted to BEEN and run individually, if you only want to test a single task, you can submit it without providing a task context or a whole benchmark.
 
-### Maven Plugin and Packaging
+### Maven Plugin and Packaging {#user.bpkplugin}
 
 The easiest way to create a submittable item (e.g. a task) is by creating a Maven project and adding a dependency on the appropriate BEEN module (e.g. `task-api`) in `pom.xml` of the project:
 
@@ -110,7 +110,7 @@ If this class is in a Maven project as described in the previous section, it can
 
 BEEN provides several APIs for user-written tasks:
 
-* *Properties* – Tasks are configurable either from their descriptors or by the benchmark that generated them. These properties are again configurable by the user before submitting the task. All properties have a name and a simple string value and these can be accessed via the `getProperty` method of the abstract `Task` class.
+* *Properties* – Tasks are configurable either from their descriptors or by the benchmark that generated them. These properties are again configurable by the user before submitting the task. All properties have a name and a simple string value and these can be accessed via the `getProperty` method of the abstract `Task` class.
 
 * *Result storing* – Each task can persist a result that it has gathered by using the API providing access to the persistence layer. To store a result, use a `ResultPersister` object, which can be created by using the method `createResultPersister` from the `Task` abstract class.
 
