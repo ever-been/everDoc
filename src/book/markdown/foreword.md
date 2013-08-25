@@ -25,7 +25,9 @@ Despite the fact that performance measuring is definitely useful, it still has q
 
 - Statistics, analysis and visualization are good candidates for having a helpful library instead of writing your own.
 
-### Previous works
+### Related works
 
-TODO
+* Kalibera, T., Lehotsky J., Majda D., Repcek B., Tomcanyi M., Tomecek A., Tuma, P., Urban J.:
+[Automated Benchmarking and Analysis Tool](http://d3s.mff.cuni.cz/publications/download/Submitted_1404_BEEN.pdf) (PDF, 149 kB), VALUETOOLS 2006
 
+* Kalibera, T., Bulej, L., Tuma, P.: [Generic Environment for Full Automation of Benchmarking](http://d3s.mff.cuni.cz/publications/download/KaliberaBulejTuma-FullAutomationOfBenchmarking.pdf) (PDF, 84 kB), SOQUA 2004
