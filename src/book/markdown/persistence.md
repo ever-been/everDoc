@@ -114,8 +114,9 @@ Then create a **been.version** property in your Maven module that corresponds to
 Now that you have your project set up, you can begin to actually code implementation. To successfully replace the *Storage* implementation, you'll need to implement the following:
 <!-- TODO javadoc link -->
 
-* [Storage](#)
-* [StorageBuilder](#)
+* [Storage](#) - the main interface providing the actual store management
+* [StorageBuilder](#) - an instantiation/configuration tool for your *Storage* implementation
+* [SuccessAction\<EntityCarrier\>](#) - an isolated action capable of persisting objects
 
 
 <!-- TODO javadoc link -->
@@ -156,6 +157,14 @@ The preferred way of interpreting queries is to create a [QueryRedactor](#) and 
 
 <!-- TODO javadoc link -->
 Once you execute the query, you will need to synthesize a [QueryAnswer](), which you can do using the [QueryAnswerFactory](). If there is data associated with the result of the query, you need to create a *data answer* using `QueryAnswerFactory#fetched(...)`. The other *QueryAnswerFactory* methods are used to indicate the query status. See the method in-code comments for more detail about available answer types.
+
+#### Auxiliary methods {#user.persistence.storageex.aux}
+In addition to persisting and querying, the *Storage* interface features these auxiliary methods, which you'll need to implement.
+<!-- TODO javadoc link -->
+
+* **createPersistAction** - return an instance of your implementation of [SuccessAction\<EntityCarrier\>](#); its *perform* method is presumed to call your `Storage#store()` implementation
+* **isConnected** - a situation may occur when the *Object Repository* is running, but the database it uses isn't; this simple method is designed to help EverBEEN detect such a situation by returning `false` should the database connection drop
+* **isIdle** - a database usage heuristics function that helps the *Object Repository* janitor better detect cleanup windows (to interfere less with heavy user operations)
 
 #### General persistent object info {#user.persistence.storageex.objectinfo}
 Although the *Storage* doesn't implicitly know any RTTI on the object it's working with, there are some safe assumptions you can make based on the *entityId* that comes with the object.
