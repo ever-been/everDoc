@@ -88,7 +88,9 @@ This is generally not an issue with NoSQL databases or document-oriented stores,
 
 
 #### Override implementation overview {#user.persistence.storageex.overview}
-If your intention is not to use ORM for *Storage* implementation, or you have really thought the consequences through, keep reading. It is highly recommended that you use Apache Maven to build your implementation. You'll need to check out the EverBEEN project and install the artifacts to your local repository:
+If your intention is not to use ORM for *Storage* implementation, or you have really thought the consequences through, keep reading. It is highly recommended that you use [Apache Maven](http://maven.apache.org/) to build your implementation. Extension without Maven is possible, but will not be covered in this booklet. Additionally, you'll need [git](http://git-scm.com/) to check out EverBEEN sources.
+
+Once you've gotten both Maven and git, you'll need to check out the EverBEEN project and install the artifacts to your local repository:
 
 	git clone git@github.com:ever-been/everBeen.git
 	mvn install
@@ -173,8 +175,39 @@ The *group* is supposed to provide a more granular grouping of objects and depen
 If you need more detail on objects that you can encounter, be sure to also read the [ORM special](#user.persistence.storageex.ormspecial), which denotes what EverBEEN classes can be expected where and what *entityIds* can carry user types.
 
 #### The ORM special {#user.persistence.storageex.ormspecial}
-<!-- TODO list needed mav modules -->
+If you're really hell-bent on creating an ORM implementation of the *Storage*, your module will need to know several more EverBEEN classes to be able to perform the mapping. The following table covers their *entityIds*, their meaning and the dependencies you will need to get them.
 <!-- TODO list mapping to EverBEEN classes -->
+
+<!-- TODO javadoc link --><!-- lots of them actually -->
+*kind*                  *group*         meaning                                         class                                                   module
+----------------        ----------      ----------------------------------              --------------------------                              ------
+log                     task            message logged by a task                        [TaskLogMessage]()                                      core-data
+log                     service         message logged by a service                     [ServiceLogMessage]()                                   core-data
+log                     monitoring      host monitoring sample                          [MonitorSample]()                                       core-data
+descriptor              task            task runtime configuration                      [TaskDescriptor]()                                      core-data
+descriptor              context         task context runtime configuration              [TaskContextDescriptor]()                               core-data
+named-descriptor        task            saved task configuration                        [TaskDescriptor]()                                      core-data
+named-descriptor        context         saved task context configuration                [TaskContextDescriptor]()                               core-data
+result                  *\**            task result                                     any user class extending [Result]()                     *n/a* (results)
+evaluation              *\**            task result evaluation                          [EvaluatorResult]()                                     results
+outcome                 task            task state service records                      [PersistentTaskState]()                                 persistence
+outcome                 context         task context state service records              [PersistentContextState]()                              persistence
+
+Thus, if you need to infer the knowledge the runtime type of all of these classes to your module, you need to add the following to your module dependencies:
+
+	<dependency>
+		<groupId>cz.cuni.mff.d3s.been</groupId>
+		<artifactId>persistence</artifactId>
+		<version>${been.version}</version>
+	</dependency>
+	
+	<dependency>
+		<groupId>cz.cuni.mff.d3s.been</groupId>
+		<artifactId>results</artifactId>
+		<version>${been.version}</version>
+	</dependency>
+
+Additionally, you'll probably need to inject a dependency containing your pre-defined result types (*Result* extenders used by your benchmarks). As mentioned before, you will need to be very careful about the versioning of this module.
 
 ### MapStore extension {#user.persistence.mapstoreex}
 <!-- TODO describe extension point -->
