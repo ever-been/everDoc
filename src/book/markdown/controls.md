@@ -1,8 +1,26 @@
 ## Web Interface {#user.webinterface}
 
+The Web Interface provides everything you need to work with the BEEN cluster.
+   
+
+### Connecting to the cluster
+When the web interface starts, it knows nothing about cluster. You have to provide cluster connection credentials to connect web interface with BEEN. If you run your nodes with default configuration, default username, port and password is prefilled in the login form. Click on **connect** to connect web interface with the cluster.
+
+![Login](images/wi/login_page_01.png)
+
+
+
+### BEEN Overview page
+Overview page tends quick overview about connected nodes, node resources, running or failed tasks/task contexs/benchmarks and current logs from tasks and services.
+
+![Cluster overview](images/wi/overview_01.png)
+
+
+
 ### Overview page {#user.webinterface.overview}
 
 
+<!--
 
 ![Benchmark detail](images/wi/benchmark_detail_01.png)
 
@@ -44,14 +62,6 @@
 
 <br/>
 
-![Login](images/wi/login_page_01.png)
-
-<br/>
-
-![Cluster overview](images/wi/overview_01.png)
-
-<br/>
-
 ![Uploaded ackages](images/wi/pacgakes_listing_01.png)
 
 <br/>
@@ -87,7 +97,7 @@
 
 <br/>
 
-
+-->
 
 
 ## EverBEEN controls
@@ -99,6 +109,5 @@
 * explain how to clean up after something (& what does it delete)
 * ...
 * any other tutorials that come to mind
-
 
 
