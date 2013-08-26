@@ -185,7 +185,6 @@ If you need more detail on objects that you can encounter, be sure to also read 
 
 #### The ORM special {#user.persistence.storageex.ormspecial}
 If you're really hell-bent on creating an ORM implementation of the *Storage*, your module will need to know several more EverBEEN classes to be able to perform the mapping. The following table covers their *entityIds*, their meaning and the dependencies you will need to get them.
-<!-- TODO list mapping to EverBEEN classes -->
 
 <!-- TODO javadoc link --><!-- lots of them actually -->
 *kind*                  *group*         meaning                                         class                                                   module
@@ -218,5 +217,92 @@ Thus, if you need to infer the knowledge the runtime type of all of these classe
 
 Additionally, you'll probably need to inject a dependency containing your pre-defined result types (*Result* extenders used by your benchmarks). As mentioned before, you will need to be very careful about the versioning of this module.
 
+#### Replacing the Storage implementation {#user.persistence.storageex.replace}
+After you implement your own *Storage* back-end, you need to sew it back into EverBEEN. EverBEEN is bundled using the [Maven Assembly Plugin](http://maven.apache.org/plugins/maven-assembly-plugin/), which unpacks EverBEEN modules along with their dependencies, combines their class files and creates the ultimate jar. That means that to actually swap the *Storage* implementation, you'll need to rebuild EverBEEN with some modifications.
+
+First, build your *Storage* module using `mvn install`. That will deploy your artifact to the local Maven repository, where EverBEEN can see it. For further reference, let's assume your storage artifact identifier is `my.group:my-storage:2.3.4`.
+
+Then, you'll need to rebuild EverBEEN using your *Storage* module instead of the default one. For that, you'll need a deployment project. This project will use `pom` packaging and will only contain the `pom.xml` with instructions for Maven Assembly Plugin. Because writing the assembly descriptor is tedious, we've created the `pom` for you as a quick starter:
+
+	<?xml version="1.0" encoding="UTF-8"?>
+	<project xmlns="http://maven.apache.org/POM/4.0.0"
+			 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+		<modelVersion>4.0.0</modelVersion>
+		<groupId>my.group</groupId>
+		<artifactId>my-been-flavor</artifactId>
+		<version>1.0.0</version>
+		<packaging>pom</packaging>
+	
+		<properties>
+			<been.version>3.0.0</been.version>
+		</properties>
+	
+		<dependencies>
+			<dependency>
+				<groupId>cz.cuni.mff.d3s.been</groupId>
+				<artifactId>node</artifactId>
+				<version>${been.version}</version>
+	
+				<exclusions>
+					<exclusion>
+						<groupId>cz.cuni.mff.d3s.been</groupId>
+						<artifactId>mongo-storage</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+	
+			<dependency>
+				<groupId>my.group</groupId>
+				<artifactId>my-storage</artifactId>
+				<version>2.3.4</version>
+			</dependency>
+		</dependencies>
+	
+		<build>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-assembly-plugin</artifactId>
+					<version>2.4</version>
+	
+					<configuration>
+						<finalName>myBeenFlavor</finalName>
+						<appendAssemblyId>false</appendAssemblyId>
+						<archive>
+							<manifest>
+								<mainClass>cz.cuni.mff.d3s.been.node.Runner</mainClass>
+							</manifest>
+						</archive>
+						<descriptorRefs>
+							<descriptorRef>jar-with-dependencies</descriptorRef>
+						</descriptorRefs>
+					</configuration>
+				</plugin>
+			</plugins>
+		</build>
+	</project>
+
+Just to explain what's going on above:
+
+* your deployment project has the `cz.cuni.mff.d3s.been:node` artifact as its dependency; this is the artifact into which we funnel all the runnable EverBEEN modules, so you'll have the entire EverBEEN portfolio in your assembly just by linking that module
+* however, in that dependency, you specify that the `cz.cuni.mff.d3s.been:mongo-storage` artifact should be excluded; that is the artifact containing the default MongoDB implementation of *Storage*
+* then, you deployment project links the `my.group:my-storage:2.3.4` which you installed earlier in your maven repository; that means **your** *Storage* implementation will be placed in the assembly
+* finally, there's the assembly plugin configuration, saying that a `jar` file named `myBeenFlavor.jar` should be deployed into the `target` folder of your deployment project, assembling classes from all dependencies, with `cz.cuni.mff.d3s.been.node.Runner` for main class
+
+Finally, you'll need to create your assembly, which can be done by invoking `mvn assembly:assembly` in the root of your deployment project.
+
+If you followed our instructions carefully, you'll end up with a runnable EverBEEN node `jar`, minus `cz.cuni.mff.d3s.been:mongo-storage`, plus `my.group:my-storage:2.3.4` on the classpath, which will enable *Object Repository* to see **your** implementation and not the default one.
+
+
+
 ### MapStore extension {#user.persistence.mapstoreex}
+EverBEEN uses the *MapStore* to maintain persistent knowledge about the state of your tasks (and other jobs). You'll only need to override the default MongoDB implementation if you need to get rid of Mongo completely.
+
+The EverBEEN *MapStore* is a direct bridge between Hazelcast (the technology EverBEEN uses for clustering) and a persistence layer, so overriding it is pretty straightforward. You need to do the following:
+
+* **Implement the Hazelcast [MapStore](http://www.hazelcast.com/docs/2.5/javadoc/com/hazelcast/core/MapStore.html) interface** - see above for links
+* **Implement the Hazelcast [MapStoreFactory](http://www.hazelcast.com/docs/2.5/javadoc/com/hazelcast/core/MapStoreFactory.html) interface** - again, see above for the link. Do not get confused by the fact that *MapStoreFactory* returns a *MapLoader* instance. The *MapStore* extends the *MapLoader* with storing methods, which you will need, so you need to to return an instance of your *MapStore* implementation in `YourMapStoreFactory#newMapStore()`
+* **Configure EverBEEN to use your MapStore** - in the `been.conf` (or any other EverBEEN config file you're using), you need to set the `been.cluster.mapstore.factory` property to the **fully qualified class name** of your **MapStoreFactory** implementation
+* **Get your package on the EverBEEN classpath** - Make sure to use the same *MapStore* implementation on all EverBEEN cluster nodes, with the same, otherwise you might end up with your job status data being partitioned across two completely different databases
 <!-- TODO describe extension point -->
