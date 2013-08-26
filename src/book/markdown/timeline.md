@@ -8,7 +8,7 @@
 
 *August 2012*
 :	Attempts to mavenize the project discovered a lot of mutual dependencies among apparently independent parts of the codebase.
-:	The team started concidering various communication frameworks and middleware as a replacement for RMI.
+:	The team started considering various communication frameworks and middleware as a replacement for RMI.
 
 *September 2012*
 :	Slf4j is chosen as a logging framework and logback as the basic logging backend. The decision was made to transform all existing logging mechanism to slf4j.
