@@ -8,7 +8,7 @@ Automatic testing of software has become a integral part of software development
 
 Such testing is not only done in order to hunt bugs and discover non-functional code, but it has found its use in performance testing and evaluation as well. The requirement to focus development on performance is becoming a standard part of software engineering. Performance measuring (benchmarking) can have different goals, e.g.:
 
-- **Regression testing**, when the developer want to know if a newly implemented feature had a negative impact on the performance of the system.
+- **Regression testing**, when the developer wants to know if a newly implemented feature has any impact on the performance of the system.
 - **Measuring scalability**, when the system is measured under an increasing load.
 - **Comparison with competing software**
 - **Determining the bottleneck**
@@ -21,7 +21,7 @@ Despite the fact that performance measuring is definitely useful, it still has q
 
 - A benchmarking framework could easily make evaluation automatized and integrate it into the development process.
 
-- The environment can offer facilities, such as synchronization, logging and communication mechanisms, that would make the task of creating the benchmark easier.
+- The environment can offer facilities, such as synchronization, logging and communication mechanisms, that would make the task of creating a benchmark easier.
 
 - Statistics, analysis and visualization are good candidates for having a helpful library instead of writing your own.
 
