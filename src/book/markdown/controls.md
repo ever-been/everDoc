@@ -70,18 +70,46 @@ If you click on the **submit** button, you can edit selected descriptor or just 
 
 
 
+
+
+
+### Listing tasks and task contexts {#user.webinterface.listingtasks}
+Instead of working with benchmark tree, you can list tasks and task contexts independently. Go to tap **Tasks** or **Task contexts** on the **Benchamrks & Tasks** page. 
+
+![Listing tasks](images/wi/benchmark_tasks__tasks_01.png)
+
+&nbsp;&nbsp;&nbsp;&nbsp;<br/>
+
+![Listing task contexts](images/wi/benchmark_tasks__task_contexts_01.png)
+
+
+
 ### Task, task context and benchmark detail {#user.webinterface.itemdetail}
 To see task, task context or benchmark detail, click on its id everywhere on the page. In case the task/context/benchmark is running, you can kill it by clicking on **kill** button in the top right corner of the page. In case the task/context/benchmark is finished or failed, you will see the **remove** button instead of kill button in right top corner of the page. Click on this button to delete all results, logs and all service information about task from the BEEN cluster.
 
 ![Task detail](images/wi/task_detail_01.png)
 
-&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;<br/>
 
 ![Task context detail](images/wi/task_context_detail_01.png)
 
-&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;<br/>
 
 ![Benchmark detail](images/wi/benchmark_detail_01.png)
+
+
+
+
+
+### Displaying logs from tasks {#user.webinterface.tasklogs}
+To display logs from tasks, go to page with task details and click on **show logs** button in the right top corner of the page. 
+
+![Task logs](images/wi/task_logs_detail_01.png)
+
+If you want to see detailed informations (e.g. stack trace), click on the line with appropriate log message.
+
+![Task logs](images/wi/task_log_detail_01.png)
+
 
 
 
@@ -101,30 +129,18 @@ You can also display evaluation result directly, but it's mime type must be supp
 ![Result display example](images/wi/evaluator_result_example_01.png)
 
 
+### Debugging tasks {#user.webinterface.debug}
+If you want to see which tasks are running in *listen* debug mode, switch to **Debug** tab. Here you can find information about hostname and port, on which the java debugger can be connected. 
 
-
-### Listing tasks and task contexts {#user.webinterface.listingtasks}
-
-![Listing task contexts](images/wi/benchmark_tasks__task_contexts_01.png)
-![Listing tasks](images/wi/benchmark_tasks__tasks_01.png)
-
-<!--
 ![Debugged tasks](images/wi/debug_01.png)
-![Debugging BEEN](images/wi/example_been_debug_page_01.png)
+
+
+
+### Handling web interface errors {#user.webinterface.errors}
+If something goes wrong or you're trying to invoke some invalid operation, web interface will show you simple error message.
+
 ![Example of error page](images/wi/example_error_page_01.png)
-![Task logs](images/wi/task_logs_detail_01.png)
--->
 
+If you are intended in stack trace of this error, click on the **show detailed stack trace** link in right bottom corner of the page.
 
-## EverBEEN controls
-* overview description
-* viewing service status
-* how to submit task to SW repo
-* how to submit task/context/benchmark
-* viewing outcomes & getting to logs
-* explain how to clean up after something (& what does it delete)
-* ...
-* any other tutorials that come to mind
-
-
-
+![Debugging BEEN](images/wi/example_been_debug_page_01.png)
