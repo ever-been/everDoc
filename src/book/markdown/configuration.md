@@ -1,7 +1,11 @@
 ## EverBEEN configuration {#user.configuration}
-* one configuration file
-* how to generate one easily
-* distribution via URL
+Configuration of the framework is done through a single, standard property file. The configuration is propagated to all services, each service is responsible for its options.
+
+An user property file is supplied to the BEEN by `-cf [file|URL]` (or `--config-file`) command line option. The value can be either a file or an URL pointing to the file. Using configuration by specifying an URL greatly enhances deployment in large environments, by reducing the need to distribute the file among machines on which the framework runs.
+
+To check effective values use `-dc` (or `--dump-config`) command line option (possibly along with the `-cf` option). It prints the configuration which will be used. User overridden options are prefixed by the *!* character.
+
+Default configuration values are supplied, before you change any of them, consult documentation and be sure you understand the implications.
 
 ### Configuration options
 Follows detailed description of available configuration options of the EverBEEN
