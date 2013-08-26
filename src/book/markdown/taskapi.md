@@ -9,7 +9,7 @@ BEEN works with three different concepts of user-supplied code and configuration
 
 * **Task context** is a container for multiple tasks that can interact together, pass data to each other and synchronize among themselves. Tasks contexts don't contain any user-written code, they only serve as a wrapper for the contained tasks. Each task context is described by a XML **task context descriptor** that specifies which tasks should be contained within the context.
 
-* **Benchmark** is a first-class object that *generates* task contexts based on its **generator task**, which is again a user-written code created by subclassing the abstract `Benchmark` class. Each benchmark is described by a XML **benchmark descriptor** which specifies the main class to run and parameters of the benchmark. A benchmark is different from a task, because its API is provides features for generating task contexts and it can also persist its state so it can be re-run when an error occurs and the generator task fails.
+* **Benchmark** is a first-class object that *generates* task contexts based on its **generator task**, which is again a user-written code created by subclassing the abstract `Benchmark` class. Each benchmark is described by a XML **benchmark descriptor** which specifies the main class to run and parameters of the benchmark. A benchmark is different from a task, because its API provides features for generating task contexts and it can also persist its state so it can be re-run when an error occurs and the generator task fails.
 
 All these three concepts can be submitted to BEEN and run individually, if you only want to test a single task, you can submit it without providing a task context or a whole benchmark.
 
@@ -23,7 +23,7 @@ The easiest way to create a submittable item (e.g. a task) is by creating a Mave
 		<version>3.0.0</version>
 	</dependency>
 
-Tasks, contexts and benchmark must be packaged into a BPK file, which can then be uploaded to the BEEN cluster. Each BPK package can contain multiple submittable items and multiple XML descriptors. The problem of packaging is made easier by the supplied `bpk-plugin` Maven plugin. To preferred way to use it is to add this plugin to the `package` Maven goal in `pom.xml` of the project:
+Tasks, contexts and benchmark must be packaged into a BPK file, which can then be uploaded to the BEEN. Each BPK package can contain multiple submittable items and multiple XML descriptors. The problem of packaging is made easier by the supplied `bpk-plugin` Maven plugin. The preferred way to use it is to add the plugin to the `package` Maven goal in `pom.xml` of the project:
 
 	<plugin>
 		<groupId>cz.cuni.mff.d3s.been</groupId>
@@ -49,7 +49,7 @@ In the plugin's configuration the user must specify at least one descriptor of a
 		</taskDescriptors>
 	</configuration>
 
-This specifies that the package should publish a single descriptor named `NginxBenchmark.td.xml` which is located in the specified resource path. With such a configuration, creating the BPK package is simply a matter of invoking `mvn package` on this project – this will produce a `.bpk` file that can be uploaded into BEEN.
+This specifies that the package should publish a single descriptor named `NginxBenchmark.td.xml` which is located in the specified resource path. With such a configuration, creating the BPK package is simply a matter of invoking `mvn package` on this project – this will produce a `.bpk` file that can be uploaded to the BEEN.
 
 ### Descriptor Format
 
@@ -81,7 +81,7 @@ These properties will be presented to the user in the web interface before submi
 		<argument>-Xmx8m</argument>
 	</arguments>
 
-For debugging purposes, you can specify the `<debug>` element which will enable remote debugging when running the task. With the `<hostRuntimes>` element you can filter on which host runtimes can the task be run. The value of this setting is an XPath expression.
+For debugging purposes, you can specify the `<debug>` element which will enable remote debugging when running the task. With the `<hostRuntimes>` element you can filter on which Host Runtimes the task can be run. The value of this setting is an XPath expression.
 
 ### Task API
 
@@ -118,7 +118,7 @@ BEEN provides several APIs for user-written tasks:
 
 ### Task Properties
 
-Every tasks has a key-value property storage. These properties can be set from various places: From the XML descriptor, from the user when submitting, inherited from a task context, set from a benchmark when it generates a task context. To access these values, you can use the `getProperty` method of the `Task` class:
+Every task has a key-value property storage. These properties can be set from various places: From the XML descriptor, from user input when submitting, inherited from a task context, set from a benchmark when it generates a task context. To access these values, you can use the `getProperty` method of the `Task` class:
 
 	int numberOfClients = Integer.parseInt(this.getProperty("numberOfClients"));
 
