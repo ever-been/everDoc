@@ -143,4 +143,4 @@ If something goes wrong or you're trying to invoke some invalid operation, web i
 
 If you are intended in stack trace of this error, click on the **show detailed stack trace** link in right bottom corner of the page.
 
-![Debugging BEEN](images/wi/example_been_debug_page_01.png)
+![Debugging Web Interface](images/wi/example_been_debug_page_01.png)
