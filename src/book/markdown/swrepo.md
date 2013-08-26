@@ -1,16 +1,14 @@
 ## BPKs and Software repository {#user.swrepository}
 
 ### Been package (BPK) {#user.swrepository.bpk}
-Been package, shortly BPK, contains sources and descriptors needed to run tasks, task contexts and benchmarks.
-Each package has its own unique identifier with structure similar to identifiers used by Maven. The identifier
-consists of three parts: 
+Been package, shortly BPK, contains binaries and descriptors needed to run tasks, task contexts and benchmarks.
+Each package has its own unique identifier with structure similar to identifiers used by Maven. The identifier consists of three parts: 
 
-1. **group ID** -  	A universally unique identifier for a BPK. It is normal to use a fully-qualified package name to distinguish it from other BPK packages with a similar name (eg. cz.been.example).
-2. **bpk ID** - The identifier for this BPK that is unique within the group given by the group ID.
-3. **version** - The current version of the BPK.
+1. **Group ID** -  	A universally unique identifier for a BPK. It is a good practice to use a fully-qualified package name to distinguish it from other BPK packages with a similar name (eg. cz.been.example).
+2. **Bpk ID** - The identifier of the BPK that is unique within the group given by the group ID.
+3. **Version** - The current version of the BPK.
 
-BPK package is represented by single file with **\*.bpk** suffix. In fact the bpk file is simple zip file
-with strictly defined structure described below.
+BPK package is represented by single file with **\*.bpk** suffix. In fact the bpk file is a zip file with predefined structure described below.
 
     package.bpk
        \___ config.xml
@@ -20,13 +18,13 @@ with strictly defined structure described below.
        \___ tds/
 
 
-1. ***config.xml*** file - Main configuration XML descriptor of BPK. It consists of two main sections:
-    - **metaInf** section - there is specified unique identifier of the BPK. 
-    - **runtime** section - there is specified runtime type. Been supports two runtime types - **JavaRuntime** and **NativeRuntime**. 
-        - **JavaRuntime** - used to define that the tasks/task context/benchmarks is written in language supported by JVM. You must also specify name of the jar with implementation of your task/task context/benchmark.
-        - **NativeRuntime** - used to define that the task/task context/benchmark is not written in language supported by JVM. In case you use this type of runtime you must specify name of runnable binary with implementation of your task/task context/benchmark.
+1. ***config.xml*** file - Main configuration XML descriptor of the BPK. It consists of two main sections:
+    - **metaInf** section - specifies unique identifier of the BPK. 
+    - **runtime** section - specifies runtime type. Been supports two runtime types - **JavaRuntime** and **NativeRuntime**. 
+        - **JavaRuntime** - defines tasks written in JVM based inanguage (e.g. Java, Scale). The name of the jar with implementation is required.
+        - **NativeRuntime** - defines tasks written in other languages. This type requires the name of a runnable object (binary or script) to be used.
 
-    Following examples shows valid descriptors for *java* and *native* runtimes.
+    Following examples show valid descriptors for *java* and *native* runtimes.
 
 ```
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -65,33 +63,27 @@ with strictly defined structure described below.
 </ns2:bpkConfiguration>
 ```
 
-2. ***files/*** directory - In case that you specified runtime as ***JavaRuntime*** in the ***config.xml*** descriptor, you have to place here the jar with implementation of your task/task context/benchmark. If you specified runtime as ***NativeRuntime***, you have to place here the executable file specified in descriptor. 
+2. ***files/*** directory - contains runnable objects of a task(s). In the case of the ***JavaRuntime***  it must contain the jar with implementation, ***NativeRuntime***s must place its runnable objects there. 
 
-3. ***lib/*** directory - In case that you specified runtime as ***JavaRuntime***, you should place here all java dependencies of jar file specified in *config.xml*. These dependencies will be placed to the classpath of the running task/task context/benchmark. 
+3. ***lib/*** directory - ***JavaRuntime***s can place additional jars which will be added to the `classpath` of a task once running on a Host Runtime. 
 
-4. ***tcds/*** directory - In this directory are placed task context descriptors.
+4. ***tcds/*** directory - should contain any Task Context descriptors in order to be recognized by the Web Interface.
 
-5. ***tds/*** directory - In this directory are placed task descriptors.
-
-
-When a task/task context/benchmark is started, *lib/*, *files*, *tds/* and *tcds/* directories are copied into the working directory of this task.
-
-Now you have all informatin needed to build BPK package by hand. But better approache is to use [Been Bpk Plugin](#user.bpkplugin).
-
-**Note:** You can see more elements in *context.xml* file generated by [Been BPK plugin](#user.bpkplugin) and you can also find definitions of these elements in corresponding \*.xsd file, but these elements are not used in actual version of BEEN. 
+5. ***tds/*** directory - should contain at least one Task descriptor.
 
 
+When a task is started, *lib/*, *files*, *tds/* and *tcds/* directories are copied into the working directory of the task.
 
+Even though it is possible to create a BPK "by hand" it is not recommended. The standard way of assembling a BPK file is to use use the [Been Bpk Plugin](#user.bpkplugin) which does all the hard work.
+
+**Note:** You can see more elements in *context.xml* file generated by [Been BPK plugin](#user.bpkplugin) and you can also find definitions of these elements in corresponding \*.xsd file, but these elements are not used in the current version. 
 
 
 ### Software repository {#user.swrepository.swrepository}
-The main purpose of the software repository is to store BPK packages for future use. SR is implemented as a service which can be started on arbitrary BEEN node. You can upload prepared BPK packages to and download them from SR. Provided implementation is based on embedded HTTP server.
+The main purpose of the software repository is to store BPKs for future use. Software Repository (SR) is implemented as a service which can be started on an arbitrary BEEN node. You can upload prepared BPKs to and download them from the SR. Provided implementation is based on embedded HTTP server.
 
 
 ### BPK versioning {#user.swrepository.bpkversioning}
-Software repository does not allow reuploading BPKs with same groupId, bpkId and version. If you want to reupload BPK, you have to change its version. The reason for this limitation is simple - it prevents inconsistency of stored data, because changes in production code may cause unpredictable behavior. Imagine a situation if you rename a field on an object and you want to deserialize already stored measured data from previous benchmark runs. As you can see it is a legitime restriction of user comfort.
+Software repository does not allow re-uploading of BPKs with same groupId, bpkId and version. If you want to re-upload a BPK, you have to change its version. The reason for this limitation is simple - it prevents inconsistencies and unpredictable behavior of production code.
 
-As usual, there exists an exception. BPKs with version suffixed by **'-SNAPSHOT'** can be reuploaded to sofware repository again and again. Use this version suffix when you are developing and testing new BPK implementation but do not use it in production environment. 
-
-
-
+For ease of developing of new tasks and benchmarks BPKs can be created with version suffixed by **'-SNAPSHOT'**. Such versions of BPKs can be re-uploaded to the Software Repository. Also Host Runtimes will download such versions instead of using cached packages. It is not recommended to use **'-SNAPSHOT'** in in production environment. 
