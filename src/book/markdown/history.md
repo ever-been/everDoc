@@ -23,7 +23,7 @@ WillBEEN's development team had to cope with large, old and fragile codebase. Wh
 
 The deployment of BEEN was yet another problematic part, when installing and configuring the environment takes a tremendous amount of effort. Last but not least, the API for tasks and benchmarks is very complicated and writing and debugging of user code of a benchmark was almost impossible.
 
-The new team was therefore supposed to eliminate some of these shortcomings, while stabilizing the framework even further. Thus the goals set where to rewrite the oldest parts of the framework, while maintaining the rest, along with finding better approach to component communication based on asynchronous message passing. The work load were estimated to +10,000 LOC.
+The new team was therefore supposed to eliminate some of these shortcomings, while stabilizing the framework even further. Thus the goals set where to rewrite the oldest parts of the framework, while maintaining the rest, along with finding better approach to component communication based on asynchronous message passing. The work load were estimated to +20,000 LOC.
 
 
 ### EverBEEN

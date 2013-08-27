@@ -1,10 +1,81 @@
 ## EverBEEN services
 
-### <a id="devel.services.hostruntime">Host Runtime</a>
-* how it only helps when you want to run tasks
-* why does it make sense to run nodes without it
+### Host Runtime {#devel.services.hostruntime}
+The Host Runtime is the service responsible for managing running tasks. It also functions as a gateway for its tasks and the rest of the framework.
 
-### <a id="devel.services.taskmanager">Task Manager</a>
+The service was completely rewritten since the quality of the code was poor. The rewrite enabled the EverBEEN team to do necessary refactoring as well as to introduce libraries, such as [Apache Commons Exec](#devel.techno.exec) producing more modular and maintainable code.
+
+Even though the service was completely rewritten the basic functions remain more or less the same compared to previous versions.
+
+A Host Runtime can run on any type of a BEEN node <!-- TODO link to node types -->. It makes sense to run it on a *NATIVE* node in order not to incur costs associated with running a *DATA* node. Typically a deployment will have a few DATA nodes and as many NATIVE nodes with a Host Runtime as needed.
+
+Available configuration options are listed in [Configuration](#uses.configuration)  
+
+#### Host Runtime overview {#devel.services.hostruntime.overview}
+
+Responsibilities of a Host Runtime include
+
+* creating an environment for a task (working directory, environment properties, command line etc.)
+* downloading BPKs from the Software Repository on behalf of a task
+* running and managing a task (spawning a process, changing task's state, exit code, etc.)
+* passing task's data to and from a task (logs, results, etc.)
+* cleaning up after a task
+* monitoring the host it runs on
+
+Each Host Runtime manages only its tasks and doest not know nor care about the rest.
+
+The implementation can be found in the *host-runtime* module within the `cz.cuni.mff.d3s.been.hostruntime` package.
+
+#### Tasks management {#devel.services.hostruntime.management}
+
+The Host Runtime interacts with the rest of the framework primarily by listening for messages (`HostRuntimeMessageListener`) through a distributed topic. Messages contain request which are dispatched to appropriate message handlers (`ProcessManager`).
+
+A task begins its life on a Host Runtime with incoming `RunTaskMessage` message. The Host Runtime can either accept the task or return it to the Task Manager. In former case a complete environment is prepared and a new process is spawned (`task.TaskProcess`). This process includes:
+
+* downloading task's BPK (`SoftwareResolver`)
+* creating working directory and unpacking the BPK into it (`ProcessManager`)
+* preparing environment properties and command line (`task.CmdLineBuilderFactory`)
+ 
+
+The task is supervised in a separate thread, waiting either for the task to finish or an user generated request to abort it. The state changes are propagated through the TaskEntry structure associated with the task (`TaskHandle`).
+
+#### Interaction with tasks {#devel.services.hostruntime.tasks}
+
+Any output and communication of a task related to the framework must go through the Host Runtime, including:
+
+* logs, output from standard output and standard error (`tasklogs.TaskLogHandler`)
+* results, result queries
+* task context related operations (Checkpoints, latches, etc.)
+
+The communication protocol is based on [0MQ](#devel.techno.zmq) and messages are encoded in JSON. This allows to implement the [Task API](#user.taskapi) in different languages. The EverBEEN project currently implements extensive support for JVM based languages.
+
+The output a of task is dispatched to appropriate destination with the help of Hazelcast distributed structures - the Host Runtime does not know how the output is processed it just know where to store it.
+
+#### Task protocol
+
+Follows overview of the protocol between Host Runtime and a task. 
+
+As was mentioned above the protocol is based on 0MQ with messages encoded in JSON format. 
+
+A task in order to communicate with its Host Runtime must send appropriate messages through 0MQ ports - connection details are passed as environment properties, names of the properties are specified in `cz.cuni.mff.d3s.been.socketworks.NamedSockets`. How are messages encoded in JSON is responsibility of the [Task API](#user.taskapi) - the current implementation uses the [Jackson](#devel.techno.jackson) library to serialize/deserialize messages from/to *Plain Old Java Objects*.
+
+There are currently four types of messages recognized by the framework. For the sake of brevity Java implementation classes are mentioned here. If the need for different implementation of the TASK API arises message, format can be inferred from them (direct mapping to JSON).  
+
+<!-- TODO better format -->
+LogMessages - *TaskLogs* - cz.cuni.mff.d3s.been.logging.LogMessage
+
+Check Points - *TaskCheckpoints* - `cz.cuni.mff.d3s.been.task.checkpoints.CheckpointRequest`, request type specified by `cz.cuni.mff.d3s.been.task.checkpoints.CheckpointRequestType`
+
+Results - *TaskResults* - `cz.cuni.mff.d3s.been.results.Result` along with `cz.cuni.mff.d3s.been.core.persistence.EntityID` wrapped in `cz.cuni.mff.d3s.been.core.persistence.EntityCarrier`  
+
+Result queries - *TaskResultQueries* - `cz.cuni.mff.d3s.been.persistence.Query`
+
+
+
+#### Host Runtime monitoring {#devel.services.hostruntime.management}
+<!-- TODO -->
+ 
+### Task Manager {#devel.services.taskmanager}
 The Task Manager is at the heart of the EverBEEN framework, its responsibilities include:
 
 * task scheduling
@@ -19,7 +90,8 @@ Main characteristic:
 * distributed
 * redundant (in default configuration)
 
-#### <a id="devel.services.taskmanager.distributed">Distributed approach to scheduling</a>
+#### Distributed approach to scheduling   {#devel.services.taskmanager.distributed}
+
 The most important characteristic of the Task Manger is that the computation is event-driven
 and distributed among the *DATA* <!-- TODO link to types --> nodes. The implication
 from such approach is that there is no central authority, bottleneck or single point
@@ -29,11 +101,11 @@ data, are transparently taken over by the rest of the cluster.
 Distributed architecture is the major difference from previous versions
 of the BEEN framework.
 
-#### <a id="devel.services.taskmanager.implementation">Implementation</a>
+#### Implementation {#devel.services.taskmanager.implementation}
 The implementation of the Task Manager is heavily dependant on [Hazelcast](#devel.techno.hazelcast)
 distributed data structures and its semantics, especially the `com.hazelcast.core.IMap`.
 
-#### <a id="devel.services.taskmanager.workflow">Workflow</a>
+#### Workflow {#devel.services.taskmanager.workflow}
 The basic event-based workflow
 
  1. Receiving asynchronous Hazelcast event
@@ -49,14 +121,14 @@ which also removes the need for explicit locking and synchronization (which happ
 but is not responsibility of the Task Manager developer).
 
 
-#### <a id="devel.services.taskmanager.ownership">Data ownership</a>
+#### Data ownership {#devel.services.taskmanager.ownership}
 An important notion to remember is that an instance of the Task Manager handles
 only entries which it owns, whenever possible (e.g. task entries). Ownership of data
 means that it is stored in local memory and the node is responsible for it.
 The design of Task Manager takes advantage of the locality and most operations
 are local with regard to data ownership. This is highly desirable for the Task Manger to scale.
 
-#### <a id="devel.services.taskmanager.structures">Main distributed structures</a>
+#### Main distributed structures {#devel.services.taskmanager.structures}
 
 * BEEN_MAP_TASKS - map containing runtime task information
 * BEEN_MAP_TASK_CONTEXTS - map containing runtime context information
@@ -65,7 +137,7 @@ are local with regard to data ownership. This is highly desirable for the Task M
 These distributed data structures are also backed by the [MapStore](#devel.services.mapstore)
 (if enabled).
 
-#### <a id="devel.services.taskmanager.tasks">Task scheduling</a>
+#### Task scheduling {#devel.services.taskmanager.tasks}
 <!-- TODO reference task states -->
 
 The Task Manager is responsible for scheduling tasks - finding a Host Runtime
@@ -101,7 +173,7 @@ to reschedule when an event happen, e.g.:
  * another tasks is removed from a Host Runtime
  * a new Host Runtime is connected
 
-#### <a id="devel.services.taskmanager.benchmarks">Benchmark Scheduling</a>
+#### Benchmark Scheduling {#devel.services.taskmanager.benchmarks}
 Benchmark tasks are scheduled the same way as other tasks. The main difference is
 that if a benchmark task fails (i.e. Host Runtime failure, but also programming error)
 the framework can re-schedule the task on a different Host Runtime.
@@ -115,7 +187,7 @@ Future implementation could deploy different heuristics to detect defective benc
 tasks, such as failure-rate.
 
 
-#### <a id="devel.services.taskmanager.contexts">Context Handling</a>
+#### Context Handling {#devel.services.taskmanager.contexts}
 
 Contexts are not scheduled as an entity on Host Runtimes as they are containers
 for related tasks. The Task Manager handles detection of contexts state changes.
@@ -134,7 +206,7 @@ that the context can not be scheduled at the moment, which is difficult because 
 distributed nature of scheduling. Any information gathered might be obsolete by the time
 its read).
 
-#### <a id="devel.services.taskmanager.errors">Handling exceptional events</a>
+#### Handling exceptional events {#devel.services.taskmanager.errors}
 
 The current Hazelcast implementation (as of version 2.6) has one limitation.
 When a key [migrates](http://hazelcast.com/docs/2.5/manual/single_html/#InternalsDistributedMap)
@@ -157,14 +229,14 @@ In the case of cluster restart there might be stale tasks which does not run any
 the state loaded from the [MapStore](#devel.services.mapstore) is inconsistent. Such
 situation will be recognized and corrected by the scan.
 
-#### <a id="devel.services.taskmanager.events">Hazelcast events</a>
+#### Hazelcast events {#devel.services.taskmanager.events}
 These are main sources of cluter-wide events, received from Hazelcast:
 
 * Task Events - `cz.cuni.mff.d3s.been.manager.LocalTaskListener`
 * Host Runtime events - `cz.cuni.mff.d3s.been.manager.LocalRuntimeListener`
 * Contexts events - `cz.cuni.mff.d3s.been.manager.LocalContextListener`
 
-#### <a id="devel.services.taskmanager.messages">Task Manger messages</a>
+#### Task Manger messages {#devel.services.taskmanager.messages}
 Main interface `cz.cuni.mff.d3s.been.manager.msg.TaskMessage`, messages are
 created through the `cz.cuni.mff.d3s.been.manager.msg.Messages` factory.
 
@@ -178,7 +250,7 @@ Overview of main messages:
 Detailed description is part of the source code nad Javadoc.
 
 
-#### <a id="devel.services.taskmanager.actions">Task Manager actions</a>
+#### Task Manager actions {#devel.services.taskmanager.actions}
 Main interface `cz.cuni.mff.d3s.been.manager.action.TaskAction`, actions are
 created through the `cz.cuni.mff.d3s.been.manager.action.Action` factory.
 
@@ -191,16 +263,16 @@ Overview of actions
 
 Detailed description is part of the source code nad Javadoc.
 
-#### <a id="devel.services.taskmanager.locking">Locking</a>
+#### Locking {#devel.services.taskmanager.locking}
 
 <!-- TODO -->
 
-### <a id="devel.services.swrepo">Software Repository</a>
+### Software Repository {#devel.services.swrepo}
 
 * functional necessities (availability from all nodes)
 * why it uses HTTP and how (describe request format)
 
-### <a id="devel.services.objectrepo">Object Repository</a>
+### Object Repository {#devel.services.objectrepo}
 
 * queue drains
 * async persist queue
@@ -211,7 +283,7 @@ Detailed description is part of the source code nad Javadoc.
 The MapStore allows the EverBEEN to persist runtime information, which can
 be restored after restart or crash of the framework.
 
-#### <a id="devel.services.mapstore.role">Role of the MapStore</a>
+#### Role of the MapStore {#devel.services.mapstore.role}
 
 EverBEEN runtime information (such as tasks, contexts and benchmarks, etc.) are
 persisted through the MapStore. This adds overhead to working with the distributed
@@ -226,7 +298,7 @@ The main advantage of using the MapStore is transparent and easy access to Hazel
 distributed structures with the ability to persist them - no explicit actions are
 needed.
 
-#### <a id="devel.services.mapstore.difference">Difference between the MapStore and the Object repository</a>
+#### Difference between the MapStore and the Object repository {#devel.services.mapstore.difference}
 Both mechanism are used to persist objects - the difference is in the type of objects
 being persisted. The [Object repository](#devel.services.objectrepo) stores
 user generated information, whereas the MapStore handles (mainly) BEEN runtime
@@ -239,13 +311,13 @@ Even though both implementations currently us MongoDB, in future the team envisa
 implementations serving different needs (such as load balancing, persistence
 guarantees, data ownership, data access, etc.)
 
-#### <a id="devel.services.mapstore.extension">Extension point</a>
+#### Extension point {#devel.services.mapstore.extension}
 Adapting the layer to different persistence layer (such as relational database)
 is relatively easy. By implementing the `com.hazelcast.core.MapStore` interface
 and specifying the implementation to use at runtime, an user of the framework
 has ability to change behaviour of the layer.
 
-#### <a id="devel.services.mapstore.configuration">Configuration</a>
+#### Configuration {#devel.services.mapstore.configuration}
 The layer can be configured to accommodate different needs:
 
 * specify connection options (hostname, user, etc.)
@@ -255,6 +327,6 @@ The layer can be configured to accommodate different needs:
 
 Detailed description of configuration can be found at [Configuration](#user.configuration).
 
-### <a id="devel.services.webinterface">Web Interface</a>
+### Web Interface {#devel.services.webinterface}
 * why it's not actually a service (but more like a client)
 * cluster client connection mechanism
