@@ -51,7 +51,7 @@ In the plugin's configuration the user must specify at least one descriptor of a
 
 This specifies that the package should publish a single descriptor named `NginxBenchmark.td.xml` which is located in the specified resource path. With such a configuration, creating the BPK package is simply a matter of invoking `mvn package` on this project – this will produce a `.bpk` file that can be uploaded to the BEEN.
 
-### Descriptor Format
+### Descriptor Format {#user.taskapi.descriptors}
 
 There are two types of descriptors, task descriptors and task context descriptors. Note that benchmarks don't have a special descriptor format, instead you only provide a task descriptor for a generator task of the benchmark. These descriptors are written in XML and they must conform to the supplied XSD definitions (`task-descriptor.xsd` and `task-context-descriptor.xsd`).
 
@@ -83,7 +83,7 @@ These properties will be presented to the user in the web interface before submi
 
 For debugging purposes, you can specify the `<debug>` element which will enable remote debugging when running the task. With the `<hostRuntimes>` element you can filter on which Host Runtimes the task can be run. The value of this setting is an XPath expression.
 
-### Task API
+### Task API {#user.taskapi.api}
 
 To create a task submittable into BEEN, you should start by subclassing the `Task` abstract class. To do this, you only need to provide a single method called `run` which will optionally receive string arguments.
 
@@ -116,7 +116,7 @@ BEEN provides several APIs for user-written tasks:
 
 * *Synchronization and communication* – When multiple tasks run in a task context, they can interact with each other either for synchronization purposes or to exchange data. API for these jobs are provided by the `CheckpointController` class. BEEN provides the concepts of **checkpoints** and **latches**. Latches serve as context-wide atomic numbers with the methods for setting a value, decreasing the value by one and waiting until the latch reaches zero. Checkpoint are also waitable objects, but they can also provide a value that was previously set to the checkpoint.
 
-### Task Properties
+### Task Properties {#user.taskapi.properties}
 
 Every task has a key-value property storage. These properties can be set from various places: From the XML descriptor, from user input when submitting, inherited from a task context, set from a benchmark when it generates a task context. To access these values, you can use the `getProperty` method of the `Task` class:
 
@@ -124,7 +124,7 @@ Every task has a key-value property storage. These properties can be set from va
 
 These properties are inherited, in the sense that that when a task context has a property, the task can see it as well. But when a task has the same property with a different value, the task's value will be override the previous one.
 
-### Persisting Results
+### Persisting Results {#user.taskapi.results}
 
 The persistence layer provided by BEEN is capable of storing user-supplied types and classes. To create a class that can be persisted, simply create a subclass of `Result` and ensure that all contained fields are serializable and public. Also make sure to include a default non-parameterized constructor so that the object can be deserialized.
 
@@ -155,7 +155,7 @@ Note that the `ResultPersister` object is `AutoCloseable`, which means you need 
 ### Querying {#user.taskapi.querying}
 <!-- TODO -->
 
-### Checkpoints and Latches
+### Checkpoints and Latches {#user.taskapi.checkpoints}
 
 Checkpoints present a powerful mechanism for synchronization and communication between tasks. When tasks run in a task context, they share all their checkpoints and they can set a value to a checkpoint and another can wait for the checkpoint. This waiting is passive and once a value is assigned to a checkpoint, the waiter will receive it.
 
@@ -193,7 +193,7 @@ You can then wait until the value reaches zero:
 
 All operations on latches are atomic and the waiting is passive. Latches initially have a value of zero.
 
-### Benchmark API
+### Benchmark API {#user.taskapi.benchmarkapi}
 
 Writing a benchmark's generator task is similar to writing an ordinary task in the sense that you have to write a subclass, package it and then it will be submitted and run on a host runtime. However, the benchmark API is completely different, because the purpose of the benchmark is to provide a long-running code that will eventually generate new task contexts whenever there is all data for it available.
 
@@ -230,7 +230,7 @@ Notice the methods `onResubmit` and `onTaskContextFinished` which are used as no
 
 You are supposed to implement the logic for generating the contexts. When your benchmark is done and it will not generate any more contexts, return `null` from the `generateTaskContext` method.
 
-### Creating Task Contexts
+### Creating Task Contexts {#user.taskapi.contexts}
 
 The preferred way of creating task contexts is to use the `ContextBuilder` class to load a XML file representing the context descriptor from a resource. This class also provides various methods for modifying the context descriptor and the contained tasks.
 
@@ -262,7 +262,7 @@ The `Benchmark` abstract class provides methods `storageGet` and `storageSet` wh
 		return taskContextDescriptor;
 	}
 
-### Evaluators
+### Evaluators {#user.taskapi.evaluators}
 
 BEEN provides a special task type called **evaluator**. The purpose of such a task is to query the stored results, perform and statistical analyses and return an interpretation of the data that can be shown back to the user via web interface. Evaluators are again tasks and they can be run manually (as a single task) or within a benchmark or a context. It's up to the user when and how to run an evaluator.
 

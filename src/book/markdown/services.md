@@ -90,7 +90,8 @@ Main characteristic:
 * distributed
 * redundant (in default configuration)
 
-#### Distributed approach to scheduling {#devel.services.taskmanager.distributed}
+#### Distributed approach to scheduling   {#devel.services.taskmanager.distributed}
+
 The most important characteristic of the Task Manger is that the computation is event-driven
 and distributed among the *DATA* <!-- TODO link to types --> nodes. The implication
 from such approach is that there is no central authority, bottleneck or single point
@@ -172,7 +173,7 @@ to reschedule when an event happen, e.g.:
  * another tasks is removed from a Host Runtime
  * a new Host Runtime is connected
 
-#### <a id="devel.services.taskmanager.benchmarks">Benchmark Scheduling</a>
+#### Benchmark Scheduling {#devel.services.taskmanager.benchmarks}
 Benchmark tasks are scheduled the same way as other tasks. The main difference is
 that if a benchmark task fails (i.e. Host Runtime failure, but also programming error)
 the framework can re-schedule the task on a different Host Runtime.
@@ -186,7 +187,7 @@ Future implementation could deploy different heuristics to detect defective benc
 tasks, such as failure-rate.
 
 
-#### <a id="devel.services.taskmanager.contexts">Context Handling</a>
+#### Context Handling {#devel.services.taskmanager.contexts}
 
 Contexts are not scheduled as an entity on Host Runtimes as they are containers
 for related tasks. The Task Manager handles detection of contexts state changes.
@@ -205,7 +206,7 @@ that the context can not be scheduled at the moment, which is difficult because 
 distributed nature of scheduling. Any information gathered might be obsolete by the time
 its read).
 
-#### <a id="devel.services.taskmanager.errors">Handling exceptional events</a>
+#### Handling exceptional events {#devel.services.taskmanager.errors}
 
 The current Hazelcast implementation (as of version 2.6) has one limitation.
 When a key [migrates](http://hazelcast.com/docs/2.5/manual/single_html/#InternalsDistributedMap)
@@ -228,14 +229,14 @@ In the case of cluster restart there might be stale tasks which does not run any
 the state loaded from the [MapStore](#devel.services.mapstore) is inconsistent. Such
 situation will be recognized and corrected by the scan.
 
-#### <a id="devel.services.taskmanager.events">Hazelcast events</a>
+#### Hazelcast events {#devel.services.taskmanager.events}
 These are main sources of cluter-wide events, received from Hazelcast:
 
 * Task Events - `cz.cuni.mff.d3s.been.manager.LocalTaskListener`
 * Host Runtime events - `cz.cuni.mff.d3s.been.manager.LocalRuntimeListener`
 * Contexts events - `cz.cuni.mff.d3s.been.manager.LocalContextListener`
 
-#### <a id="devel.services.taskmanager.messages">Task Manger messages</a>
+#### Task Manger messages {#devel.services.taskmanager.messages}
 Main interface `cz.cuni.mff.d3s.been.manager.msg.TaskMessage`, messages are
 created through the `cz.cuni.mff.d3s.been.manager.msg.Messages` factory.
 
@@ -249,7 +250,7 @@ Overview of main messages:
 Detailed description is part of the source code nad Javadoc.
 
 
-#### <a id="devel.services.taskmanager.actions">Task Manager actions</a>
+#### Task Manager actions {#devel.services.taskmanager.actions}
 Main interface `cz.cuni.mff.d3s.been.manager.action.TaskAction`, actions are
 created through the `cz.cuni.mff.d3s.been.manager.action.Action` factory.
 
@@ -262,16 +263,16 @@ Overview of actions
 
 Detailed description is part of the source code nad Javadoc.
 
-#### <a id="devel.services.taskmanager.locking">Locking</a>
+#### Locking {#devel.services.taskmanager.locking}
 
 <!-- TODO -->
 
-### <a id="devel.services.swrepo">Software Repository</a>
+### Software Repository {#devel.services.swrepo}
 
 * functional necessities (availability from all nodes)
 * why it uses HTTP and how (describe request format)
 
-### <a id="devel.services.objectrepo">Object Repository</a>
+### Object Repository {#devel.services.objectrepo}
 
 * queue drains
 * async persist queue
@@ -282,7 +283,7 @@ Detailed description is part of the source code nad Javadoc.
 The MapStore allows the EverBEEN to persist runtime information, which can
 be restored after restart or crash of the framework.
 
-#### <a id="devel.services.mapstore.role">Role of the MapStore</a>
+#### Role of the MapStore {#devel.services.mapstore.role}
 
 EverBEEN runtime information (such as tasks, contexts and benchmarks, etc.) are
 persisted through the MapStore. This adds overhead to working with the distributed
@@ -297,7 +298,7 @@ The main advantage of using the MapStore is transparent and easy access to Hazel
 distributed structures with the ability to persist them - no explicit actions are
 needed.
 
-#### <a id="devel.services.mapstore.difference">Difference between the MapStore and the Object repository</a>
+#### Difference between the MapStore and the Object repository {#devel.services.mapstore.difference}
 Both mechanism are used to persist objects - the difference is in the type of objects
 being persisted. The [Object repository](#devel.services.objectrepo) stores
 user generated information, whereas the MapStore handles (mainly) BEEN runtime
@@ -310,13 +311,13 @@ Even though both implementations currently us MongoDB, in future the team envisa
 implementations serving different needs (such as load balancing, persistence
 guarantees, data ownership, data access, etc.)
 
-#### <a id="devel.services.mapstore.extension">Extension point</a>
+#### Extension point {#devel.services.mapstore.extension}
 Adapting the layer to different persistence layer (such as relational database)
 is relatively easy. By implementing the `com.hazelcast.core.MapStore` interface
 and specifying the implementation to use at runtime, an user of the framework
 has ability to change behaviour of the layer.
 
-#### <a id="devel.services.mapstore.configuration">Configuration</a>
+#### Configuration {#devel.services.mapstore.configuration}
 The layer can be configured to accommodate different needs:
 
 * specify connection options (hostname, user, etc.)
@@ -326,6 +327,6 @@ The layer can be configured to accommodate different needs:
 
 Detailed description of configuration can be found at [Configuration](#user.configuration).
 
-### <a id="devel.services.webinterface">Web Interface</a>
+### Web Interface {#devel.services.webinterface}
 * why it's not actually a service (but more like a client)
 * cluster client connection mechanism

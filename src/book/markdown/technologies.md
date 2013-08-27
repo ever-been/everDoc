@@ -25,48 +25,45 @@ As an experiment the [Task Manager](#devel.services.taskmanager)'s internal comm
 has been implemented on top of the library as well using the inter-process communication
 protocol, somewhat resembling the Actor concurrency model.
 
-### <a id="devel.techno.maven">Apache Maven</a>
+### Apache Maven {#devel.techno.maven}
 
-### <a id="devel.techno.exec">Apache Commons Exec</a>
+### Apache Commons Exec {#devel.techno.exec}
 The previous version of the BEEN framework chose to implement executing of tasks
 using basic primitives found in the Java SE (which is known to be hard).
 The realization was buggy, confusing and fragile. Instead of re-inventing the
 wheel once more the team decided to use time-proven [Apache Commins Exec](http://commons.apache.org/proper/commons-exec/) library.
 
-### <a id="devel.techno.commons">Apache Commons</a>
+### Apache Commons {#devel.techno.commons}
 
 *  (virtually everything around IO and compression)
 
-### <a id="devel.techno.http">Apache HTTP Core/Components</a>
+### Apache HTTP Core/Components {#devel.techno.http}
 
 *  (HTTP server)
 
-### <a id="devel.techno.bootstrap">Bootstrap</a>
+### Bootstrap {#devel.techno.bootstrap}
 
 * (cool skins, save time)
 
-### <a id="devel.techno.hazelcast">Hazelcast</a>
-### <a id="devel.techno.zmq">0MQ</a>
 
-
-### <a id="devel.techno.jackson">Jackson </a>
+### Jackson {#devel.techno.jackson}
 
 * (JSON serialization for inter-process data transport and user type abstraction)
 
-### <a id="devel.techno.jaxb">JAXB</a>
+### JAXB {#devel.techno.jaxb}
 
 *  (serializable POJO generation)
 
-### <a id="devel.techno.logback">Logback (logging impl)</a>
-### <a id="devel.techno.mongodb">MongoDB</a>
+### Logback (logging impl) {#devel.techno.logback}
+### MongoDB {#devel.techno.mongodb}
 
 *  (store all kinds of stuff)
 
-### <a id="devel.techno.slf4j">SLF4J</a>
+### SLF4J {#devel.techno.slf4j}
 
 * (logging unification of custom logging implementations and standard libraries)
 
-### <a id="devel.techno.tapestry">Tapestry</a>
+### Tapestry {#devel.techno.tapestry}
 
 ### Other
 * I definitely forgot about a half of these, feel free to complete this, just maintain the cool alphabetic ordering
