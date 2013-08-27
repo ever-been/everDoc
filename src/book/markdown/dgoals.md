@@ -7,15 +7,22 @@ These findings made us focus not only on technological modifications of WillBEEN
 
 ### Scalability, Redundancy, Reliability
 
-* decentralize decision-making
-* use a non-SPOF comm protocol (replacing TM and RMI)
+As we were deciding which networking technology EverBEEN will use, we were driven to make EverBEEN as robust as possible in face of potential network failures and OS freezes. The choice of Hazelcast as a networking technology took this idea to new heights, enabling us to build EverBEEN as a truly distributed system, rather than just a set of interconnected nodes.
+
+<!-- TODO check link addr -->
+As a result, we decentralized all EverBEEN desision-making. All decisions are made on the basis of network-shared memory, so as long as multiple [data nodes](#user.deployment.nodes.types) are running, the danger of a single point of failure is eliminated. The failure of a single partaking host was seen as an eventuality, rather than an unrecoverable error, and was accounted with from the start of EverBEEN development, as was the case of a temporary disconnection of the persistence layer.
 
 ### Modularity 
 
-* in reaction to previous experience with RR
-* provide extension points
+Modularity was the first code characteristic we noted as lacking in WillBEEN. Although some pseudo-modules were present, the entire codebase was compiled together, leading to frequent cross-references in the project. Not only does this pose an issue with code maintainability, but it also makes component overrides very demanding on the user's knowledge of the entire system. With the aid of modern building tools (mostly Apache Maven), we made EverBEEN a modular project, where component overriding is possible.
+
+In reaction to previous problems with WillBEEN's result storage, we specifically interfaced the *Object Repository* (formerly *Results Repository*) database connector out of the project, thus making it easily replacable in case of need (see [extension points](#user.extension) for a guide).
 
 ### Ease of use
 
-* heavy Maven integration into Task API (BPK plugin), subsequent Java task focus
-* node service composition over separate processes
+When we started attempts at refactoring WillBEEN code, we were told that it took several dozen to a few hundred hours to deploy WillBEEN and get some basic benchmarks working. We saw this quantity of time as unacceptable, hence the major focus of our works on making EverBEEN project easier to use.
+
+Firstly, we decided to completely invert the way EverBEEN services are programmed. WillBEEN services were tailored to work with each other, compiled together, but launched separately. In EverBEEN, we developped services separately, and only fused them together in the final assembly step. Thus, the communication between services only happens on the basis of a small common codebase containing relevant protocol objects. As opposed to WillBEEN, the order in which EverBEEN services are launched is not critical to the correct functioning of the clusters. We believe this considerably limits hassle with EverBEEN deployment, and reduces necessary study-time before the application can successfully run.
+
+Second, we decided to simplify the process of task creation as much as possible. The decisions we had to make towards the realization of this goal were particularly difficult, as the concept of facilitation directly opposes the genericity the rest of the framework had to offer. We came to a similar conclusion as WillBEEN authors did, and picked one technology we support to full extent - Java in combination with Apache Maven. As arbitrary as this decision may seem, it comes with huge benefits - the user can have a simple EverBEEN task up and running in the matter of minutes.
+
