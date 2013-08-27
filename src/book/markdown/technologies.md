@@ -1,9 +1,9 @@
 ## Used technologies
 The reasoning why we chose this or that tech is already done in the decision timeline, this should be more of a list of all the stuff we used and what we used it for (including the technologies that have no real repercussions on the project but we just needed them). Consider a table with a lot of fancy logos...
 
-### <a id="devel.techno.hazelcast">Hazelcast</a>
+### Hazelcast {#devel.techno.hazelcast}
 
-### <a id="devel.techno.zmq">0MQ</a>
+### 0MQ {#devel.techno.zmq}
 [0MQ](http://zeromq.org/) is a message passing library which can also
 act as a concurrency framework. It supports many advanced features. Best
 source to learn more about the library is the [0MQ Guide](http://zguide.zeromq.org/):

@@ -1,4 +1,4 @@
-## Task and Benchmark API
+## Task and Benchmark API {#user.taskapi}
 TODO: AQL (description of the abstract querying language API)
 
 One of the main goals of the current BEEN project was making the task API as simple as possible and to minimize the amount of work needed to create the whole benchmark. This was of the biggest problems with the previous BEEN versions as writing a complete and efficient benchmark required a tremendous amount of time both to study the provided API with the related Java classes and to implement the benchmark itself.

@@ -1,10 +1,81 @@
 ## EverBEEN services
 
-### <a id="devel.services.hostruntime">Host Runtime</a>
-* how it only helps when you want to run tasks
-* why does it make sense to run nodes without it
+### Host Runtime {#devel.services.hostruntime}
+The Host Runtime is the service responsible for managing running tasks. It also functions as a gateway for its tasks and the rest of the framework.
 
-### <a id="devel.services.taskmanager">Task Manager</a>
+The service was completely rewritten since the quality of the code was poor. The rewrite enabled the EverBEEN team to do necessary refactoring as well as to introduce libraries, such as [Apache Commons Exec](#devel.techno.exec) producing more modular and maintainable code.
+
+Even though the service was completely rewritten the basic functions remain more or less the same compared to previous versions.
+
+A Host Runtime can run on any type of a BEEN node <!-- TODO link to node types -->. It makes sense to run it on a *NATIVE* node in order not to incur costs associated with running a *DATA* node. Typically a deployment will have a few DATA nodes and as many NATIVE nodes with a Host Runtime as needed.
+
+Available configuration options are listed in [Configuration](#uses.configuration)  
+
+#### Host Runtime overview {#devel.services.hostruntime.overview}
+
+Responsibilities of a Host Runtime include
+
+* creating an environment for a task (working directory, environment properties, command line etc.)
+* downloading BPKs from the Software Repository on behalf of a task
+* running and managing a task (spawning a process, changing task's state, exit code, etc.)
+* passing task's data to and from a task (logs, results, etc.)
+* cleaning up after a task
+* monitoring the host it runs on
+
+Each Host Runtime manages only its tasks and doest not know nor care about the rest.
+
+The implementation can be found in the *host-runtime* module within the `cz.cuni.mff.d3s.been.hostruntime` package.
+
+#### Tasks management {#devel.services.hostruntime.management}
+
+The Host Runtime interacts with the rest of the framework primarily by listening for messages (`HostRuntimeMessageListener`) through a distributed topic. Messages contain request which are dispatched to appropriate message handlers (`ProcessManager`).
+
+A task begins its life on a Host Runtime with incoming `RunTaskMessage` message. The Host Runtime can either accept the task or return it to the Task Manager. In former case a complete environment is prepared and a new process is spawned (`task.TaskProcess`). This process includes:
+
+* downloading task's BPK (`SoftwareResolver`)
+* creating working directory and unpacking the BPK into it (`ProcessManager`)
+* preparing environment properties and command line (`task.CmdLineBuilderFactory`)
+ 
+
+The task is supervised in a separate thread, waiting either for the task to finish or an user generated request to abort it. The state changes are propagated through the TaskEntry structure associated with the task (`TaskHandle`).
+
+#### Interaction with tasks {#devel.services.hostruntime.tasks}
+
+Any output and communication of a task related to the framework must go through the Host Runtime, including:
+
+* logs, output from standard output and standard error (`tasklogs.TaskLogHandler`)
+* results, result queries
+* task context related operations (Checkpoints, latches, etc.)
+
+The communication protocol is based on [0MQ](#devel.techno.zmq) and messages are encoded in JSON. This allows to implement the [Task API](#user.taskapi) in different languages. The EverBEEN project currently implements extensive support for JVM based languages.
+
+The output a of task is dispatched to appropriate destination with the help of Hazelcast distributed structures - the Host Runtime does not know how the output is processed it just know where to store it.
+
+#### Task protocol
+
+Follows overview of the protocol between Host Runtime and a task. 
+
+As was mentioned above the protocol is based on 0MQ with messages encoded in JSON format. 
+
+A task in order to communicate with its Host Runtime must send appropriate messages through 0MQ ports - connection details are passed as environment properties, names of the properties are specified in `cz.cuni.mff.d3s.been.socketworks.NamedSockets`. How are messages encoded in JSON is responsibility of the [Task API](#user.taskapi) - the current implementation uses the [Jackson](#devel.techno.jackson) library to serialize/deserialize messages from/to *Plain Old Java Objects*.
+
+There are currently four types of messages recognized by the framework. For the sake of brevity Java implementation classes are mentioned here. If the need for different implementation of the TASK API arises message, format can be inferred from them (direct mapping to JSON).  
+
+<!-- TODO better format -->
+LogMessages - *TaskLogs* - cz.cuni.mff.d3s.been.logging.LogMessage
+
+Check Points - *TaskCheckpoints* - `cz.cuni.mff.d3s.been.task.checkpoints.CheckpointRequest`, request type specified by `cz.cuni.mff.d3s.been.task.checkpoints.CheckpointRequestType`
+
+Results - *TaskResults* - `cz.cuni.mff.d3s.been.results.Result` along with `cz.cuni.mff.d3s.been.core.persistence.EntityID` wrapped in `cz.cuni.mff.d3s.been.core.persistence.EntityCarrier`  
+
+Result queries - *TaskResultQueries* - `cz.cuni.mff.d3s.been.persistence.Query`
+
+
+
+#### Host Runtime monitoring {#devel.services.hostruntime.management}
+<!-- TODO -->
+ 
+### Task Manager {#devel.services.taskmanager}
 The Task Manager is at the heart of the EverBEEN framework, its responsibilities include:
 
 * task scheduling
@@ -19,7 +90,7 @@ Main characteristic:
 * distributed
 * redundant (in default configuration)
 
-#### <a id="devel.services.taskmanager.distributed">Distributed approach to scheduling</a>
+#### Distributed approach to scheduling {#devel.services.taskmanager.distributed}
 The most important characteristic of the Task Manger is that the computation is event-driven
 and distributed among the *DATA* <!-- TODO link to types --> nodes. The implication
 from such approach is that there is no central authority, bottleneck or single point
@@ -29,11 +100,11 @@ data, are transparently taken over by the rest of the cluster.
 Distributed architecture is the major difference from previous versions
 of the BEEN framework.
 
-#### <a id="devel.services.taskmanager.implementation">Implementation</a>
+#### Implementation {#devel.services.taskmanager.implementation}
 The implementation of the Task Manager is heavily dependant on [Hazelcast](#devel.techno.hazelcast)
 distributed data structures and its semantics, especially the `com.hazelcast.core.IMap`.
 
-#### <a id="devel.services.taskmanager.workflow">Workflow</a>
+#### Workflow {#devel.services.taskmanager.workflow}
 The basic event-based workflow
 
  1. Receiving asynchronous Hazelcast event
@@ -49,14 +120,14 @@ which also removes the need for explicit locking and synchronization (which happ
 but is not responsibility of the Task Manager developer).
 
 
-#### <a id="devel.services.taskmanager.ownership">Data ownership</a>
+#### Data ownership {#devel.services.taskmanager.ownership}
 An important notion to remember is that an instance of the Task Manager handles
 only entries which it owns, whenever possible (e.g. task entries). Ownership of data
 means that it is stored in local memory and the node is responsible for it.
 The design of Task Manager takes advantage of the locality and most operations
 are local with regard to data ownership. This is highly desirable for the Task Manger to scale.
 
-#### <a id="devel.services.taskmanager.structures">Main distributed structures</a>
+#### Main distributed structures {#devel.services.taskmanager.structures}
 
 * BEEN_MAP_TASKS - map containing runtime task information
 * BEEN_MAP_TASK_CONTEXTS - map containing runtime context information
@@ -65,7 +136,7 @@ are local with regard to data ownership. This is highly desirable for the Task M
 These distributed data structures are also backed by the [MapStore](#devel.services.mapstore)
 (if enabled).
 
-#### <a id="devel.services.taskmanager.tasks">Task scheduling</a>
+#### Task scheduling {#devel.services.taskmanager.tasks}
 <!-- TODO reference task states -->
 
 The Task Manager is responsible for scheduling tasks - finding a Host Runtime
