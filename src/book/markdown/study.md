@@ -8,7 +8,7 @@ Regression benchmarking is a technique mostly aimed to discover negative perform
 
 While performance degradation is obviously an undesired effect, unplanned performance increase can also be an indicator of a problem. This can easily happen when an expensive check (e.g. for security purposes) is unintendedly removed or bypassed. Both positive and negative changes can serve as a valuable input for the development team, because it not only denotes the change, but also points to the exact code that caused the change.
 
-### Pull-oriented benchmarking
+### Pull-oriented benchmarking
 
 Consider the case that we have access to the source code repository with version history of a software product. Suppose the developers don't do any regular benchmarking and suddenly they realize that their software behaves much slower than a year ago. Although the performance degradation is probably caused by several factors, the developers would like to know, what exact change caused the biggest slowdown, so they can focus on improving.
 
