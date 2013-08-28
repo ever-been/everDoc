@@ -2,10 +2,10 @@
 
 ### BEEN
 
-The original BEEN project was started in Fall 2004 and it was finished at the turn of 2006 and 2007, it was supervised by Tomáš Kalibera and developed by Jakub Lehotsky, David Majda, Branislav Repcek, Michal Tomcanyi, Antonin Tomecek and Jaroslav Urban. This project's assignment was:
+The original BEEN project was started in Fall 2004 and it was finished at the turn of 2006 and 2007, it was supervised by Tomas Kalibera and developed by Jakub Lehotsky, David Majda, Branislav Repcek, Michal Tomcanyi, Antonin Tomecek and Jaroslav Urban. This project's assignment was:
 
-> The aim of the project will be to create a highly configurable and modular environment
-> for benchmarking of applications, with special focus on middleware benchmarks.
+> The aim of the project will be to create a highly configurable and modular environment
+> for benchmarking of applications, with special focus on middleware benchmarks.
 
 The team that worked on the project created the whole architecture and individual component of the framework and eventually implemented a functional benchmarking environment in Java, using RMI as the main mean of communication among it's individual parts.
 
@@ -40,7 +40,7 @@ EverBEEN is supervised by Andrej Podzimek and Petr Tuma, and developed by Martin
 
 One of the biggest issues with the original BEEN project was stability of the computer network (both network itself and individual machines) and the framework required that all the involved computer were running and available. Disconnecting some of the core services caused the whole network to hang or crash and recovery of this situation was often impossible. Also, the core components of BEEN had to be running for the whole time, which created a lot of *single points of failure*. Many common situation, like a short-term network outage, made the whole system fail and all of its components had to be rebooted.
 
-Such a *client-server architecture* seemed inappropriate for a framework that is supposed to run in a large and heterogenous network. The current version of BEEN is built on *Hazelcast*, a decentralized, highly scalable platform for distributed data sharing. Hazelcast is a Java-based library that implements peer-to-peer communication over TCP/IP, with automatic discovery of other nodes. This platform offers very user-friendly implementations of distributed maps, queues, lists, locks, topics, transactions and many other data structures and synchronization mechanisms.
+Such a *client-server architecture* seemed inappropriate for a framework that is supposed to run in a large and heterogeneous network. The current version of BEEN is built on *Hazelcast*, a decentralized, highly scalable platform for distributed data sharing. Hazelcast is a Java-based library that implements peer-to-peer communication over TCP/IP, with automatic discovery of other nodes. This platform offers very user-friendly implementations of distributed maps, queues, lists, locks, topics, transactions and many other data structures and synchronization mechanisms.
 
 Hazelcast supports data sharding with redundancy and fail-over mechanisms. Using these, BEEN is able to present a decentralized environment for the benchmarks, with almost no single point of failure. Each connected node is equal to each, and the framework can run as long as each node can communicate with the rest of the network. When a node gets disconnected (for whatever reason), the cluster is notified about this and stops using this node.
 

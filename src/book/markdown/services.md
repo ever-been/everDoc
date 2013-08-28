@@ -102,7 +102,7 @@ Distributed architecture is the major difference from previous versions
 of the BEEN framework.
 
 #### Implementation {#devel.services.taskmanager.implementation}
-The implementation of the Task Manager is heavily dependant on [Hazelcast](#devel.techno.hazelcast)
+The implementation of the Task Manager is heavily dependent on [Hazelcast](#devel.techno.hazelcast)
 distributed data structures and its semantics, especially the `com.hazelcast.core.IMap`.
 
 #### Workflow {#devel.services.taskmanager.workflow}
@@ -261,7 +261,7 @@ Overview of actions
 * `RunContextAction`
 * `NullAction`
 
-Detailed description is part of the source code nad Javadoc.
+Detailed description is part of the source code and Javadoc.
 
 #### Locking {#devel.services.taskmanager.locking}
 
@@ -315,7 +315,7 @@ guarantees, data ownership, data access, etc.)
 Adapting the layer to different persistence layer (such as relational database)
 is relatively easy. By implementing the `com.hazelcast.core.MapStore` interface
 and specifying the implementation to use at runtime, an user of the framework
-has ability to change behaviour of the layer.
+has ability to change behavior of the layer.
 
 #### Configuration {#devel.services.mapstore.configuration}
 The layer can be configured to accommodate different needs:
