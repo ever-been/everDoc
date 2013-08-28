@@ -2,7 +2,7 @@
 
 BEEN is from the first moment of development a multi-platform software. It's possible to run an installation of BEEN on any of these platforms:
 
-* Linux – most recent distributions
+* Linux -- most recent distributions
 * Mac OS X 10.8 and later
 * Microsoft Windows XP, Windows Vista, Windows 7 and later
 * FreeBSD

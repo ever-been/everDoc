@@ -13,7 +13,7 @@ Such testing is not only done in order to hunt bugs and discover non-functional 
 - **Comparison with competing software**
 - **Determining the bottleneck**
 
-Despite the fact that performance measuring is definitely useful, it still has quite a low popularity among development teams. Regression benchmarking is uncommon and the implementation of induvidual benchmarks is usually project-specific. The need for a generic framework for regression benchmarking is obvious for many reasons:
+Despite the fact that performance measuring is definitely useful, it still has quite a low popularity among development teams. Regression benchmarking is uncommon and the implementation of individual benchmarks is usually project-specific. The need for a generic framework for regression benchmarking is obvious for many reasons:
 
 - Benchmarking middleware is hard because of the need for a complex environment. A general environment could simplify the tasks of deployment, configuration and management of a networked system for benchmarking.
 

@@ -13,5 +13,5 @@ Therefore the goals were adapted and mainly contain:
 * Delivering a highly scalable and stable product
 * Reducing the number of *single points of failure* to a minimum
 * Making the framework easily deployable
-* Improving usability to simplify writing and debuggin tasks and benchmarks
+* Improving usability to simplify writing and debugging tasks and benchmarks
 * Implement asynchronous and distributed communication

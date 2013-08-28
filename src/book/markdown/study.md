@@ -6,7 +6,7 @@ During the development of EverBEEN, several use cases were considered and this s
 
 Regression benchmarking is a technique mostly aimed to discover negative performance impact of a newly added feature, an upgrade or a single patch in the source code. This usually involves performing the same set of benchmarks against various versions of the same software, and often it tests even individual revisions of the source tree. When the benchmark is stable enough to result in consistent data, it is easy to immediately see which commits had impact on performance.
 
-While performance degradation is obviously an undesired effect, unplanned performance increase can also be an indicator of a problem. This can easily happen when an expensive check (e.g. for security purposes) is unintendedly removed or bypassed. Both positive and negative changes can serve as a valuable input for the development team, because it not only denotes the change, but also points to the exact code that caused the change.
+While performance degradation is obviously an undesired effect, unplanned performance increase can also be an indicator of a problem. This can easily happen when an expensive check (e.g. for security purposes) is unintentionally removed or bypassed. Both positive and negative changes can serve as a valuable input for the development team, because it not only denotes the change, but also points to the exact code that caused the change.
 
 ### Pull-oriented benchmarking
 
@@ -14,7 +14,7 @@ Consider the case that we have access to the source code repository with version
 
 If this software was a standalone desktop application, the obvious solution would be to build all the revisions of the software since the last year and benchmark them. Writing a script automating this task would be straightforward, but when the software we are talking about is a distributed middleware, even setting a benchmarking environment could be a costly task.
 
-This task can be generalized into a problem of running a benchmark over a set of parameters. The parameters are known in advance and the benchmark is by neccessity a user-written code. If a general framework for benchmarking should be helpful, it would need to simplify the issues of writing the code *and* of specifying the set of parameters. The user's options must be flexible enough to support many possible configurations of the benchmark. One might want to benchmark software with various configurations.
+This task can be generalized into a problem of running a benchmark over a set of parameters. The parameters are known in advance and the benchmark is by necessity a user-written code. If a general framework for benchmarking should be helpful, it would need to simplify the issues of writing the code *and* of specifying the set of parameters. The user's options must be flexible enough to support many possible configurations of the benchmark. One might want to benchmark software with various configurations.
 
 When the benchmark is to work over an already-known set of parameters, we call it **pull-oriented benchmarking**. The details of BEEN's support for this use case are discussed later.
 

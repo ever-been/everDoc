@@ -6,7 +6,7 @@ There are two persistence components you might want to override - the [Storage](
 If your goal is to relocate EverBEEN user data (benchmark results, logs etc.) to your own database and don't mind running a MongoDB as well for EverBEEN service data, you'll be fine just overriding the [Storage](#user.extension.storageex). If you want to completely port all of EverBEEN's persistence, you'll have to override the [MapStore](#user.extension.extension.mapstore) as well.
 
 ### Storage extension {#user.extension.storageex}
-As declared above, the *Storage* component is fully replacable by a different implementation than the default MongoDB adapter. However, we don't feel comfortable with letting you plunge into this extension point override without a few warnings first.
+As declared above, the *Storage* component is fully replaceable by a different implementation than the default MongoDB adapter. However, we don't feel comfortable with letting you plunge into this extension point override without a few warnings first.
 
 #### Override warning {#user.extension.storageex.warning}
  The issue with *Storage* implementation is that the persistence layer is designed to be completely devoid of any type knowledge. The reason for this is that *Storage* is used to persist and retrieve objects from user tasks. Should the *Storage* have any RTTI knowledge of the objects it works with, imagine what problems could arise when two tasks using two different versions of the same objects would attempt to use the same *Storage*.
@@ -83,7 +83,7 @@ The [store](#) method is asynchronous. It doesn't return any outcome information
 
 #### Query / Answer {#user.extension.storageex.qa}
 <!-- TODO javadoc link -->
-The other type of requests that *Storage* supports are queries. They are synchronous and a *Query* is always answered with a *QueryAnswer*. In order to support queries, you could implement all the querying mechanics by yourself (if you wish to do that, see the [Task API](#user.taskapi.querying) for more details), but that's not necessary. The [QueryTranslator](#) adaptor is designed to help you interpret queries without having to go through all of the query structure.
+The other type of requests that *Storage* supports are queries. They are synchronous and a *Query* is always answered with a *QueryAnswer*. In order to support queries, you could implement all the querying mechanics by yourself (if you wish to do that, see the [Task API](#user.taskapi.querying) for more details), but that's not necessary. The [QueryTranslator](#) adapter is designed to help you interpret queries without having to go through all of the query structure.
 
 <!-- TODO javadoc link -->
 The preferred way of interpreting queries is to create a [QueryRedactor](#) and implementation (or several, in fact). The *QueryRedactor* class designed to help you construct database-specific query interpretations using callbacks. This way, you instantiate the *QueryTranslator*, call its *interpret* method passing it your instance of the *QueryRedactor* and the *QueryTranslator* calls the appropriate methods on your *QueryRedactor*. Once configured, your *QueryRedactor* can be used to assemble and perform the expected query. There are additional interfaces that can help you in the process ([QueryRedactorFactory](), [QueryExecutor]() and [QueryExecutorFactory]()).

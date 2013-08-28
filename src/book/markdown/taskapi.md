@@ -110,11 +110,11 @@ If this class is in a Maven project as described in the previous section, it can
 
 BEEN provides several APIs for user-written tasks:
 
-* *Properties* – Tasks are configurable either from their descriptors or by the benchmark that generated them. These properties are again configurable by the user before submitting the task. All properties have a name and a simple string value and these can be accessed via the `getProperty` method of the abstract `Task` class.
+* *Properties* --- Tasks are configurable either from their descriptors or by the benchmark that generated them. These properties are again configurable by the user before submitting the task. All properties have a name and a simple string value and these can be accessed via the `getProperty` method of the abstract `Task` class.
 
-* *Result storing* – Each task can persist a result that it has gathered by using the API providing access to the persistence layer. To store a result, use a `ResultPersister` object, which can be created by using the method `createResultPersister` from the `Task` abstract class.
+* *Result storing* --- Each task can persist a result that it has gathered by using the API providing access to the persistence layer. To store a result, use a `ResultPersister` object, which can be created by using the method `createResultPersister` from the `Task` abstract class.
 
-* *Synchronization and communication* – When multiple tasks run in a task context, they can interact with each other either for synchronization purposes or to exchange data. API for these jobs are provided by the `CheckpointController` class. BEEN provides the concepts of **checkpoints** and **latches**. Latches serve as context-wide atomic numbers with the methods for setting a value, decreasing the value by one and waiting until the latch reaches zero. Checkpoint are also waitable objects, but they can also provide a value that was previously set to the checkpoint.
+* *Synchronization and communication* --- When multiple tasks run in a task context, they can interact with each other either for synchronization purposes or to exchange data. API for these jobs are provided by the `CheckpointController` class. BEEN provides the concepts of **checkpoints** and **latches**. Latches serve as context-wide atomic numbers with the methods for setting a value, decreasing the value by one and waiting until the latch reaches zero. Checkpoint are also waitable objects, but they can also provide a value that was previously set to the checkpoint.
 
 ### Task Properties {#user.taskapi.properties}
 
@@ -144,7 +144,7 @@ Persisting a result is then only a simple mean of creating the appropriate objec
 	ResultPersister rp = results.createResultPersister(SampleResult.RESULT_ENTITY_ID));
 	rp.persist(result);
 
-Note that the `ResultPersister` object is `AutoCloseable`, which means you need to ensure its `close` method is called when you no longer need the object. The best way to achive this is by enclosing the instantiation inside a try-catch block:
+Note that the `ResultPersister` object is `AutoCloseable`, which means you need to ensure its `close` method is called when you no longer need the object. The best way to achieve this is by enclosing the instantiation inside a try-catch block:
 
 	try (ResultPersister rp = results.createResultPersister(...)) {
 		...
@@ -266,7 +266,7 @@ The `Benchmark` abstract class provides methods `storageGet` and `storageSet` wh
 
 BEEN provides a special task type called **evaluator**. The purpose of such a task is to query the stored results, perform and statistical analyses and return an interpretation of the data that can be shown back to the user via web interface. Evaluators are again tasks and they can be run manually (as a single task) or within a benchmark or a context. It's up to the user when and how to run an evaluator.
 
-To create an evaluator, subclass the abstract class `Evaluator` and implement the method `evaluate`. This method is supposed to return a `EvaluatorResult` object which will then be stored in the database. This object holds a byte array of data and a MIME type of it. BEEN supports a few MIME types with which it can directly work, e.g. if the result is a JPEG image, it will show it directly in the web interface. The list of supported MIME types can be found defined as contants inside the `EvaluatorResult` class.
+To create an evaluator, subclass the abstract class `Evaluator` and implement the method `evaluate`. This method is supposed to return a `EvaluatorResult` object which will then be stored in the database. This object holds a byte array of data and a MIME type of it. BEEN supports a few MIME types with which it can directly work, e.g. if the result is a JPEG image, it will show it directly in the web interface. The list of supported MIME types can be found defined as constants inside the `EvaluatorResult` class.
 
 An evaluator needs to retrieve data from the persistence layer, and it can do so using the provided `ResultFacade` interface. This object is available as an instance method on the `Task` superclass. Queries can be build using the `QueryBuilder` object which supports various conditions and query parameters. A simple query that will retrieve a collection of results can have this form:
 

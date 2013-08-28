@@ -26,11 +26,11 @@
 :	The team acknowledged that it's impossible to create a high-level API independent on the low-level transport and communication protocol. We decided to make Hazelcast an integral dependency of BEEN.
 
 *February 2013*
-:	The software reposity component will be implemented as a HTTP server with a REST API. This will allow us to reuse existing libraries for HTTP communication and achieve correct streaming of large file transfers.
+:	The software repository component will be implemented as a HTTP server with a REST API. This will allow us to reuse existing libraries for HTTP communication and achieve correct streaming of large file transfers.
 
 *March 2013*
 :	For the purposes of both inter- and intra-process communication, we will use 0MQ.
-:	Jackson will be  usedas a serialization library, and we will use JSON as a transport format for various inter-component communication. The (de-)serialization is easier and more flexible than XML.
+:	Jackson will be used as a serialization library, and we will use JSON as a transport format for various inter-component communication. The (de-)serialization is easier and more flexible than XML.
 
 *April 2013*
 :	MongoDB is to be used as the default storage engine. Though, the persistence layer is to be implemented will a universal interface that would allow any other common database storage to be use instead. Also, MongoDB has a [lot of features](http://www.youtube.com/watch?v=b2F-DItXtZs) that fit the BEEN use case.
