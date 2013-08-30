@@ -264,17 +264,54 @@ Overview of actions
 Detailed description is part of the source code and Javadoc.
 
 #### Locking {#devel.services.taskmanager.locking}
+<!-- TODO description -->
 
-<!-- TODO -->
+
 
 ### Software Repository {#devel.services.swrepo}
+<!-- TODO description -->
 
 * functional necessities (availability from all nodes)
 * why it uses HTTP and how (describe request format)
 
+
+
 ### Object Repository {#devel.services.objectrepo}
 
-* queue drains
+The purpose of the *Object Repository* is to service user data persistence. While the actual persistence and querying code is isolated from the *Object Repository* by the [Storage](<!-- TODO javadoc link -->) interface module and is database-dependent (the default MongoDB implementation can be found in the `mongo-storage` module), the *Object Repository* operates without any knowledge of user types or concrete database storage implementation. The main portion of its work is to communicate with the rest of the EverBEEN cluster, collect objects sent by other nodes for persistence, collect queries from other nodes and dispatch answers. The communication with the rest of the cluster is realized through shared queues and maps (distributed cluster-wide memory).
+
+The *Object Repository* also features a *Janitor* sub-service, which is responsible for cleaning up old data once it's deemed unnecessary. The *Janitor* works on its local *Storage* instance and therefore doesn't partake in any cluster-wide activities.
+
+#### Queue drains
+
+As mentioned above, the *Object Repository*'s communication with the rest of the EverBEEN cluster is mostly based on distributed queues. The *Object Repository* continuously drains these queues using special *consumer* threads (spawned dynamically based on load-balancing heuristics). This idea is revisited in both persist requests and querying.
+
+#### Persist request queue
+
+The object persisting mechanism is simple:
+
+* A node serializes its object `o` ([Entity](<!-- TODO javadoc link -->)) into JSON. Let's call the resulting string `ojson`
+* The node creates an special wrapper ([EntityCarrier](<!-- TODO javadoc link -->)) which combines the serialized object with a destination id ([EntityID](<!-- TODO javadoc link -->)) - let's call the specific id instance `oid`
+* The wrapper, containing both `ojson` and `oid`, gets submitted into a distributed queue
+* A few moments later, an *Object Repository* drains the wrapper from the distributed queue
+* The repository unpacks the wrapper and passes both `ojson` and `oid` to its *Storage* implementation
+* The locating conventions of the *Storage* implementation are transparent to the *Object Repository*
+
+If the *Storage* implementation refuses to store `ojson` for any reason, the *Object Repository* resubmits the wrapper, containing `ojson` and `oid`, back to the shared queue to prevent data loss.
+
+From the above principle, it is obvious that multiple *Object Repository* instances can operate concurrently, without a negative impact on data integrity or performance. The condition is, however, that all of the *Object Repository* instances be accessing either the same database, or that the databases so accessed have a full data-sharing policy of their own.
+
+Persist requests in EverBEEN are asynchronous, and no notification is sent back after a persist is done. Although this approach may limit the user's knowledge about the current state of his data, it comes at a considerable advantage: The shared memory can function as a buffer through *ObjectRepository* disconnects. This enables a hassle-free means of reconfiguring the *Object Repository* if need be.
+
+#### Query queue & Answer map
+
+A similar approach regarding queues is taken for persistence layer queries.
+<!-- TODO description of queue draining -->
+
+However, queries in EverBEEN are synchronous and, provide state information and are subject to timeouts.
+<!-- TODO description of querying and answers -->
+
+
 * async persist queue
 * abstract query machinery (query queue handling, effective querying without user type knowledge)
 
