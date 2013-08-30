@@ -23,13 +23,3 @@ When the benchmark is to work over an already-known set of parameters, we call i
 Another practical use case is implementing benchmarking into a **continuous integration environment**. Such environments usually perform a large suite of unit tests whenever a commit into the repository is made. The results (especially failed tests) are then shown either on a project status web page or sent via email to the developers.
 
 Deploying a *continuous regression resting* suite into such a system would then be a matter of integrating a benchmarking framework in such a way that a suite of prepared benchmarks would be run every time a new commit is made. We call this case **push-oriented benchmarking**, because there is no predefined set of items to benchmark. Instead, a *push event* should be dispatched what would cause the newly created item to be tested.
-
-### EverBEEN's support
-
-BEEN's has been designed to cover both these use cases and still have only a single user-friendly API. The API for writing benchmarks is a unified mean to create and submit a benchmarkable item. Every benchmark consists of a user-written class which has a method `generateTaskContext`, which should return a new item to be benchmarked (called *task context*). When a benchmark doesn't have any item to submit, it can simply wait for an event (to support the push-oriented case). This method is called by the framework in a loop, so the benchmark can generate as many items as it wants. The benchmark can run indefinitely or it can mark itself as finished by returning `null` from the method. The BEEN cluster itself calls the method when it is capable of running a new item.
-
-During the development, we have considered implementing a *descriptive language* that would specify which items are to be benchmarked. This would however only support the pull-oriented case and would require a different API for push-oriented benchmarking. The unified API offers unlimited flexibility, because the code that generates the benchmarkable items is written by the user.
-
-This also means that the running benchmark can take the current (incomplete) results into account and modify the progress of the benchmark. E.g. this might be necessary to refine granularity of the benchmarked items when it detects an anomaly in the results.
-
-For details about the API for writing tasks and benchmarks, see the [Task and Benchmark API](#user.taskapi) section.
