@@ -65,8 +65,15 @@ JAXB - Java XML Binding is standard which specify how to map Java classes to XML
 
 
 ### MongoDB {#devel.techno.mongodb}
+[MongoDB](http://www.mongodb.org/) is open-source no-sql database. We use it as persist backend for some objects stored in Hazelcast data grid and as persistent storage of all kind of results from benchmarks. We prefer no-sql database before any relational database because it is easier to store and retrieve objects with beforehead unknown structure. We chose MongoDB because ot its positives:
 
-*  (store all kinds of stuff)
+* continuous development
+* simple installation (in all major Linux distributions installable through standard package managers)
+* BEEN framework uses JSON as major format for user type abstraction and MongoDB provides simple JSON data binding
+* allows to store big documents
+* easy testability due to embedded deployment
+* detailed documentation
+
 
 ### SLF4J (logging interface) {#devel.techno.slf4j}
 Old incarnation of the BEEN framework has been messed up with at least four implementations of logging. Because we are holding modern standards we uniform all logging under the [SLF4J](http://www.slf4j.org/) logging interface. This decision has positives in very simple change of logging implementation.  
@@ -78,6 +85,3 @@ In previous versions of been developers decided to use JSP (JavaServer Pages) as
 
 ### Twitter Bootstrap {#devel.techno.bootstrap}
 Instead of writing tons of CSS, we chose to use [Twitter Bootstrap](http://getbootstrap.com) to design web interface. Although none of us is pure web designer, we were able to create uniform design in a very short time.
-
-### Other
-* I definitely forgot about a half of these, feel free to complete this, just maintain the cool alphabetic ordering
