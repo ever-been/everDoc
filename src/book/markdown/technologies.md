@@ -45,13 +45,16 @@ The previous team of the BEEN developers chose to implement almost everything ab
 *  (serializable POJO generation)
 
 ### Logback (logging impl) {#devel.techno.logback}
+[Logback](http://logback.qos.ch/) is logging implementation. It is intended as as a successor to the popular "log4j" projects. Whe decided to use because it natively implements [SLF4J](#devel.techno.tapestry) logging interface. If for any reason you wanted to switch to another logging implementation implementing SLF4J interface, you could do so within seconds by changing few lines of xml in Maven POM descriptors.
+
+
 ### MongoDB {#devel.techno.mongodb}
 
 *  (store all kinds of stuff)
 
 ### SLF4J {#devel.techno.slf4j}
+Old incarnation of the BEEN framework has been messed up with at least four implementations of logging. Because we are holding modern standards we uniform all logging under the [SLF4J](http://www.slf4j.org/) logging interface. This decision has positives in very simple change of logging implementation.  
 
-* (logging unification of custom logging implementations and standard libraries)
 
 ### Tapestry5 {#devel.techno.tapestry}
 In previous versions of been developers decided to use JSP (JavaServer Pages) as basic building stone of the web interface. We decided to use [Tapestry5](http://tapestry.apache.org/), which is very flexible component based framework for creating robust and dynamic java web applications and also, what is most important, simply expansible and maintainable. We also used [Tapestry5-jquery](http://tapestry5-jquery.com/) extension, which replaces [Prototype](http://prototypejs.org/) for [jQuery](http://jquery.com/), the most popular JavaScript framework for dynamic web applications and [Tapestry5 CometD](https://github.com/uklance/tapestry-cometd), more and more popular web-socket extension.
