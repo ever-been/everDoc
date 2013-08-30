@@ -26,6 +26,7 @@ has been implemented on top of the library as well using the inter-process commu
 protocol, somewhat resembling the Actor concurrency model.
 
 ### Apache Maven {#devel.techno.maven}
+As already mentioned in the introductory chapters, we decided to use some software project management technology instead of Ant, which is not maintainable on large projects. Maven is robust software project management and comprehension tool based on XML descriptors representing project object model (POM). Maven takes care about project external dependencies and about dependencies between separate been modules. This avoids problems with version mismatch between various libraries.
 
 ### Apache Commons Exec {#devel.techno.exec}
 The previous version of the BEEN framework chose to implement executing of tasks
