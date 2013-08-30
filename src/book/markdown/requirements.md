@@ -1,4 +1,4 @@
-## EverBEEN requirements
+## EverBEEN requirements {#user.requirements}
 
 BEEN is from the first moment of development a multi-platform software. It's possible to run an installation of BEEN on any of these platforms:
 
