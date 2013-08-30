@@ -203,7 +203,7 @@ Some EverBEEN modules were created with the sole purpose of deploying existing m
 
 
 `web-interface-standalone`
-:	Provides support for the `web-interface` to be run in an embedded java container, rather than deployed in the standard fashion.
+:	Provides support for the `web-interface` to be run in an embedded java container, in addition to manual deployment to a java container.
 
 
 `mongo-storage-standalone`
