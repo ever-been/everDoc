@@ -63,7 +63,8 @@ wheel once more the team decided to use time-proven [Apache Commins Exec](http:/
 
 * (logging unification of custom logging implementations and standard libraries)
 
-### Tapestry {#devel.techno.tapestry}
+### Tapestry5 {#devel.techno.tapestry}
+In previous versions of been developers decided to use JSP (JavaServer Pages) as basic building stone of the web interface. We decided to use [Tapestry5](http://tapestry.apache.org/), which is very flexible component based framework for creating robust and dynamic java web applications and also, what is most important, simply expansible and maintainable. We also used [Tapestry5-jquery](http://tapestry5-jquery.com/) extension, which replaces [Prototype](http://prototypejs.org/) for [jQuery](http://jquery.com/), the most popular JavaScript framework for dynamic web applications and [Tapestry5 CometD](https://github.com/uklance/tapestry-cometd), more and more popular web-socket extension.
 
 ### Other
 * I definitely forgot about a half of these, feel free to complete this, just maintain the cool alphabetic ordering
