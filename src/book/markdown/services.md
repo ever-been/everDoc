@@ -269,6 +269,37 @@ Detailed description is part of the source code and Javadoc.
 
 
 ### Software Repository {#devel.services.swrepo}
+
+From users perspective, the software repository is a black box to which you can upload and from which you can download standalone BPK packages with task, task context and benchmark definitions and sources and all interaction is done through web interface. 
+
+From developers perspective, the architecture of software repository is built on file system storage and very simple message protocol over HTTP. Follows description of this protocol:
+
+* *get* **/bpk** - download BPK from software repository 
+    * request header: **Bpk-Identifier**, value: cz.cuni.mff.d3s.been.bpk.BpkIdentifier (JSON), unique identifier of BPK to be downloaded
+    * valid response status codes: **2XX**
+    * response body: binary content of the requested BPK file
+* *put* **/bpk** - upload BPK to software repository 
+    * request header: **Bpk-Identifier**, value: cz.cuni.mff.d3s.been.bpk.BpkIdentifier (JSON), unique identifier of BPK to be uploaded
+    * request body: binary content of the uploaded BPK file
+    * valid response status codes: **2XX**
+* *get* **/bpklist** - list all BPKs stored in software repository
+    * valid response status codes: **2XX**
+    * response body: java.util.List&lt;cz.cuni.mff.d3s.been.bpk.BpkIdentifier&gt; (JSON) 
+* *get* **/tdlist** - list all task descriptors for BPK stored in software repository and identified by given BpkIdentifier 
+    * request header: **Bpk-Identifier**, value: cz.cuni.mff.d3s.been.bpk.BpkIdentifier (JSON), unique identifier of BPK for which the list of available descriptors should be returned
+    * valid response status codes: **2XX**
+    * response body: java.util.Map&lt;java.lang.String, cz.cuni.mff.d3s.been.core.task.TaskDescriptor&gt; (JSON), key is task descriptor filename
+* *get* **/tcdlist** - list all task context descriptors for BPK stored in software repository and identified by given BpkIdentifier 
+    * request header: **Bpk-Identifier**, value: cz.cuni.mff.d3s.been.bpk.BpkIdentifier (JSON), unique identifier of BPK for which the list of available descriptors should be returned
+    * valid response status codes: **2XX**
+    * response body: java.util.Map&lt;java.lang.String, cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor&gt; (JSON), key is task context descriptor filename
+
+If http request returns other than valid response status code, HTTP reason phrase should be filled with reason of failure.
+
+
+(For JSON serialization and deserialization is used ObjectMapper provided in [Jackson](#devel.techno.jackson) library)
+
+
 <!-- TODO description -->
 
 * functional necessities (availability from all nodes)
