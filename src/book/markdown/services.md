@@ -51,7 +51,7 @@ The communication protocol is based on [0MQ](#devel.techno.zmq) and messages are
 
 The output a of task is dispatched to appropriate destination with the help of Hazelcast distributed structures - the Host Runtime does not know how the output is processed it just know where to store it.
 
-#### Task protocol {#devel.services.hostruntime.protocol}
+#### Task protocol
 
 Follows overview of the protocol between Host Runtime and a task. 
 
@@ -303,7 +303,9 @@ Some limitations:
 *(You can find another directory called **artifacts** in software repository working directory. We intended to implement another type of files which can be stored. Imagine task which needs tons of resource files. Now, you have to store these resources directly in BPK package. And what if you want to upload newer task with different version but using the same resources? You have to store them again in the BPK. So this feature was intended to store shared resources between tasks, bat due to lack of time was not implemented.)*
 
 
-### Software Repository cache {#devel.services.swrepocache}
+### Software Repository client {#devel.services.swrepocache}
+
+Because some BPKs can be used multiple times on single host runtime, each host runtime has its own software repository cache. This cache uses same file store as software repository and saves bandwidth and I/O resources.
 
 
 
