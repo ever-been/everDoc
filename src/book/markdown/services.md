@@ -51,7 +51,7 @@ The communication protocol is based on [0MQ](#devel.techno.zmq) and messages are
 
 The output a of task is dispatched to appropriate destination with the help of Hazelcast distributed structures - the Host Runtime does not know how the output is processed it just know where to store it.
 
-#### Task protocol
+#### Task protocol {#devel.services.hostruntime.protocol}
 
 Follows overview of the protocol between Host Runtime and a task. 
 
