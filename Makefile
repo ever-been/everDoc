@@ -17,7 +17,7 @@ cat:		targetdir
 		chmod +x ${catFile}
 
 pdf:		cat
-		./${catFile} | pandoc  -f markdown+definition_lists+header_attributes --template=template.latex -V geometry:margin=1in --chapters --toc --number-sections -o ${pdfFile}
+		./${catFile} | pandoc  -f markdown+definition_lists+header_attributes -V links-as-notes=true --template=template.latex -V geometry:margin=1in --chapters --toc --number-sections -o ${pdfFile}
 
 clean:
 		rm -f ${catFile}
