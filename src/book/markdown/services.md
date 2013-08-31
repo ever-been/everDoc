@@ -272,7 +272,9 @@ Detailed description is part of the source code and Javadoc.
 
 From users perspective, the software repository is a black box to which you can upload and from which you can download standalone BPK packages with task, task context and benchmark definitions and sources and all interaction is done through web interface. 
 
-From developers perspective, the architecture of software repository is built on file system storage and very simple message protocol over HTTP. Follows description of this protocol:
+From developers perspective, the architecture of software repository is based on file system storage and very simple message protocol over HTTP. 
+
+Description of HTTP protocol:
 
 * *get* **/bpk** - download BPK from software repository 
     * request header: **Bpk-Identifier**, value: cz.cuni.mff.d3s.been.bpk.BpkIdentifier (JSON), unique identifier of BPK to be downloaded
@@ -294,16 +296,50 @@ From developers perspective, the architecture of software repository is built on
     * valid response status codes: **2XX**
     * response body: java.util.Map&lt;java.lang.String, cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor&gt; (JSON), key is task context descriptor filename
 
-If http request returns other than valid response status code, HTTP reason phrase should be filled with reason of failure.
+If response is marked with other than valid status code, standard HTTP response reason phrase will contain reason of the failure. For JSON serialization and deserialization is used ObjectMapper provided by [Jackson](#devel.techno.jackson) library.
+
+We chose HTTP protocol because it is adapted for transfer of large files and is easy and use.   
+
+Software repository stores uploaded BPKs in subdirectory **bpks** in SR working directory. Each uploaded bpk is stored in subfolder **GROUP_ID/BPK_ID/VERSION** under the name **BPK_ID-VERSION.bpk** where GROUP_ID stands for fully qualified groupId of BPK name where dots are replaced by slashes, BPK_ID stands for bpkId of BPK and VERSION stands for version of BPK. See following example for understanding directory structure.
+
+```    
+SR working directory (WD): 
+    e.g. /home/been/swrepository on Linux systems
+    e.g. C:\been\swrepository on Windows systems
+
+BPK store directory: 
+    {WD}/bpks
+    
+uploaded example BPK 1:
+    filename: example.bpk
+    groupId:  cz.cuni.mff.d3s.been.example
+    bpkId:    example-bpk
+    version:  1.1.beta-02
+    
+uploaded example BPK 2:
+    filename: alpmexa.bpk
+    groupId:  cz.cuni.mff.d3s.been.example
+    bpkId:    alpmexa-bpk
+    version:  0.1-SNAPSHOT
+
+example BPK 1 will be stored in:
+    {WD}/bpks/cz/cuni/mff/d3s/been/example/example-bpk/
+                      1.1.beta-02/example-bpk-1.1.beta-02.bpk    
+    
+example BPK 2 will be stored in: 
+    {WD}/bpks/cz/cuni/mff/d3s/been/example/alpmexa-bpk/0.1-SNAPSHOT/
+                      alpmexa-bpk-0.1-SNAPSHOT.bpk    
+```
+
+Some limitations:
+
+* Software repository does not support reuploading of already uploaded BPKs with same groupId, bpkId and version except BPKs with version suffixed by **-SNAPSHOT**
+* You have to start software repository on node visible for all other nodes and on port which is not blocked by firewall.
+
+*(You can find another directory called **artifacts** in software repository working directory. We intended to implement another type of files which can be stored. Imagine task which needs tons of resource files. Now, you have to store these resources directly in BPK package. And what if you want to upload newer task with different version but using the same resources? You have to store them again in the BPK. So this feature was intended to store shared resources between tasks, bat due to lack of time was not implemented.)*
 
 
-(For JSON serialization and deserialization is used ObjectMapper provided in [Jackson](#devel.techno.jackson) library)
-
-
-<!-- TODO description -->
-
-* functional necessities (availability from all nodes)
-* why it uses HTTP and how (describe request format)
+### Software Repository cache {#devel.services.swrepocache}
 
 
 
