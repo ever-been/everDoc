@@ -128,6 +128,7 @@ These properties are inherited, in the sense that that when a task context has a
 
 The persistence layer provided by BEEN is capable of storing user-supplied types and classes. To create a class that can be persisted, simply create a subclass of `Result` and ensure that all contained fields are serializable and public. Also make sure to include a default non-parameterized constructor so that the object can be deserialized.
 
+<!-- TODO rewrite to match task API removing the option of overriding the result kind -->
 Each storable type is identified with an `EntityID` object, which specified its group and kind. We recommend to create a constant describing your type. An example result type can look like this:
 
 	public class SampleResult extends Result {
