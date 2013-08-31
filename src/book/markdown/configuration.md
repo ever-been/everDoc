@@ -97,11 +97,17 @@ Configuration for persistence transport layer. See [Persistence](#user.persisten
 #### Persistence Janitor Configuration {#user.configuration.objectrepo.janitor}
 Configuration for persistence layer janitor component. See [Persistence](#user.persistence) for more details.
 
-`been.objectrepository.janitor.finished-longevity`=*96*
-:	 Number of hours objects with a 'FINISHED' status stay persistent.
+`been.objectrepository.janitor.finished-longevity`=*168*
+:	 Number of hours objects with a `FINISHED` status stay persistent.
 
-`been.objectrepository.janitor.failed-longevity`=*48*
+`been.objectrepository.janitor.failed-longevity`=*96*
 :	Number of hours objects with a `FAILED` status stay persistent.
+
+`been.objectrepository.janitor.service-log-longevity`=*168*
+:	Number of hours EverBEEN service logs stay persistent.
+
+`been.objectrepository.janitor.load-sample-longevity`=*168*
+:	Number of hours EverBEEN node load monitor samples stay persistent.
 
 `been.objectrepository.janitor.cleanup-interval`=*10*
 :	Period in minutes of janitor cleanup checks.
