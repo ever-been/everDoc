@@ -83,6 +83,61 @@ These properties will be presented to the user in the web interface before submi
 
 For debugging purposes, you can specify the `<debug>` element which will enable remote debugging when running the task. With the `<hostRuntimes>` element you can filter on which Host Runtimes the task can be run. The value of this setting is an XPath expression.
 
+	/id
+	/workingDirectory
+	/tasksWorkingDirectory
+	/port
+	/host
+	/startUpTime
+	/exclusivity
+	/exclusiveId
+	/taskCount
+	/maxTasks
+	/memoryThreshold
+	/taskDirs
+	/type
+
+	/java/version
+	/java/vendor
+	/java/runtimeName
+	/java/VMVersion
+	/java/VMVendor
+	/java/runtimeVersion
+	/java/specificationVersion
+
+	/operatingSystem/name
+	/operatingSystem/version
+	/operatingSystem/arch
+	/operatingSystem/vendor
+	/operatingSystem/vendorVersion
+	/operatingSystem/dataModel
+	/operatingSystem/endian
+
+	/filesystem/deviceName
+	/filesystem/directory
+	/filesystem/type
+	/filesystem/free
+	/filesystem/total
+
+
+	/hardware/cpu/vendor
+	/hardware/cpu/model
+	/hardware/cpu/mhz
+	/hardware/cpu/cacheSize
+
+	/hardware/networkInterface/name
+	/hardware/networkInterface/hwaddr
+	/hardware/networkInterface/type
+	/hardware/networkInterface/mtu
+	/hardware/networkInterface/netmask
+	/hardware/networkInterface/broadcast
+	/hardware/networkInterface/address
+
+
+	/hardware/memory/ram
+	/hardware/memory/swap
+
+
 ### Task API {#user.taskapi.api}
 
 To create a task submittable into BEEN, you should start by subclassing the `Task` abstract class. To do this, you only need to provide a single method called `run` which will optionally receive string arguments.
