@@ -290,12 +290,12 @@ As mentioned above, the *Object Repository*'s communication with the rest of the
 
 The object persisting mechanism is simple:
 
-* A node serializes its object `o` ([Entity](<!-- TODO javadoc link -->)) into JSON. Let's call the resulting string `ojson`
-* The node creates an special wrapper ([EntityCarrier](<!-- TODO javadoc link -->)) which combines the serialized object with a destination id ([EntityID](<!-- TODO javadoc link -->)) - let's call the specific id instance `oid`
-* The wrapper, containing both `ojson` and `oid`, gets submitted into a distributed queue
-* A few moments later, an *Object Repository* drains the wrapper from the distributed queue
-* The repository unpacks the wrapper and passes both `ojson` and `oid` to its *Storage* implementation
-* The locating conventions of the *Storage* implementation are transparent to the *Object Repository*
+* A node serializes its object `o` ([Entity](<!-- TODO javadoc link -->)) into JSON. Let's call the resulting string `ojson`.
+* The node creates an special wrapper ([EntityCarrier](<!-- TODO javadoc link -->)) which combines the serialized object with a destination id ([EntityID](<!-- TODO javadoc link -->)) - let's call the specific id instance `oid`.
+* The wrapper, containing both `ojson` and `oid`, gets submitted into a distributed queue.
+* A few moments later, an *Object Repository* drains the wrapper from the distributed queue.
+* The repository unpacks the wrapper and passes both `ojson` and `oid` to its *Storage* implementation.
+* The locating conventions of the *Storage* implementation are transparent to the *Object Repository*.
 
 If the *Storage* implementation refuses to store `ojson` for any reason, the *Object Repository* resubmits the wrapper, containing `ojson` and `oid`, back to the shared queue to prevent data loss.
 
@@ -305,15 +305,27 @@ Persist requests in EverBEEN are asynchronous, and no notification is sent back 
 
 #### Query queue & Answer map
 
-A similar approach regarding queues is taken for persistence layer queries.
-<!-- TODO description of queue draining -->
+A similar approach regarding queues is taken for persistence layer queries. Just as serialized persistent objects do, queries get submitted to a distributed queue, where they wait for the *Object Repository* to process them. However, queries naturally need to provide an answer to the requesting party, so an object needs to be sent back. This is realized through a distributed map with listeners. To facilitate control flow for the requesting party, we made the query calls synchronous. The querying process is as follows:
 
-However, queries in EverBEEN are synchronous and, provide state information and are subject to timeouts.
-<!-- TODO description of querying and answers -->
+* The requesting party creates a query.
+* If the requesting party is a *task*, the query is serialized, sent to the corresponding *Host Runtime*, deserialized. The *Host Runtime* becomes the new requesting party while the *task* blocks in wait for an answer from the *Host Runtime*.
+* The requesting party registers a listener on the query's ID in the distributed answer map.
+* The requesting party submits the query to the distributed query queue.
+* The requesting party blocks in wait for the answer to its query.
+* Once the answer appears in the distributed answer map, the requesting party picks it up, removes it from the answer map and resumes processing.
+
+Of course, such blocking behavior is prone to potential infinite waits in various corner-cases. To prevent that from happening, queries are subject to two types of timeout:
+
+*Query timeout*
+:	<!-- TODO describe -->
+
+*Processing timeout*
+:	<!-- TODO describe -->
+
+#### Janitor
+<!-- TODO description -->
 
 
-* async persist queue
-* abstract query machinery (query queue handling, effective querying without user type knowledge)
 
 ### Map Store {#devel.services.mapstore}
 
