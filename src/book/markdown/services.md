@@ -140,58 +140,36 @@ These distributed data structures are also backed by the [MapStore](#devel.servi
 #### Task scheduling {#devel.services.taskmanager.tasks}
 <!-- TODO reference task states -->
 
-The Task Manager is responsible for scheduling tasks - finding a Host Runtime
-on which the task can run. Description of possible restrictions can be found at
-[Host Runtime] <!-- TODO should point to user documentation for Host Runtime? -->.
+The Task Manager is responsible for scheduling tasks - finding a Host Runtime on which the task can run. Description of possible restrictions can be found at [Host Runtime] <!-- TODO should point to user documentation for Host Runtime? -->.
 
-A [distributed query](http://hazelcast.com/docs/2.6/manual/single_html/#MapQuery)
-is used to find suitable Host Runtimes, spreading the load among `DATA` nodes.
+A [distributed query](http://hazelcast.com/docs/2.6/manual/single_html/#MapQuery) is used to find suitable Host Runtimes, spreading the load among `DATA` nodes.
 
-An appropriate Host Runtime is also chosen based on Host Runtime utilization, less
-overloaded Host Runtimes are preferred. Among equal hosts a Host Runtime is chosen
-randomly.
+An appropriate Host Runtime is also chosen based on Host Runtime utilization, less overloaded Host Runtimes are preferred. Among equal hosts a Host Runtime is chosen randomly.
 
-The lifecycle of a task is commenced by inserting a `cz.cuni.mff.d3s.been.core.task.TaskEntry`
-into the task map with a random UUID as the key and in the SUBMITTED state <!-- TODO link -->.
-Inserting a new entry to the map causes an event which is handled by the owner
-of the key - the Task Manager responsible for the key. The event is
-converted to the `cz.cuni.mff.d3s.been.manager.msg.NewTaskMessage` and sent
-to the processing thread. The handling logic is separated in order not to block
-the Hazelcast service threads. In this regard handling of messages is serialized on the particular
-node. The message then generates `cz.cuni.mff.d3s.been.manager.action.ScheduleTaskAction`
-which is responsible for figuring out what to do. Several things might happen
+The lifecycle of a task is commenced by inserting a `cz.cuni.mff.d3s.been.core.task.TaskEntry` into the task map with a random UUID as the key and in the SUBMITTED state <!-- TODO link -->. Inserting a new entry to the map causes an event which is handled by the owner of the key - the Task Manager responsible for the key. The event is converted to the `cz.cuni.mff.d3s.been.manager.msg.NewTaskMessage` and sent to the processing thread. The handling logic is separated in order not to block the Hazelcast service threads. In this regard handling of messages is serialized on the particular node. The message then generates `cz.cuni.mff.d3s.been.manager.action.ScheduleTaskAction` which is responsible for figuring out what to do. Several things might happen 
 
 * the task cannot be run because it's waiting on another task, the state is changed to WAITING
 * the task cannot be run because there is no suitable Host Runtime for it, the state is changed to WAITING
-* the task can be scheduled on a chosen Host Runtime, the state is changed to SCHEDULED and the runtime is notified.
+* the task can be scheduled on a chosen Host Runtime, the state is changed to SCHEDULED and the runtime is notified. 
 
 If the task is scheduled, the chosen Host Runtime is responsible for the task until it finishes or fails.
 
-WAITING tasks are still responsibility of the Task Manager which can try
-to reschedule when an event happen, e.g.:
+WAITING tasks are still responsibility of the Task Manager which can try to reschedule when an event happen, e.g.:
 
  * another tasks is removed from a Host Runtime
  * a new Host Runtime is connected
 
 #### Benchmark Scheduling {#devel.services.taskmanager.benchmarks}
-Benchmark tasks are scheduled the same way as other tasks. The main difference is
-that if a benchmark task fails (i.e. Host Runtime failure, but also programming error)
-the framework can re-schedule the task on a different Host Runtime.
+Benchmark tasks are scheduled the same way as other tasks. The main difference is that if a benchmark task fails (i.e. Host Runtime failure, but also programming error) the framework can re-schedule the task on a different Host Runtime.
 
+A problem can arise from re-scheduling an incorrectly written benchmark which fails too often. There is a [configuration option](#user.configuration.taskmanager) which controls how many re-submits to allow for a benchmark task.
 
-A problem can arise from re-scheduling an incorrectly written benchmark which fails
-too often. There is a [configuration option](#user.configuration.taskmanager) which
-controls how many re-submits to allow for a benchmark task.
-
-Future implementation could deploy different heuristics to detect defective benchmark
-tasks, such as failure-rate.
+Future implementation could deploy different heuristics to detect defective benchmark tasks, such as failure-rate.
 
 
 #### Context Handling {#devel.services.taskmanager.contexts}
 
-Contexts are not scheduled as an entity on Host Runtimes as they are containers
-for related tasks. The Task Manager handles detection of contexts state changes.
-The state of a contexts is decided from the states of its tasks.
+Contexts are not scheduled as an entity on Host Runtimes as they are containers for related tasks. The Task Manager handles detection of contexts state changes. The state of a contexts is decided from the states of its tasks.
 
 <!-- TODO this should (also) be in user documentation? -->
 Task context states:
@@ -201,20 +179,11 @@ Task context states:
  * FINISHED - all contained tasks finished without an error
  * FAILED - at least one task from the context failed
 
-Future improvements may include heuristics for scheduling contexts as an entity (i.e. detection
-that the context can not be scheduled at the moment, which is difficult because of the
-distributed nature of scheduling. Any information gathered might be obsolete by the time
-its read).
+Future improvements may include heuristics for scheduling contexts as an entity (i.e. detection that the context can not be scheduled at the moment, which is difficult because of the distributed nature of scheduling. Any information gathered might be obsolete by the time its read).
 
 #### Handling exceptional events {#devel.services.taskmanager.errors}
 
-The current Hazelcast implementation (as of version 2.6) has one limitation.
-When a key [migrates](http://hazelcast.com/docs/2.5/manual/single_html/#InternalsDistributedMap)
-the new owner does not receive any event (`com.hazelcast.partition.MigrationListener` is not much useful
-in this regard since it does not contain enough information). This might be a problem if e.g.
-a node crashes and an event of type "new task added" is lost. To mitigate the problem
-the Task Manager periodically scans (`cz.cuni.mff.d3s.been.manager.LocalKeyScanner`) its *local
-keys* looking for irregularities. If it finds one it creates a message to fix it.
+The current Hazelcast implementation (as of version 2.6) has one limitation. When a key [migrates](http://hazelcast.com/docs/2.5/manual/single_html/#InternalsDistributedMap) the new owner does not receive any event (`com.hazelcast.partition.MigrationListener` is not much useful in this regard since it does not contain enough information). This might be a problem if e.g. a node crashes and an event of type "new task added" is lost. To mitigate the problem the Task Manager periodically scans (`cz.cuni.mff.d3s.been.manager.LocalKeyScanner`) its *local keys* looking for irregularities. If it finds one it creates a message to fix it.
 
 There are several situations this might happen:
 
@@ -222,12 +191,9 @@ There are several situations this might happen:
 * key migration
 * cluster restart
 
-Note that this is a safe net - most of the time the framework will receive an event
-on which it can react appropriately (e.g. Host Runtime failed).
+Note that this is a safe net - most of the time the framework will receive an event on which it can react appropriately (e.g. Host Runtime failed).
 
-In the case of cluster restart there might be stale tasks which does not run anymore, but
-the state loaded from the [MapStore](#devel.services.mapstore) is inconsistent. Such
-situation will be recognized and corrected by the scan.
+In the case of cluster restart there might be stale tasks which does not run anymore, but the state loaded from the [MapStore] (#devel.services.mapstore) is inconsistent. Such situation will be recognized and corrected by the scan.
 
 #### Hazelcast events {#devel.services.taskmanager.events}
 These are main sources of cluter-wide events, received from Hazelcast:
@@ -237,8 +203,7 @@ These are main sources of cluter-wide events, received from Hazelcast:
 * Contexts events - `cz.cuni.mff.d3s.been.manager.LocalContextListener`
 
 #### Task Manger messages {#devel.services.taskmanager.messages}
-Main interface `cz.cuni.mff.d3s.been.manager.msg.TaskMessage`, messages are
-created through the `cz.cuni.mff.d3s.been.manager.msg.Messages` factory.
+Main interface `cz.cuni.mff.d3s.been.manager.msg.TaskMessage`, messages are created through the `cz.cuni.mff.d3s.been.manager.msg.Messages` factory.
 
 Overview of main messages:
 
@@ -247,12 +212,11 @@ Overview of main messages:
 * `CheckSchedulabilityMessage`
 * `RunContextMessage`
 
-Detailed description is part of the source code nad Javadoc.
+Detailed description is part of the source code and Javadoc.
 
 
 #### Task Manager actions {#devel.services.taskmanager.actions}
-Main interface `cz.cuni.mff.d3s.been.manager.action.TaskAction`, actions are
-created through the `cz.cuni.mff.d3s.been.manager.action.Action` factory.
+Main interface `cz.cuni.mff.d3s.been.manager.action.TaskAction`, actions are created through the `cz.cuni.mff.d3s.been.manager.action.Action` factory.
 
 Overview of actions
 
@@ -416,42 +380,25 @@ This case is not handled, mainly because the default values for both longevities
 
 ### Map Store {#devel.services.mapstore}
 
-The MapStore allows the EverBEEN to persist runtime information, which can
-be restored after restart or crash of the framework.
+The MapStore allows the EverBEEN to persist runtime information, which can be restored after restart or crash of the framework.
 
 #### Role of the MapStore {#devel.services.mapstore.role}
 
-EverBEEN runtime information (such as tasks, contexts and benchmarks, etc.) are
-persisted through the MapStore. This adds overhead to working with the distributed
-objects, but allows restoring of the state after a cluster restart, providing an
-user with more concise experience.
+EverBEEN runtime information (such as tasks, contexts and benchmarks, etc.) are persisted through the MapStore. This adds overhead to working with the distributed objects, but allows restoring of the state after a cluster restart, providing an user with more concise experience.
 
-The implementation is build atop of Hazelcast Map Store - mechanism for storing/loading
-of Hazelcast distributed objects to/from a persistence layer. The EverBEEN
-team implemented a mapping to the MongoDB.
+The implementation is build atop of Hazelcast Map Store - mechanism for storing/loading of Hazelcast distributed objects to/from a persistence layer. The EverBEEN team implemented a mapping to the MongoDB.
 
-The main advantage of using the MapStore is transparent and easy access to Hazelcast
-distributed structures with the ability to persist them - no explicit actions are
-needed.
+The main advantage of using the MapStore is transparent and easy access to Hazelcast distributed structures with the ability to persist them - no explicit actions are needed.
 
 #### Difference between the MapStore and the Object repository {#devel.services.mapstore.difference}
-Both mechanism are used to persist objects - the difference is in the type of objects
-being persisted. The [Object repository](#devel.services.objectrepo) stores
-user generated information, whereas the MapStore handles (mainly) BEEN runtime
-information - information essential to proper working of the framework.
+Both mechanism are used to persist objects - the difference is in the type of objects being persisted. The [Object repository](#devel.services.objectrepo) stores user generated information, whereas the MapStore handles (mainly) BEEN runtime information - information essential to proper working of the framework. 
 
-The difference is also in level of transparency for users. Object persistence
-happens on behalf of an user explicit request, the MapStore works "behind the scene".
+The difference is also in level of transparency for users. Object persistence happens on behalf of an user explicit request, the MapStore works "behind the scene".
 
-Even though both implementations currently us MongoDB, in future the team envisage
-implementations serving different needs (such as load balancing, persistence
-guarantees, data ownership, data access, etc.)
+Even though both implementations currently us MongoDB, in future the team envisage implementations serving different needs (such as load balancing, persistence guarantees, data ownership, data access, etc.)
 
 #### Extension point {#devel.services.mapstore.extension}
-Adapting the layer to different persistence layer (such as relational database)
-is relatively easy. By implementing the `com.hazelcast.core.MapStore` interface
-and specifying the implementation to use at runtime, an user of the framework
-has ability to change behavior of the layer.
+Adapting the layer to different persistence layer (such as relational database) is relatively easy. By implementing the `com.hazelcast.core.MapStore` interface and specifying the implementation to use at runtime, an user of the framework has ability to change behavior of the layer.
 
 #### Configuration {#devel.services.mapstore.configuration}
 The layer can be configured to accommodate different needs:
