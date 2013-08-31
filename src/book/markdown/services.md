@@ -332,7 +332,7 @@ If the *Storage* implementation refuses to store `ojson` for any reason, the *Ob
 
 From the above principle, it is obvious that multiple *Object Repository* instances can operate concurrently, without a negative impact on data integrity or performance. The condition is, however, that all of the *Object Repository* instances be accessing either the same database, or that the databases so accessed have a full data-sharing policy of their own.
 
-Persist requests in EverBEEN are asynchronous, and no notification is sent back after a persist is done. Although this approach may limit the user's knowledge about the current state of his data, it comes at a considerable advantage: The shared memory can function as a buffer through *ObjectRepository* disconnects. This enables a hassle-free means of reconfiguring the *Object Repository* if need be.
+Persist requests in EverBEEN are asynchronous, and no notification is sent back after a persist is done. Although this approach may limit the user's knowledge about the current state of his data, it comes at a considerable advantage: The shared memory can function as a buffer through *Object Repository* disconnects. This enables a hassle-free means of reconfiguring the *Object Repository* if need be.
 
 #### Query queue & Answer map
 
@@ -348,14 +348,32 @@ A similar approach regarding queues is taken for persistence layer queries. Just
 Of course, such blocking behavior is prone to potential infinite waits in various corner-cases. To prevent that from happening, queries are subject to two types of timeout:
 
 *Query timeout*
-:	<!-- TODO describe -->
+:	The requesting party only waits for this period of time for an answer to appear in the distributed answer map. If the answer doesn't appear in time, the requesting party attempts to cancel the query altogether by withdrawing it from the distributed query queue to prevent clotting the answer map with unused answers.
 
 *Processing timeout*
-:	<!-- TODO describe -->
+:	If the answer doesn't appear in time, but the query can not be withdrawn from the distributed queue, it is assumed that an *Object Repository* instance has picked the query up, but did not yet process it. In such case, the requesting party waits for the *processing timeout* duration to give the *Object Repository* time to process the request. If the *Object Repository* responds within that interval, the answer it provided is returned normally. If the *processing timeout* is hit instead, a special timeout answer is returned instead.
+
+Both of these timeouts are implemented on the client side to ensure that the requesting party always gets a valid answer or a timeout, even in case of unpredictable situations. Clearly, the maximum waiting time before the requesting party is guaranteed to receive an answer is `total_timeout = query_timeout + processing_timeout`.
+
+For cases when the `total_timeout` is systematically being hit (as unlikely as they may be), there is a local eviction policy on answers submitted to the map, with `TTL = 5 * total_timeout`. That means answers submitted to the distributed answer map will be automatically deleted once the TTL expires.
 
 #### Janitor
 <!-- TODO description -->
+Every instance of *Object Repository* has its own *Janitor* thread that periodically checks the *Storage* for old objects and removes them. To enable this kind of cleanup, EverBEEN stores some service entries about *task* and *context* states, which are deleted once the cleanup of all other entries related to that *task* or *context* has been performed. The cleanup rules are as follows:
 
+* EverBEEN features two configurable TTL properties: `been.objectrepository.janitor.finished-longevity` and `been.objectrepository.janitor.failed-longevity`
+* For successfully finished *tasks* and *contexts* past *finished longevity*, configurations (*descriptors*), results and evaluations thereof are kept, but service information (logs) are deleted
+* For failed *tasks* and *contexts* past *failed longevity*, all entries are deleted
+
+All of these deletes are implemented using queries similar to `DELETE FROM xyz AS o WHERE o.att='abcd'`, so even if multiple instances of *Janitor* are running and they all attempt to perform cleanup after the same *task* or *context*, the deletes do not result in failures.
+
+There is a hypothetical case when the *Janitor component* performs a sweep which successfully deletes leftover information about a *task* or *context* and is followed by a persist of leftover data for that same *task* (*context*). This would mean that the late persisted object will never be deleted. It would take the following for this case to occur:
+
+* Both the initial and terminal states of the *task* (*context*) get persisted, but some leftover data doesn't. That can happen due to a persist queue reorder (potentially due to a temporary *Storage* failure resulting in a requeue).
+* *Object Repository* gets disconnected after the initial and terminal state has been drained, but before the late persisted object has been drained
+* *Object Repository* doesn't get reconnected for at least `been.objectrepository.janitor.finished-longevity` (or `been.objectrepository.janitor.failed-longevity`, depending on the terminal state of the *task*/*context*), but keeps running (or gets restarted with a bad network configuration).
+
+This case is not handled, mainly because the default values for both longevities are in the order of days, and it would take the user not noticing an invalid cluster configuration for this long.
 
 
 ### Map Store {#devel.services.mapstore}
