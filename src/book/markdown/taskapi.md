@@ -1,13 +1,13 @@
 ## Task and Benchmark API {#user.taskapi}
 TODO: AQL (description of the abstract querying language API)
 
-One of the main goals of the current BEEN project was making the task API as simple as possible and to minimize the amount of work needed to create the whole benchmark. This was of the biggest problems with the previous BEEN versions as writing a complete and efficient benchmark required a tremendous amount of time both to study the provided API with the related Java classes and to implement the benchmark itself.
+One of the main goals of the current BEEN project was to make the task API as simple as possible and to minimize amount of work needed to create the whole benchmark. One of the biggest problems with the previous BEEN versions was that writing a complete and efficient benchmark required tremendous amount of time - both to study the provided API and to implement the benchmark itself.
 
-BEEN works with three different concepts of user-supplied code and configuration:
+EverBEEN works with three concepts of user-supplied code and configuration:
 
-* **Task**, which is an elementary unit of code that can be submitted and run by BEEN. Tasks are created by subclassing the abstract `Task` class and implementing the appropriate methods. Each task has to be described by a XML **task descriptor** which specifies the main class to run and parameters of the task.
+* **Task**, which is an elementary unit of code that can be submitted to and run by BEEN. Tasks are created by subclassing the abstract `Task` class and implementing the appropriate methods. Each task has to be described by a XML **task descriptor** which specifies the main class to run and parameters of the task.
 
-* **Task context** is a container for multiple tasks that can interact together, pass data to each other and synchronize among themselves. Tasks contexts don't contain any user-written code, they only serve as a wrapper for the contained tasks. Each task context is described by a XML **task context descriptor** that specifies which tasks should be contained within the context.
+* **Task context** is a container for multiple tasks which can interact, pass data to each other and synchronize among themselves. Tasks contexts don't contain any user-written code, they only serve as a wrapper for the contained tasks. Each task context is described by a XML **task context descriptor** that specifies which tasks should be contained within the context.
 
 * **Benchmark** is a first-class object that *generates* task contexts based on its **generator task**, which is again a user-written code created by subclassing the abstract `Benchmark` class. Each benchmark is described by a XML **benchmark descriptor** which specifies the main class to run and parameters of the benchmark. A benchmark is different from a task, because its API provides features for generating task contexts and it can also persist its state so it can be re-run when an error occurs and the generator task fails.
 
@@ -20,7 +20,7 @@ The easiest way to create a submittable item (e.g. a task) is by creating a Mave
 	<dependency>
 		<groupId>cz.cuni.mff.d3s.been</groupId>
 		<artifactId>task-api</artifactId>
-		<version>3.0.0</version>
+		<version>3.0.0-SNAPSHOT</version>
 	</dependency>
 
 Tasks, contexts and benchmark must be packaged into a BPK file, which can then be uploaded to the BEEN. Each BPK package can contain multiple submittable items and multiple XML descriptors. The problem of packaging is made easier by the supplied `bpk-plugin` Maven plugin. The preferred way to use it is to add the plugin to the `package` Maven goal in `pom.xml` of the project:

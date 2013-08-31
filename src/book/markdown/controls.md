@@ -106,7 +106,7 @@ To display logs from tasks, go to the page with task details and click on **show
 
 ![Task logs](images/wi/task_logs_detail_01.png)
 
-If you want to see detailed informations (e.g. stack trace), click on the line with an appropriate log message.
+If you want to see detailed information (e.g. stack trace), click on the line with an appropriate log message.
 
 ![Task logs](images/wi/task_log_detail_01.png)
 
