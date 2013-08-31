@@ -1,39 +1,39 @@
 ## Web Interface {#user.webinterface}
 
-The Web Interface provides everything you need to work with the BEEN cluster.
+The Web Interface is the main tool to interact with the EverBEEN framework.
    
 
 ### Connecting to the cluster {#user.webinterface.connecting}
-When the web interface starts, it knows nothing about cluster. You have to provide cluster connection credentials to connect web interface with BEEN. If you run your nodes with default configuration, default username, port and password is prefilled in the login form. Click on **connect** to connect web interface with the cluster.
+First, the Web Interface needs to connect to the the BEEN cluster. You have to provide cluster connection credentials. If you run your nodes with default configuration, default username, port and password is prefilled in the login form. Type of the node must be *DATA*.  Click on **connect** to establish connection with the cluster.
 
 ![Login](images/wi/login_page_01.png)
 
 
 
 ### Cluster overview {#user.webinterface.overview}
-Overview page tends quick overview about connected nodes, node resources, running or failed tasks/task contexs/benchmarks and current logs from tasks and services.
+The overview page shows quick overview of connected nodes, node resources, currently active or failed tasks and task logs.
 
 ![Cluster overview](images/wi/overview_01.png)
 
 
 
 ### Package listing and package uploading {#user.webinterface.packages}
-Click on the **Packages** tab. If the software repository is connected, you can list and download already uploaded packages, otherwise you will see notification about disconnected repository.
+Click on the **Packages** tab. If the *Software Repository* is connected, you can list and download already uploaded packages.
 
 ![Uploaded packages](images/wi/packages_listing_01.png)
 
-Also, if the software repository running and connected, you can upload new BPK packages directly through web interface.
+Also, if the Software Repository is up, you can upload new BPK packages directly through web interface.
 
 ![Uploading new package](images/wi/packages_uploading_01.png)
 
 
 
 ### Cluster info and service logs {#user.webinterface.clusterinfo}
-To view cluster info click on **Clusted** tab. On the cluster info page you can information about connected services and their state. You can also find here list of connected cluster member. Beware, cluster member means node connected to the hazelcast cluster. Cluster member is not synonym of BEEN member.
+To view information about the cluster  click on the **Cluster** tab. The page displays list of cluster members, information about connected services and their states. Cluster member is a BEEN `DATA node` - `NATIVE` nodes will not be shown here.
 
 ![Cluster info](images/wi/cluster_01.png)
 
-Cick on **Service logs** subtab where you can dow download service logs from any period.
+The **Service logs** tab allows to download service logs.
 
 ![Service logs](images/wi/service_logs_01.png)
 
@@ -41,11 +41,11 @@ Cick on **Service logs** subtab where you can dow download service logs from any
 
 
 ### Runtimes {#user.webinterface.runtimes}
-Click on the **Runtimes** tab. Here you can see all connected host runtimes in well-aranged table with basic information about each runtime. 
+The **Runtimes** tab displays all connected *Host Runtimes* in a table along with basic information on each runtime. 
 
 ![Listing runtimes](images/wi/runtimes_01.png)
 
-You can display runtime detail by clicking on runtime id.
+You can display runtime details by clicking on its ID.
 
 ![Runtime detail](images/wi/runtime_detail_01.png)
 
@@ -64,7 +64,7 @@ If you want to submit and run new task, task context or benchmark, you can do it
  
 ![Submitting new item](images/wi/benchmark_tasks__submit_new_item_01.png)
 
-If you click on the **submit** button, you can edit selected descriptor or just use prepared template. If you want, you can name edited descriptor and save it for future use.
+If you click on the **submit** button, you can edit selected descriptor or just use prepared template. You can also save descriptor for future use.
 
 ![Submitting benchmark](images/wi/submit_benchmark_01.png)
 
@@ -85,7 +85,7 @@ Instead of working with benchmark tree, you can list tasks and task contexts ind
 
 
 ### Task, task context and benchmark detail {#user.webinterface.itemdetail}
-To see task, task context or benchmark detail, click on its id everywhere on the page. In case the task/context/benchmark is running, you can kill it by clicking on **kill** button in the top right corner of the page. In case the task/context/benchmark is finished or failed, you will see the **remove** button instead of kill button in right top corner of the page. Click on this button to delete all results, logs and all service information about task from the BEEN cluster.
+To see task, task context or benchmark detail, click on its id everywhere on the page. In case the task/context/benchmark is running, you can kill it by clicking on **kill** button in the top right corner of the page. In case the task/context/benchmark is finished or failed, you will see the **remove** button instead of kill button in right top corner of the page. Click on this button to delete all results, logs and all service information about task from the BEEN.
 
 ![Task detail](images/wi/task_detail_01.png)
 
@@ -102,11 +102,11 @@ To see task, task context or benchmark detail, click on its id everywhere on the
 
 
 ### Displaying logs from tasks {#user.webinterface.tasklogs}
-To display logs from tasks, go to page with task details and click on **show logs** button in the right top corner of the page. 
+To display logs from tasks, go to the page with task details and click on **show logs** button in the right top corner of the page. 
 
 ![Task logs](images/wi/task_logs_detail_01.png)
 
-If you want to see detailed informations (e.g. stack trace), click on the line with appropriate log message.
+If you want to see detailed informations (e.g. stack trace), click on the line with an appropriate log message.
 
 ![Task logs](images/wi/task_log_detail_01.png)
 
@@ -114,11 +114,11 @@ If you want to see detailed informations (e.g. stack trace), click on the line w
 
 
 ### Listing and displaying evaluated results {#user.webinterface.listingresults}
-If you want to list results, switch to tab **Results**. You can see here all results evaluated by evaluators. You can download them and delete them. Beware, only results from evaluators can be displayed and downloaded directly through web interface. Results stored in normal tasks are stored in object repository and their displaying is not supported.
+If you want to list results, switch to the **Results** tab. You can see here all results evaluated by evaluators. You can download them and delete them. Beware, only results from evaluators can be displayed and downloaded directly through web interface. Results stored in normal tasks are stored in object repository - displaying results is not currently supported.
 
 ![Listing evaluated results](images/wi/results_01.png)
 
-You can also display evaluation result directly, but it's mime type must be supported. Supported mime types are:
+You can also display evaluation result directly, but it's `MINE` type must be supported. Supported MINE types are:
 
 * image/png
 * image/jpeg
@@ -137,10 +137,10 @@ If you want to see which tasks are running in *listen* debug mode, switch to **D
 
 
 ### Handling web interface errors {#user.webinterface.errors}
-If something goes wrong or you're trying to invoke some invalid operation, web interface will show you simple error message.
+If something goes wrong or you're trying to invoke some invalid operation, the web interface will show you simple error message.
 
 ![Example of error page](images/wi/example_error_page_01.png)
 
-If you are intended in stack trace of this error, click on the **show detailed stack trace** link in right bottom corner of the page.
+If you are interested in stack trace of the error, click on the **show detailed stack trace** link in right bottom corner of the page.
 
 ![Debugging Web Interface](images/wi/example_been_debug_page_01.png)

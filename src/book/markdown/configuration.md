@@ -171,5 +171,7 @@ Configuration for the [Software Repository](#user.swrepository)
 `swrepository.persistence.folder`=*.swrepository*
 :	Default storage directory for Software Repository server, relative to the working directory of a node.
 
+<!-- not used
 `hostruntime.swcache.maxSize`=*1024*
 :	Maximum size of the software cache in MBytes.	
+-->
