@@ -97,13 +97,13 @@ Configuration for persistence transport layer. See [Persistence](#user.persisten
 #### Persistence Janitor Configuration {#user.configuration.objectrepo.janitor}
 Configuration for persistence layer janitor component. See [Persistence](#user.persistence) for more details.
 
-`been.repository.janitor.finished-longevity`=*96*
+`been.objectrepository.janitor.finished-longevity`=*96*
 :	 Number of hours objects with a 'FINISHED' status stay persistent.
 
-`been.repository.janitor.failed-longevity`=*48*
+`been.objectrepository.janitor.failed-longevity`=*48*
 :	Number of hours objects with a `FAILED` status stay persistent.
 
-`been.repository.janitor.cleanup-interval`=*10*
+`been.objectrepository.janitor.cleanup-interval`=*10*
 :	Period in minutes of janitor cleanup checks.
 
 #### Monitoring Configuration {#user.configuration.monitoring}
