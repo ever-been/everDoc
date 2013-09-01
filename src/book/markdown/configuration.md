@@ -3,20 +3,17 @@ Configuration of the framework is done through a single, standard property file.
 
 An user property file is supplied to the BEEN by `-cf [file|URL]` (or `--config-file`) command line option. The value can be either a file or an URL pointing to the file. Using configuration by specifying an URL greatly enhances deployment in large environments, by reducing the need to distribute the file among machines on which the framework runs.
 
-To check effective values use `-dc` (or `--dump-config`) command line option (possibly along with the `-cf` option). It prints the configuration which will be used. User overridden options are prefixed by the *!* character.
+To check effective values use `-dc` (or `--dump-config`) command line option (possibly along with the `-cf` option). It prints the configuration which will be used - the output can serve as the basis for configuration file (options with default value are commented out with `#`).
 
 Default configuration values are supplied, before you change any of them, consult documentation and be sure you understand the implications.
 
 ### Configuration options
-Follows detailed description of available configuration options of the EverBEEN
-framework. Default value for each configuration option is provided
+Follows detailed description of available configuration options of the EverBEEN framework. Default value for each configuration option is provided.
 
 #### Cluster Configuration {#user.configuration.cluster}
-Cluster configuration manages how nodes will form a cluster and
-how the cluster will behave. The configuration is directly mapped to
-Hazelcast configuration. These options are applicable only to *DATA* nodes. <!-- TODO link to DATA node -->
+Cluster configuration manages how nodes will form a cluster and how the cluster will behave. The configuration is directly mapped to [Hazelcast](#devel.techno.hazelcast) configuration. These options are applicable only to [DATA nodes](#user.deployment.nodes.types).
 
-It is essential that cluster nodes use the same configuration for these options, otherwise they may not form a cluster.
+It is *essential* that cluster nodes use the same configuration for these options, otherwise they may not form a cluster.
 
 `been.cluster.group`=*dev*
 :	Group to which the nodes belong. Nodes with different group will not form a cluster.
@@ -28,10 +25,10 @@ It is essential that cluster nodes use the same configuration for these options,
 :	Manages how nodes form the cluster. Two values are possible: `multicast` which means only `been.cluster.multicast.*` options will be used, and `tcp` which means only  `been.cluster.tcp.members` option will be used.
 
 `been.cluster.multicast.group`=*224.2.2.3*
-:	Specifies multicast group to use
+:	Specifies multicast group to use.
 
 `been.cluster.multicast.port`=*54327*
-:	Specifies multicast port to use
+:	Specifies multicast port to use.
 
 `been.cluster.tcp.members`=*localhost:5701*
 :	Semicolon separated list of `[ip|host][:port]` nodes to connect to.
@@ -40,10 +37,10 @@ It is essential that cluster nodes use the same configuration for these options,
 :	Port on which the node will listen to.
 
 `been.cluster.interfaces`=
-:	Semicolen separated list of interfaces Hazelcast should bind to, '*' wildcard can be used, e.g. *10.0.1.*
+:	Semicolen separated list of interfaces Hazelcast should bind to, '*' wildcard can be used, e.g. *10.0.1.*.
 
 `been.cluster.preferIPv4Stack`=*true*
-:	Whether to prefer IPv4 stack over IPv6
+:	Whether to prefer IPv4 stack over IPv6.
 
 `been.cluster.backup.count`=*1*
 :	How many backups should the cluster keep.
@@ -52,7 +49,7 @@ It is essential that cluster nodes use the same configuration for these options,
 :	Enables/Disables logging of Hazelcast messages. Note that if enabled messages will not appear among service logs.
 
 `been.cluster.mapstore.use`=*true*
-:	Wheather to use [MapStore](#devel.services.mapstore) to persist cluster runtime information
+:	Wheather to use [MapStore](#devel.services.mapstore) to persist cluster runtime information.
 
 `been.cluster.mapstore.write.delay`=*0*
 :	Delay in seconds with which to write to the [MapStore](#devel.services.mapstore). *0* means *write-through*, values bigger than zero mean *write-back*. MapStore implementation can optimize *write-back* mode. 
@@ -61,7 +58,7 @@ It is essential that cluster nodes use the same configuration for these options,
 :	Implementation of the [MapStore](#devel.services.mapstore), must be on the classpath when starting a node.
 
 `been.cluster.socket.bind.any`=*true*
-:	Whether to bind to local interfaces
+:	Whether to bind to local interfaces.
 
 #### Cluster Client Configuration {#user.configuration.client}
 Cluster client configuration options are used when a node is connection to the cluster in *NATIVE* client mode. [Cluster Configuration](#user.configuration.cluster) options are ignored.
@@ -79,10 +76,10 @@ Task Manager configuration options are used to tune the [Task Manager](#devel.se
 :	Maximum number of resubmits of a failed benchmark task the Task Manager will allow.
 
 `been.tm.scanner.period`=*30*
-:	Period in second of the Task Manager's [local key scanner](#devel.services.taskmanager.errors)
+:	Period in second of the Task Manager's [local key scanner](#devel.services.taskmanager.errors).
 
 `been.tm.scanner.delay`=*15*
-:	Initial delay in seconds of the Task Manager's [local key scanner](#devel.services.taskmanager.errors)
+:	Initial delay in seconds of the Task Manager's [local key scanner](#devel.services.taskmanager.errors).
 
 #### Cluster Persistence Configuration {#user.configuration.objectrepo}
 Configuration for persistence transport layer. See [Persistence](#user.persistence) for more details.
@@ -119,16 +116,16 @@ Host Runtime monitoring configuration options.
 :	Interval of Host Runtime system monitoring samples, in milliseconds.
 
 #### Host Runtime Configuration {#user.configuration.hostruntime}
-[Host Runtime](#user.hostruntime) configuration options
+[Host Runtime](#user.hostruntime) configuration options.
 
 `hostruntime.tasks.max`=*15*
-:	Maximum number of tasks per Host Runtime
+:	Maximum number of tasks per Host Runtime.
 
 `hostruntime.tasks.memory.threshold`=*90*
 :	Host Runtime memory threshold in percents. If the threshold is reached no other task will be run on the Host Runtime. The value must be between 20 - 100.  The threshold is compared to the value of '(free memory/available memory)*100'.
 
 `hostruntime.wrkdir.name`=*.HostRuntime*
-:	Relative path to the Host Runtime working directory
+:	Relative path to the Host Runtime working directory.
 
 `hostruntime.tasks.wrkdir.maxHistory`=*4*
 :	 Maximum number of task working directories a Host Runtime will keep. When this number is exceeded at the boot of a Host Runtime service, the oldest existing directory is deleted.
