@@ -171,7 +171,6 @@ Future implementation could deploy different heuristics to detect defective benc
 
 Contexts are not scheduled as an entity on Host Runtimes as they are containers for related tasks. The Task Manager handles detection of contexts state changes. The state of a contexts is decided from the states of its tasks.
 
-<!-- TODO this should (also) be in user documentation? -->
 Task context states:
 
  * WAITING - for future use
