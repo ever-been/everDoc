@@ -10,15 +10,18 @@ TODO
 * Monitoring
 * Web Interface
 
+
 *Radek Macha* 
 
 * Object Repository
 * Software Repository
 
+
 *Tadeas Palusga*
 
 * Host Runtime
 * Web Interface
+* Software Repository
 
 
 *Martin Sixta*
