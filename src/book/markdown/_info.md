@@ -1,3 +1,3 @@
 % EverBEEN Documentation
-% Martin Sixta, Tadeas Palusga, Radek Macha, Jakub Brecka
+% Martin Sixta, Tadeáš Palusga, Radek Mácha, Jakub Břečka
 % 2013
