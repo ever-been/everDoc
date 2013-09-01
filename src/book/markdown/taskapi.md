@@ -1,5 +1,4 @@
 ## Task and Benchmark API {#user.taskapi}
-TODO: AQL (description of the abstract querying language API)
 
 One of the main goals of the current BEEN project was to make the task API as simple as possible and to minimize amount of work needed to create the whole benchmark. One of the biggest problems with the previous BEEN versions was that writing a complete and efficient benchmark required tremendous amount of time - both to study the provided API and to implement the benchmark itself.
 
@@ -81,21 +80,21 @@ These properties will be presented to the user in the web interface before submi
 		<argument>-Xmx8m</argument>
 	</arguments>
 
-For debugging purposes, you can specify the `<debug>` element which will enable remote debugging when running the task. With the `<hostRuntimes>` element you can filter on which Host Runtimes the task can be run. The value of this setting is an XPath expression.
+For debugging purposes, you can specify the `<debug>` element which will enable remote debugging when running the task.
+ 
+#### Host Runtime selection {#user.taskapi.descriptors.selection}
+
+With the `<hostRuntimes>` element you can filter on which Host Runtimes the task can be run. The value of this setting is an expression in [XML Path Language (XPath) Version 1.0](http://www.w3.org/TR/xpath).
+
+The most useful options for host selection are presented here. For full specification see [runtime-info.xsd](http://www.everbeen.cz/xsd/runtime-info.xsd), [hardware-info.xsd](http://www.everbeen.cz/xsd/hardware-info.xsd), [monitor.xsd](http://www.everbeen.cz/xsd/monitor.xsd)
+
+*Basic Information about a Host Runtime*
 
 	/id
-	/workingDirectory
-	/tasksWorkingDirectory
 	/port
 	/host
-	/startUpTime
-	/exclusivity
-	/exclusiveId
-	/taskCount
-	/maxTasks
-	/memoryThreshold
-	/taskDirs
-	/type
+	
+*Java runtime specification*
 
 	/java/version
 	/java/vendor
@@ -105,6 +104,8 @@ For debugging purposes, you can specify the `<debug>` element which will enable 
 	/java/runtimeVersion
 	/java/specificationVersion
 
+*Operation system information*
+
 	/operatingSystem/name
 	/operatingSystem/version
 	/operatingSystem/arch
@@ -113,6 +114,15 @@ For debugging purposes, you can specify the `<debug>` element which will enable 
 	/operatingSystem/dataModel
 	/operatingSystem/endian
 
+*CPU information* (there can be multiply CPUs)
+
+	/hardware/cpu/vendor
+	/hardware/cpu/model
+	/hardware/cpu/mhz
+	/hardware/cpu/cacheSize
+
+*File system information* (there can be multiply file systems)
+
 	/filesystem/deviceName
 	/filesystem/directory
 	/filesystem/type
@@ -120,10 +130,7 @@ For debugging purposes, you can specify the `<debug>` element which will enable 
 	/filesystem/total
 
 
-	/hardware/cpu/vendor
-	/hardware/cpu/model
-	/hardware/cpu/mhz
-	/hardware/cpu/cacheSize
+*Network information* (there can be multiply network interfaces)
 
 	/hardware/networkInterface/name
 	/hardware/networkInterface/hwaddr
@@ -133,18 +140,51 @@ For debugging purposes, you can specify the `<debug>` element which will enable 
 	/hardware/networkInterface/broadcast
 	/hardware/networkInterface/address
 
+*Main memory information*
 
 	/hardware/memory/ram
 	/hardware/memory/swap
+
+*Examples*
+
+	<hostRuntimes>
+		<xpath>host = "eduroam40.ms.mff.cuni.cz"</xpath>
+	</hostRuntimes>
+
+Will select the Host Runtime with host name `eduroam40.ms.mff.cuni.cz`.
+
+	<hostRuntimes>
+		<xpath>//networkInterface[address = "195.113.16.40"]</xpath>
+	</hostRuntimes>
+
+Will select the Host Runtime with the IPv4 address `195.113.16.40`.
+
+	<hostRuntimes>
+		<xpath>/hardware/networkInterface[contains(address,"195.113.16")]</xpath>
+	</hostRuntimes>
+
+Will select all Host Runtime whose IP contains "195.113.16".
+
+	<hostRuntimes>
+		<xpath>contains(/operatingSystem/name, "Linux")</xpath>
+	</hostRuntimes>
+
+Will select all Linux operating systems.
+
+
+
+Selections can be tried out on the `runtime/list` page in the Web Interface.
+
+
 
 
 ### Task API {#user.taskapi.api}
 
 To create a task submittable into BEEN, you should start by subclassing the `Task` abstract class. To do this, you only need to provide a single method called `run` which will optionally receive string arguments.
 
-BEEN uses `slf4j` as its logging mechanism and provides a logging backend for all user-written code. This means that you can simply use the standard loggers and any logs with be automatically stored in the BEEN cluster.
+BEEN uses [SLF4J](#devel.techno.slf4j) as its logging mechanism and provides a logging backend for all user-written code. This means that you can simply use the standard loggers and any logs will be automatically stored through BEEN.
 
-Knowing this, the simplest task that will only log a single string can look something like this:
+Knowing this, the simplest task that will only log a single string looks like this:
 
 	package my.sample.benchmark;
 
@@ -167,7 +207,7 @@ BEEN provides several APIs for user-written tasks:
 
 * *Properties* --- Tasks are configurable either from their descriptors or by the benchmark that generated them. These properties are again configurable by the user before submitting the task. All properties have a name and a simple string value and these can be accessed via the `getProperty` method of the abstract `Task` class.
 
-* *Result storing* --- Each task can persist a result that it has gathered by using the API providing access to the persistence layer. To store a result, use a `ResultPersister` object, which can be created by using the method `createResultPersister` from the `Task` abstract class.
+* *Result storing* --- Each task can persist a result that it has gathered by using the API providing access to the persistence layer. To store a result, use a `Persister` object, which can be created by using the method `createResultPersister` from the `Task` abstract class.
 
 * *Synchronization and communication* --- When multiple tasks run in a task context, they can interact with each other either for synchronization purposes or to exchange data. API for these jobs are provided by the `CheckpointController` class. BEEN provides the concepts of **checkpoints** and **latches**. Latches serve as context-wide atomic numbers with the methods for setting a value, decreasing the value by one and waiting until the latch reaches zero. Checkpoint are also waitable objects, but they can also provide a value that was previously set to the checkpoint.
 
@@ -183,33 +223,63 @@ These properties are inherited, in the sense that that when a task context has a
 
 The persistence layer provided by BEEN is capable of storing user-supplied types and classes. To create a class that can be persisted, simply create a subclass of `Result` and ensure that all contained fields are serializable and public. Also make sure to include a default non-parameterized constructor so that the object can be deserialized.
 
-<!-- TODO rewrite to match task API removing the option of overriding the result kind -->
-Each storable type is identified with an `EntityID` object, which specified its group and kind. We recommend to create a constant describing your type. An example result type can look like this:
+
+Each result type is identified with a string `Group ID` (we recommend to create a constant). The Group ID is identification of a group of related results - each benchmark should use its own (or several) `Group ID`. Also a naming convection of the Group ID should be adopted describing particular kind of results. An example of a result:
 
 	public class SampleResult extends Result {
-		public static final EntityID RESULT_ENTITY_ID = new EntityID().withKind("result").withGroup("helloworld");
+		public static final String GROUP_ID = "example-data";
 
 		public int data;
 
 		public SampleResult() {}
 	}
 
-Persisting a result is then only a simple mean of creating the appropriate object, instantiating the `ResultPersister` class through the supplied `results` field and calling `persist` on it:
+All fields will be stored (even private). Setters and getters are not necessary but still recommended.
 
-	SampleResult result = ...;
-	ResultPersister rp = results.createResultPersister(SampleResult.RESULT_ENTITY_ID));
-	rp.persist(result);
+Persisting the result is then only a simple matter of creating the appropriate object, instantiating the `Persister` class through the supplied `results` field and calling `persist` on it:
 
-Note that the `ResultPersister` object is `AutoCloseable`, which means you need to ensure its `close` method is called when you no longer need the object. The best way to achieve this is by enclosing the instantiation inside a try-catch block:
+	SampleResult result = results.createResult(SampleResult.class);
+	Persister persister = results.createResultPersister(SampleResult.GROUP_ID));
+	persister.persist(result);
 
-	try (ResultPersister rp = results.createResultPersister(...)) {
-		...
-	} catch (DAOException e) {
-		...
-	}
+The `results.createResult(SampleResult.class)` call properly initializes results with *taskId*, *contextId* and (if running as part of a benchmark) *benchmarkId*. These parameters are useful in identifying results.
 
-### Querying {#user.taskapi.querying}
-<!-- TODO -->
+The `Persister` can be reused, but `close()` method should be called once you are done with it. The best way to achieve it is to use try-with-resources statement (the Persister implements `AutoCloseable`):
+
+	try (Persister persister = results.createResultPersister(SampleResult.GROUP_ID)) {
+		persister.persist(result);
+	} 
+
+### Querying Results {#user.taskapi.querying}
+Task can also query stored results. Note that results storing is asynchronous and may take some time. Usually this is not a problem, blocking result persistence is a planned feature. 
+
+First a `Query` specifying what results to select must be build using the `ResultQueryBuilder`. The ResultQueryBuilder uses fluent API to build a query.
+
+Following example creates a query which will fetch results from the SampleResult.GROUP_ID group, requesting that the *taskId* property is set to the ID of the current task and data property is 47;
+
+	Query query = new ResultQueryBuilder().on(SampleResult.GROUP_ID)
+		.with("taskId", getId()).with("data", 47).fetch();
+
+
+The query can be now used to fetch collection of results, again using the `results` helper object which is part of the `Task` object:
+
+Collection<ExampleResult> taskResults = results.query(query, ExampleResult.class);
+
+Currently tasks can only fetch results, not delete them (this is design decision, the code if fully capable of issuing deletes).
+
+Follows overview of the `ResultQueryBuilder` API:
+
+`public ResultQueryBuilder on(String group)`
+:	Sets the Group ID of results to fetch.
+
+`public ResultQueryBuilder with(String attribute, Object value)`
+:	Adds a criteria to the query, where the `attribute` is the name of the property, and `value` is expected value of the property.
+
+`	public ResultQueryBuilder without(String attribute)`
+:	Removes a criteria from the query, the value of `attribute` will not be fetched (beware of NullPointerExceptions).
+
+`public ResultQueryBuilder retrieving(String... attributes)`
+:	 Sets attributes to fetch. Other attributes will be omitted  and will not be set.
 
 ### Checkpoints and Latches {#user.taskapi.checkpoints}
 

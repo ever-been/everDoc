@@ -2,7 +2,7 @@
 
 ### BEEN
 
-The original BEEN project was started in Fall 2004 and it was finished at the turn of 2006 and 2007, it was supervised by Tomas Kalibera and developed by Jakub Lehotsky, David Majda, Branislav Repcek, Michal Tomcanyi, Antonin Tomecek and Jaroslav Urban. This project's assignment was:
+The original BEEN project was started in Fall 2004 and it was finished at the turn of 2006 and 2007, it was supervised by Tomáš Kalibera and developed by Jakub Lehotský, David Majda, Branislav Repček, Michal Tomčányi, Antonín Tomeček and Jaroslav Urban. This project's assignment was:
 
 > The aim of the project will be to create a highly configurable and modular environment
 > for benchmarking of applications, with special focus on middleware benchmarks.
@@ -13,7 +13,7 @@ The team that worked on the project created the whole architecture and individua
 
 The second incarnation of the framework was called *WillBEEN* and it mainly continued development of the original project. Its goal was to extend BEEN, mainly focusing on adding support for non-Java user tasks (scripts) and creating a modular results repository component. 
 
-This project was supervised by Petr Tuma and developed by Andrej Podzimek, Jan Tattermusch and Jiri Tauber. The team started working in 2009 and finished the project in March 2010. During the development, several components were redesigned and reimplemented and the project integrated several new technologies, such as JAXB and Derby database.
+This project was supervised by Petr Tůma and developed by Andrej Podzimek, Jan Tattermusch and Jiří Tauber. The team started working in 2009 and finished the project in March 2010. During the development, several components were redesigned and reimplemented and the project integrated several new technologies, such as JAXB and Derby database.
 
 ### State of WillBEEN in 2012
 
@@ -34,6 +34,6 @@ BEEN now has a fundamentally different, decentralized architecture. Many aspects
 
 The decision to do a complete rewrite was made after careful consideration of all options - mainly state of the code and goals set for the framework.
 
-EverBEEN is supervised by Andrej Podzimek and Petr Tuma, and developed by Martin Sixta, Tadeas Palusga, Radek Macha and Jakub Brecka. The work on the project started in Fall 2012 and is believed to be finished in September 2013.
+EverBEEN is supervised by Andrej Podzimek and Petr Tůma, and developed by Martin Sixta, Tadeáš Palusga, Radek Mácha and Jakub Břečka. The work on the project started in Fall 2012 and is believed to be finished in September 2013.
 
 
