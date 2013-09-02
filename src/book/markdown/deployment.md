@@ -73,3 +73,36 @@ The last step consists of deploying and running *the Web Interface*. The supplie
 
 which will use an embedded container.
 
+### Node directory structure
+Node working directory is created on first startup. 
+       
+    1.  .HostRuntime/
+    2.      \___ tasks/
+    3.          \___ 1378031207851/
+    4.          \___ 1378038338005/
+    5.          \___ 1378038763308/
+    6.          \___ 1378040071618/
+    7.              \___ example-task-a_1bdcaeb4/
+    8.              |   \___ config.xml
+    9.              |   \___ files/
+    10.             |   \___ lib/
+    11.             |   \___ stderr.log
+    12.             |   \___ stdout.log
+    13.             |   \___ tcds/
+    14.             |   \___ tds/
+    15.             \___ example-task-b_6a2ccc11/
+    16.             \___ ...
+    17.             \___ ...
+                
+* **.HostRuntime** directory (1) - Host Runtime global working directory. It can be configured by changing property `hostruntime.wrkdir.name`. Default name is `.HostRuntime`.
+* Each separate run of the been creates its own working directory for its tasks in the **tasks** subdirectory (2).
+* On each node restart is created new working directory for tasks running on this node (3,4,5,6). Names of these directories are based on actual time when node starts. BEEN on each start checks these directories and if their number exceeds 4 by default, the oldest one is deleted. This prevents unexpected growth of Host Runtime working directory size, but allows debugging failed tasks, when underlying Host Runtime is terminated and restarted. Count of backuped directories is cnfigurable by property `hostruntime.tasks.wrkdir.maxHistory`.
+* Working directories of single tasks (7,15,16,17) contains files from extracted BPK (8,9,10,13,14) and log files for error output (11) and standard output (12).
+
+Working directory of single tasks is deleted only in case that this task finished its execution without error, otherwise the directory remains unchanged. If you want to cleanup directory manually, you can, or you can do it through web interface.
+
+
+
+### Limitations
+* If you want to run more more Host Runtimes on same machine you can, but we **strongly recommend you** to start each node with different working directory name. Host Runtime is not intended to run on single machine multiple times at the same time.
+* Running BEEN for a long time without clearing directories after failed tasks can result in low disk space. If you tasks are failing, we can't easily know whenever we can delete them or not.
