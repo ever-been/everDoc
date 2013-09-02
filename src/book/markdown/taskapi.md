@@ -50,6 +50,26 @@ In the plugin's configuration the user must specify at least one descriptor of a
 
 This specifies that the package should publish a single descriptor named `NginxBenchmark.td.xml` which is located in the specified resource path. With such a configuration, creating the BPK package is simply a matter of invoking `mvn package` on this project – this will produce a `.bpk` file that can be uploaded to the BEEN.
 
+#### Maven repositories
+
+Maven repositories are available. Put following declarations into `pom.xml` to transparently resolve dependencies:
+
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>everbeen.cz-plugins-snapshots</id>
+			<url>http://everbeen.cz/artifactory/plugins-snapshot-local</url>
+		</pluginRepository>
+	</pluginRepositories>
+
+	<repositories>
+		<repository>
+			<id>everbeen.cz-snapshots</id>
+			<url>http://everbeen.cz/artifactory/libs-snapshot-local</url>
+		</repository>
+	</repositories>
+
+
 ### Descriptor Format {#user.taskapi.descriptors}
 
 There are two types of descriptors, task descriptors and task context descriptors. Note that benchmarks don't have a special descriptor format, instead you only provide a task descriptor for a generator task of the benchmark. These descriptors are written in XML and they must conform to the supplied XSD definitions (`task-descriptor.xsd` and `task-context-descriptor.xsd`).

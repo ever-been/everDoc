@@ -11,7 +11,7 @@ Default configuration values are supplied, before you change any of them, consul
 Follows detailed description of available configuration options of the EverBEEN framework. Default value for each configuration option is provided.
 
 #### Cluster Configuration {#user.configuration.cluster}
-Cluster configuration manages how nodes will form a cluster and how the cluster will behave. The configuration is directly mapped to [Hazelcast](#devel.techno.hazelcast) configuration. These options are applicable only to [DATA nodes](#user.deployment.nodes.types).
+Cluster configuration manages how nodes will form a cluster and how the cluster will behave. The configuration is directly mapped to [Hazelcast](#devel.techno.hazelcast) configuration. These options are applicable only to [DATA nodes](#user.concepts.nodes).
 
 It is *essential* that cluster nodes use the same configuration for these options, otherwise they may not form a cluster.
 
