@@ -36,10 +36,10 @@ Tasks have states:
 :	Indicates successful completion of the task.
 
 *ABORTED*
-:	Indicates that the task failed while running or cannot be run at all (for example bacause of a missing BPK).
+:	Indicates that the task failed while running or cannot be run at all (for example because of a missing BPK).
 
 ### Contexts
-BEEN contexts group together related tasks usually for achieving shared goal. 
+BEEN contexts group together related tasks for achieving shared goal. Contexts are not runnable entities, their life cycle is derived from state of contained tasks. Contexts are described by *Task Context Descriptor* XML files   
 
 Task context states:
 
@@ -53,6 +53,8 @@ Task context states:
 :	At least one task from the context failed
 
 ### Benchmarks
+
+Benchmark are user-written tasks with additional capabilities (in form of the *Benchmark API*). Benchmark tasks generate task contexts which are submitted to the framework.
 
 ### Node types {#user.deployment.nodes.types}
 In EverBEEN `node` is a program capable of running BEEN services. The node must be able to interact with other nodes through a computer network. Type of a node determines mechanism used to connect to other nodes. Since EverBEEN uses [Hazelcast](#devel.techno.hazelcast) as it means of connection nodes, types resemble those in Hazelcast. Currently two types are supported:
