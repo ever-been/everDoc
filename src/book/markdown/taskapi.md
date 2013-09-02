@@ -235,9 +235,23 @@ BEEN provides several APIs for user-written tasks:
 
 Every task has a key-value property storage. These properties can be set from various places: From the XML descriptor, from user input when submitting, inherited from a task context, set from a benchmark when it generates a task context. To access these values, you can use the `getProperty` method of the `Task` class:
 
-	int numberOfClients = Integer.parseInt(this.getProperty("numberOfClients"));
+	int numberOfClients = Integer.parseInt(this.getTaskProperty("numberOfClients"));
 
 These properties are inherited, in the sense that that when a task context has a property, the task can see it as well. But when a task has the same property with a different value, the task's value will be override the previous one.
+
+One important property recognized by the Task API is `task.log.level` which sets log level for a task. The property can have following values (in increasing severity):
+
+* TRACE
+* DEBUG
+* INFO
+* WARN
+* ERROR
+
+The default log level is INFO.
+
+
+*Warning* for the TRACE log level
+:	Note that TRACE log level is used by the Task API (instead of the DEBUG level which is reserved for user code). Setting TRACE level will print Task API debug messages.
 
 ### Persisting Results {#user.taskapi.results}
 
