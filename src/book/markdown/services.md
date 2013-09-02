@@ -398,5 +398,13 @@ The layer can be configured to accommodate different needs:
 Detailed description of configuration can be found at [Configuration](#user.configuration).
 
 ### Web Interface {#devel.services.webinterface}
-* why it's not actually a service (but more like a client)
-* cluster client connection mechanism
+Web interface is sophisticated util to monitor and control the BEEN cluster. It is not actually a real service but rather a standalone client, nevertheless it is an indispensable part of the BEEN. Implementation is based on [Tapestry5](http://tapestry.apache.org/) framework and its extension [Tapestry5-jquery](http://tapestry5-jquery.com/). Describe the principles and conventions of Tapestry framework is not part of the BEEN documentation but it can be found on the framework official site. We would like to include only few information which could be helpful when extending web interface.
+
+#### Dependency Injection
+Tapestry uses its own implementation of depencency injection container called Tapestry IoC (Inversion of Control) – this container is responsible for dependencies between pages, components, services and other parts of the application. Tapestry has several of its own services managed by IoC and we added two more. First, the most important, is `cz.cuni.mff.d3s.been.web.services.BeenApiService` and its implementation `cz.cuni.mff.d3s.been.web.services.BeenApiServiceImpl`, which is responsible for connecting to the cluster and work with the BeenApi. The second is `cz.cuni.mff.d3s.been.web.services.LiveFeedService` and its implementation `cz.cuni.mff.d3s.been.web.services.LiveFeedServiceImpl`, which is responsible for communication with web browsers through web sockets. When defined, these services are fully integrated to whole Tapestry webapp lifecycle and can be injected to pages and components through standard Tapestry annotations.
+
+#### Pages and Components
+All pages are inherited from `cz.cuni.mff.d3s.been.Page` class. This class contains injected BeenApiService from which you can obtain BeenApi through which you can manage whole BEEN cluster. Layout is defined in `cz.cuni.mff.d3s.been.web.components.Layout` component and all JavaScript and CSS can be found in `src/main/webapp` subdirectory of web-interface module.
+
+#### Connecting WI to the cluster
+Web interface is connected to the cluster using Hazelcast native client. It means that the WI does not store any data and does not manage any keys for Hazelcast maps. 
