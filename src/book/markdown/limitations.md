@@ -17,7 +17,7 @@ The EverBEEN project, as any big project, has some limitations and opportunities
 :	Because the architecture of the EverBEEN framework depends on in-memory storage of data, transferring of big files is not recommended. We assume that benchmarking will be done in controlled environment, where the deployment of a network file system is not a problem if need be. Recently released version 3.0 of Hazelcast contains features which might be useful in implementing such feature. Or a separate service could be implemented - in which case we opt for usage of network file system. 
 
 *Database backend for the Software Repository*
-:	Interesting improvement might be adding database backend for the Software Repository. The feature is on the TODO list but due to lack of time and resources was not implemented. The Software Repository was design to easily change backends.
+:	Interesting improvement might be adding database backend for the Software Repository. The feature is on the wish list but due to lack of time and resources was not implemented. The Software Repository was design to easily change backends.
 
 *Decentralized Software Repository*
 :	Currently the Software Repository is centralized service. It might be interesting to explore new features in recently released [Hazalcast 3.0](http://hazelcast.com/docs/3.0/manual/single_html/) to allow cluster wide file distribution.
