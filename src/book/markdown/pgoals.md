@@ -1,15 +1,15 @@
-## Project Goals
+## Project Goals {#user.pgoals}
 This section contains text copied directly from the Project Committee's web site.
 
 [http://ksvi.mff.cuni.cz/~holan/SWP/zadani/ebeen.txt](http://ksvi.mff.cuni.cz/~holan/SWP/zadani/ebeen.txt)
 
-### Overview 
+### Overview {#user.pgoals.overview}
 The Been framework automatically executes software performance measurements in a heterogeneous networked environment.  The basic architecture of the Been framework consists of a host runtime capable of executing arbitrary tasks, a task manager that relies on the host runtime to distribute and execute scheduled sequences of tasks, and a benchmark manager that creates the sequences of tasks to execute and measure benchmarks.  Other components include a software repository, a results repository, and a graphical user interface.
 
 The Been framework has been developed as a part of a student project between 2004-2006, and substantially modified as a part of another student project between 2009-2010.
 
 
-### Goals
+### Goals {#user.pgoals.goals}
 The overall goal of this project is to modify the Been framework to facilitate truly continuous execution. In particular, this means:
 
 * Reviewing the code responsible for communication between hosts, setting up rules that prevent the communication from creating orphan references (and therefore memory leaks), and rules that make the communication robust in face of network and host failures.
@@ -22,7 +22,7 @@ The overall goal of this project is to modify the Been framework to facilitate t
 
 * Generally clean up any reliability related bugs.
 
-### How we met the goals
+### How we met the goals {#user.pgoals.approach}
 
 The following overview takes into account goals set for the project as submitted to the Project Commission. The overall changes were much more substantial then anticipated. 
 
@@ -41,7 +41,7 @@ The following overview takes into account goals set for the project as submitted
 *Generally clean up any reliability related bugs.*
 : Adoption of standard development techniques and usage of 3rd party components resulted in much smaller and compact code base. 
 
-## Project Output
+## Project Output {#user.poutput}
 
 The assignment of the current incarnation of the BEEN project are mainly focused on delivering a more usable, stable and scalable product. This meant that the development team should work on the current codebase and refactor it instead of starting from scratch.
 
@@ -58,7 +58,7 @@ Therefore the goals were adapted to also contain:
 * Making the framework easily deployable
 * Improving usability to simplify writing and debugging tasks and benchmarks
 
-### Distributed nature of EverBEEN
+### Distributed nature of EverBEEN {#user.poutput.distributed}
 
 One of the biggest issues with the original BEEN project was stability of the computer network (both network itself and individual machines) and the framework required that all involved computers were running and available. Disconnecting some of the core services caused the whole network to hang or crash and recovery of this situation was often impossible. Also, the core components of BEEN had to be running for the whole time, which created a lot of *single points of failure*. Many common situation, like a short-term network outage, made the whole system fail and all of its components had to be rebooted.
 
@@ -70,7 +70,7 @@ For this fail-redundancy to work properly, most of the core components now funct
 
 This architecture of BEEN transformed the project into a fully distributed platform with high availability and scalability, while minimizing bottlenecks and the number of critical components.
 
-### EverBEEN's Support for Regression Benchmarking
+### EverBEEN's Support for Regression Benchmarking {#user.poutput.regression}
 
 <!-- TODO -->
 
