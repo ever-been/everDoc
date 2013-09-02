@@ -4,7 +4,7 @@ BEEN is from the first moment of development a multi-platform software. It's pos
 
 * Linux -- most recent distributions
 * Mac OS X 10.8 and later
-* Microsoft Windows XP, Windows Vista, Windows 7 and later
+* Microsoft Windows 7 and later
 * FreeBSD
 
 In order to deploy BEEN, every machine that should be connected into the BEEN cluster, needs:
@@ -17,7 +17,9 @@ For writing and debugging user-written tasks, the machine needs:
 
 For a node that will run the web interface client, the machine needs:
 
-* Tomcat version 7 // TODO
+* Java Servlet compatible container (e.g. Tomcat 7, Jetty)
+
+(The container is optional, the Web Interface can be also run in embedded mode.) 
 
 For a node that will run the results repository, the machine needs:
 
