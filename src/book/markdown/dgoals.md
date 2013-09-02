@@ -10,7 +10,7 @@ These findings made us focus not only on technological modifications of WillBEEN
 As we were deciding which networking technology EverBEEN will use, we were driven to make EverBEEN as robust as possible in face of potential network failures and OS freezes. The choice of Hazelcast as a networking technology took this idea to new heights, enabling us to build EverBEEN as a truly distributed system, rather than just a set of interconnected nodes.
 
 <!-- TODO check link addr -->
-As a result, we decentralized all EverBEEN decision-making. All decisions are made on the basis of network-shared memory, so as long as multiple [data nodes](#user.deployment.nodes.types) are running, the danger of a single point of failure is eliminated. The failure of a single partaking host was seen as an eventuality, rather than an unrecoverable error, and was accounted with from the start of EverBEEN development, as was the case of a temporary disconnection of the persistence layer.
+As a result, we decentralized all EverBEEN decision-making. All decisions are made on the basis of network-shared memory, so as long as multiple [data nodes](#user.concepts.nodes) are running, the danger of a single point of failure is eliminated. The failure of a single partaking host was seen as an eventuality, rather than an unrecoverable error, and was accounted with from the start of EverBEEN development, as was the case of a temporary disconnection of the persistence layer.
 
 ### Modularity 
 

@@ -1,8 +1,8 @@
-## Basic concepts
+## Basic concepts {#user.concepts}
 Before dwelling into the deployment process a few concepts must be explained. The concepts are explored and further explained in following chapters.
 
 
-### BEEN services
+### BEEN services {#user.concepts.services}
 A BEEN service is a component which carries out a particular function. Essential services include:
 
 * Host Runtime - executes tasks
@@ -11,7 +11,7 @@ A BEEN service is a component which carries out a particular function. Essential
 * Object Repository - provides persistence layer
 
 
-### Tasks
+### Tasks {#user.concepts.tasks}
 A BEEN task is basic executable unit of the framework. Tasks are run on Host Runtimes.
 
 Tasks are distributed in form of a package - which are called *BPK*s (from `BEEN package`). BPKs are uploaded to the Software Repository and are uniquely identified by *groupId*, *bpkId* and *version*.
@@ -38,7 +38,7 @@ Tasks have states:
 *ABORTED*
 :	Indicates that the task failed while running or cannot be run at all (for example because of a missing BPK).
 
-### Contexts
+### Contexts {#user.concepts.contexts}
 BEEN contexts group together related tasks for achieving shared goal. Contexts are not runnable entities, their life cycle is derived from state of contained tasks. Contexts are described by *Task Context Descriptor* XML files   
 
 Task context states:
@@ -52,11 +52,11 @@ Task context states:
  *FAILED*
 :	At least one task from the context failed
 
-### Benchmarks
+### Benchmarks {#user.concepts.benchmarks}
 
 Benchmark are user-written tasks with additional capabilities (in form of the *Benchmark API*). Benchmark tasks generate task contexts which are submitted to the framework.
 
-### Node types {#user.deployment.nodes.types}
+### Node types  {#user.concepts.nodes} 
 In EverBEEN `node` is a program capable of running BEEN services. The node must be able to interact with other nodes through a computer network. Type of a node determines mechanism used to connect to other nodes. Since EverBEEN uses [Hazelcast](#devel.techno.hazelcast) as it means of connection nodes, types resemble those in Hazelcast. Currently two types are supported:
 
 `DATA node`

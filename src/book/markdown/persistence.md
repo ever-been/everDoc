@@ -61,5 +61,5 @@ The Storage component gets loaded dynamically by the Object Repository at startu
 
 
 #### MapStore {#user.persistence.components.mapstore}
-Where the ObjectRepository stores user data, the MapStore is used to map EverBEEN cluster memory to a persistent storage, which enables EverBEEN to preserve job state memory through cluster-wide restarts. The MapStore runs on all *data nodes* (see [deployment](#user.deployment.nodes.types) for more information on node types).
+Where the ObjectRepository stores user data, the MapStore is used to map EverBEEN cluster memory to a persistent storage, which enables EverBEEN to preserve job state memory through cluster-wide restarts. The MapStore runs on all [DATA nodes](#user.concepts.nodes).
 
