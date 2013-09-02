@@ -22,7 +22,7 @@ A subset of EverBEEN's modules corresponds exactly to the set of former WillBEEN
 
 
 `task-manager`
-:	Enable task planning on this node. All [data nodes](#user.deployment.nodes.types) run this service.
+:	Enable task planning on this node. All [DATA nodes](#user.concepts.nodes) run this service.
 
 
 `web-interface`
