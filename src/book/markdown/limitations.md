@@ -1,4 +1,4 @@
-## Current limitations and future work
+## Current limitations and future work {#devel.limitations}
 The EverBEEN project, as any big project, has some limitations and opportunities for improvement. This chapter summarizes them and suggests possible directions which might be explored in future.
  
 *Support for non JVM-based tasks*
