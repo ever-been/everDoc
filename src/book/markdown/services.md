@@ -7,7 +7,7 @@ The service was completely rewritten since the quality of the code was poor. The
 
 Even though the service was completely rewritten the basic functions remain more or less the same compared to previous versions.
 
-A Host Runtime can run on any type of a BEEN node <!-- TODO link to node types -->. It makes sense to run it on a *NATIVE* node in order not to incur costs associated with running a *DATA* node. Typically a deployment will have a few DATA nodes and as many NATIVE nodes with a Host Runtime as needed.
+A Host Runtime can run on any type of a [BEEN node](#user.concepts.nodes) . It makes sense to run it on a *NATIVE* node in order not to incur costs associated with running a *DATA* node. Typically, deployment will have a few DATA nodes and as many NATIVE nodes with a Host Runtime as needed.
 
 Available configuration options are listed in [Configuration](#uses.configuration)  
 
@@ -72,8 +72,10 @@ Result queries - *TaskResultQueries* - `cz.cuni.mff.d3s.been.persistence.Query`
 
 
 
-#### Host Runtime monitoring {#devel.services.hostruntime.management}
-<!-- TODO -->
+#### Host Runtime monitoring {#devel.services.hostruntime.monitoring}
+Monitoring samples are taken through the [Sigar library](#devel.techno.sigar) which uses native libraries to gather system information. The period of sampling is [configurable](#user.configuration.monitoring). Samples are persisted through the Object Repository.
+
+In case Sigar native library is not available for a platform (as is currently the case for FreeBSD 8 and later) Java fallback is provided. The Java implementation does not supply as much information as Sigar does (the striking example is information about system free memory which cannot be obtained, as far as the team knows, directly from Java standard libraries).  
  
 ### Task Manager {#devel.services.taskmanager}
 The Task Manager is at the heart of the EverBEEN framework, its responsibilities include:
@@ -92,21 +94,15 @@ Main characteristic:
 
 #### Distributed approach to scheduling   {#devel.services.taskmanager.distributed}
 
-The most important characteristic of the Task Manger is that the computation is event-driven
-and distributed among the *DATA* <!-- TODO link to types --> nodes. The implication
-from such approach is that there is no central authority, bottleneck or single point
-of failure. If a data node disconnects (or crashes) its responsibilities,along with
-data, are transparently taken over by the rest of the cluster.
+The most important characteristic of the Task Manger is that the computation is event-driven and distributed among the *DATA*  nodes. The implication from such approach is that there is no central authority, bottleneck or single point of failure. If a data node disconnects (or crashes) its responsibilities,along with data, are transparently taken over by the rest of the cluster.
 
-Distributed architecture is the major difference from previous versions
-of the BEEN framework.
+Distributed architecture is the major difference from previous versions of the BEEN framework.
 
 #### Implementation {#devel.services.taskmanager.implementation}
-The implementation of the Task Manager is heavily dependent on [Hazelcast](#devel.techno.hazelcast)
-distributed data structures and its semantics, especially the `com.hazelcast.core.IMap`.
+The implementation of the Task Manager is heavily dependent on [Hazelcast](#devel.techno.hazelcast) distributed data structures and its semantics, especially the `com.hazelcast.core.IMap`.
 
 #### Workflow {#devel.services.taskmanager.workflow}
-The basic event-based workflow
+The basic event-based work flow:
 
  1. Receiving asynchronous Hazelcast event
  2. Generating appropriate message describing the event
@@ -114,19 +110,10 @@ The basic event-based workflow
  4. Executing the action
 
 
-Handling of internal messages is also message-driven, based on the [0MQ](#devel.techno.zmq)
-library, somewhat resembling the Actor model. This has the advantage of separating
-logic of message receiving and handling. Internal messages are executed in one thread,
-which also removes the need for explicit locking and synchronization (which happens,
-but is not responsibility of the Task Manager developer).
-
+Handling of internal messages is also message-driven, based on the [0MQ](#devel.techno.zmq) library, somewhat resembling the Actor model. This has the advantage of separating logic of message receiving and handling. Internal messages are executed in one thread, which also removes the need for explicit locking and synchronization (which happens, but is not responsibility of the Task Manager developer).
 
 #### Data ownership {#devel.services.taskmanager.ownership}
-An important notion to remember is that an instance of the Task Manager handles
-only entries which it owns, whenever possible (e.g. task entries). Ownership of data
-means that it is stored in local memory and the node is responsible for it.
-The design of Task Manager takes advantage of the locality and most operations
-are local with regard to data ownership. This is highly desirable for the Task Manger to scale.
+An important notion to remember is that an instance of the Task Manager handles only entries which it owns, whenever possible (e.g. task entries). Ownership of data means that it is stored in local memory and the node is responsible for it. The design of Task Manager takes advantage of the locality and most operations are local with regard to data ownership. This is highly desirable for the Task Manger to scale.
 
 #### Main distributed structures {#devel.services.taskmanager.structures}
 
@@ -134,19 +121,18 @@ are local with regard to data ownership. This is highly desirable for the Task M
 * BEEN_MAP_TASK_CONTEXTS - map containing runtime context information
 * BEEN_MAP_BENCHMARKS - map containing runtime context information
 
-These distributed data structures are also backed by the [MapStore](#devel.services.mapstore)
-(if enabled).
+These distributed data structures are also backed by the [MapStore](#devel.services.mapstore) (enabled by default).
 
 #### Task scheduling {#devel.services.taskmanager.tasks}
-<!-- TODO reference task states -->
+Task state are described in the user manual - [Basic concepts ](#user.concepts.tasks).
 
-The Task Manager is responsible for scheduling tasks - finding a Host Runtime on which the task can run. Description of possible restrictions can be found at [Host Runtime] <!-- TODO should point to user documentation for Host Runtime? -->.
+The Task Manager is responsible for scheduling tasks - finding a Host Runtime on which the task can run. Description of possible restrictions can be found at [Host Runtime](#devel.services.hostruntime)
 
 A [distributed query](http://hazelcast.com/docs/2.6/manual/single_html/#MapQuery) is used to find suitable Host Runtimes, spreading the load among `DATA` nodes.
 
 An appropriate Host Runtime is also chosen based on Host Runtime utilization, less overloaded Host Runtimes are preferred. Among equal hosts a Host Runtime is chosen randomly.
 
-The lifecycle of a task is commenced by inserting a `cz.cuni.mff.d3s.been.core.task.TaskEntry` into the task map with a random UUID as the key and in the SUBMITTED state <!-- TODO link -->. Inserting a new entry to the map causes an event which is handled by the owner of the key - the Task Manager responsible for the key. The event is converted to the `cz.cuni.mff.d3s.been.manager.msg.NewTaskMessage` and sent to the processing thread. The handling logic is separated in order not to block the Hazelcast service threads. In this regard handling of messages is serialized on the particular node. The message then generates `cz.cuni.mff.d3s.been.manager.action.ScheduleTaskAction` which is responsible for figuring out what to do. Several things might happen 
+The lifecycle of a task is commenced by inserting a `cz.cuni.mff.d3s.been.core.task.TaskEntry` into the task map with a random UUID as the key and in the SUBMITTED state. Inserting a new entry to the map causes an event which is handled by the owner of the key - the Task Manager responsible for the key. The event is converted to the `cz.cuni.mff.d3s.been.manager.msg.NewTaskMessage` and sent to the processing thread. The handling logic is separated in order not to block the Hazelcast service threads. In this regard handling of messages is serialized on the particular node. The message then generates `cz.cuni.mff.d3s.been.manager.action.ScheduleTaskAction` which is responsible for figuring out what to do. Several things might happen 
 
 * the task cannot be run because it's waiting on another task, the state is changed to WAITING
 * the task cannot be run because there is no suitable Host Runtime for it, the state is changed to WAITING
@@ -227,8 +213,10 @@ Overview of actions
 Detailed description is part of the source code and Javadoc.
 
 #### Locking {#devel.services.taskmanager.locking}
-<!-- TODO description -->
 
+Certain objects are shared, and possibly concurrently modified, by different services (and possibly different nodes). Such object is for example `TaskEntry` - which is modified by a Task Manager and then by a Host Runtime. Such cases must be unfortunately, in current implementation, be resolved through the usage of distributed Hazelcast locks. Such locking is of course costly. The good news is that the locking is not used on paths which are performance critical, the number of parties trying to obtain the lock is not high (a Task Manager, a Host Runtime and in case of a key migration another Task Manager), and the locks are, in case of the Task Manager, local in respect to data ownership as described above.
+
+Recently released Hazelcast 3.0 introduced [Entry Processor](http://hazelcast.com/docs/3.0/manual/single_html/#MapEntryProcessor) feature that could help improve throughput - if there is any need for it.
 
 
 ### Software Repository {#devel.services.swrepo}
