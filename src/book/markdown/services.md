@@ -28,22 +28,22 @@ The implementation can be found in the *host-runtime* module within the `cz.cuni
 
 #### Tasks management {#devel.services.hostruntime.management}
 
-The Host Runtime interacts with the rest of the framework primarily by listening for messages (`HostRuntimeMessageListener`) through a distributed topic. Messages contain request which are dispatched to appropriate message handlers (`ProcessManager`).
+The Host Runtime interacts with the rest of the framework primarily by listening for messages ([HostRuntimeMessageListener](http://evenbeen.cz/javadoc/TODO) through a distributed topic. Messages contain request which are dispatched to appropriate message handlers ([ProcessManager](http://evenbeen.cz/javadoc/TODO)).
 
-A task begins its life on a Host Runtime with incoming `RunTaskMessage` message. The Host Runtime can either accept the task or return it to the Task Manager. In former case a complete environment is prepared and a new process is spawned (`task.TaskProcess`). This process includes:
+A task begins its life on a Host Runtime with incoming [RunTaskMessage](http://evenbeen.cz/javadoc/TODO) message. The Host Runtime can either accept the task or return it to the Task Manager. In former case a complete environment is prepared and a new process is spawned ([TaskProcess](http://evenbeen.cz/javadoc/TODO)). This process includes:
 
-* downloading task's BPK (`SoftwareResolver`)
-* creating working directory and unpacking the BPK into it (`ProcessManager`)
-* preparing environment properties and command line (`task.CmdLineBuilderFactory`)
+* downloading task's BPK ([SoftwareResolver](http://evenbeen.cz/javadoc/TODO))
+* creating working directory and unpacking the BPK into it ([ProcessManager](http://evenbeen.cz/javadoc/TODO))
+* preparing environment properties and command line ([CmdLineBuilderFactory](http://evenbeen.cz/javadoc/TODO))
  
 
-The task is supervised in a separate thread, waiting either for the task to finish or an user generated request to abort it. The state changes are propagated through the TaskEntry structure associated with the task (`TaskHandle`).
+The task is supervised in a separate thread, waiting either for the task to finish or an user generated request to abort it. The state changes are propagated through the [TaskEntry](http://evenbeen.cz/javadoc/TODO) structure associated with the task ([TaskHandle](http://evenbeen.cz/javadoc/TODO)).
 
 #### Interaction with tasks {#devel.services.hostruntime.tasks}
 
 Any output and communication of a task related to the framework must go through the Host Runtime, including:
 
-* logs, output from standard output and standard error (`tasklogs.TaskLogHandler`)
+* logs, output from standard output and standard error ([TaskLogHandler](http://evenbeen.cz/javadoc/TODO))
 * results, result queries
 * task context related operations (Checkpoints, latches, etc.)
 
@@ -57,25 +57,189 @@ Follows overview of the protocol between Host Runtime and a task.
 
 As was mentioned above the protocol is based on 0MQ with messages encoded in JSON format. 
 
-A task in order to communicate with its Host Runtime must send appropriate messages through 0MQ ports - connection details are passed as environment properties, names of the properties are specified in `cz.cuni.mff.d3s.been.socketworks.NamedSockets`. How are messages encoded in JSON is responsibility of the [Task API](#user.taskapi) - the current implementation uses the [Jackson](#devel.techno.jackson) library to serialize/deserialize messages from/to *Plain Old Java Objects*.
+A task in order to communicate with its Host Runtime must send appropriate messages through 0MQ ports - connection details are passed as environment properties, names of the properties are specified in [NamedSockets](http://evenbeen.cz/javadoc/TODO). How are messages encoded in JSON is responsibility of the [Task API](#user.taskapi) - the current implementation uses the [Jackson](#devel.techno.jackson) library to serialize/deserialize messages from/to *Plain Old Java Objects*.
 
 There are currently four types of messages recognized by the framework. For the sake of brevity Java implementation classes are mentioned here. If the need for different implementation of the TASK API arises message, format can be inferred from them (direct mapping to JSON).  
 
-<!-- TODO better format -->
-LogMessages - *TaskLogs* - cz.cuni.mff.d3s.been.logging.LogMessage
 
-Check Points - *TaskCheckpoints* - `cz.cuni.mff.d3s.been.task.checkpoints.CheckpointRequest`, request type specified by `cz.cuni.mff.d3s.been.task.checkpoints.CheckpointRequestType`
+LogMessages - *TaskLogs* - `LogMessage`
 
-Results - *TaskResults* - `cz.cuni.mff.d3s.been.results.Result` along with `cz.cuni.mff.d3s.been.core.persistence.EntityID` wrapped in `cz.cuni.mff.d3s.been.core.persistence.EntityCarrier`  
+Example message:
 
-Result queries - *TaskResultQueries* - `cz.cuni.mff.d3s.been.persistence.Query`
+	LOG_MESSAGE#{
+		"created":1378147630541,
+		"taskId":"4b7c3169-7a30-4ca7-8ac1-ebb973ac0b4d",
+		"contextId":"16f50281-0bb5-44d8-ab33-eea33e895b31",
+		"benchmarkId":"",
+		"message":{
+			"name":"com.example.been.ExampleTask",
+			"level":1,
+			"message":"Mae govannen!",
+			"errorTrace":null,
+			"threadName":"main"
+		}
+	}
 
+Notice that there currently is *LOG_MESSAGE#* before the actual message.
+
+CheckPoints - *TaskCheckpoints* - [CheckpointRequest](http://evenbeen.cz/javadoc/TODO) 
+
+Examples of CheckPoint messages:
+
+The first example shows the "Check Point Get" message: 
+
+	{
+		"selector":"checkpoint",
+		"value":null,
+		"timeout":0,
+		"type":"GET",
+		"taskId":"272028b5-9cba-4730-b672-385469efa7e3",
+		"taskContextId":"ebbae46a-ad8f-4653-9225-49df327cb90e"
+	}
+
+The format is the same for all types of CheckPoint messages:
+
+`selector`
+:	name of the requested entity
+
+`value`
+:	string representation of value to be passed, applicable according to message type, e.g. value of a CheckPoint to set 
+
+`timeout`
+:	timeout in milliseconds of the request if applicable, zero means infinity
+
+`type`
+:	defines type of the request, supported types are to be found in [CheckpointRequestType](http://evenbeen.cz/javadoc/TODO)
+
+`taskId`
+:	taskId of the requesting task 
+
+`taskContextId`
+: task context id of the requesting entity
+
+The response might look like this:
+
+	{
+		"replyType":"OK",
+		"value":"42"
+	}
+
+`replyType`
+:	it's either *OK* if operation succeeded or *ERROR* otherwise 
+
+`value`
+:	value returned from the operation, in case of ERROR reason why the operation failed
+
+Here is the request for Count Down Latch wait with 1s timeout:
+
+	{
+		"selector":"example-latch",
+		"value":null,
+		"timeout":1000,
+		"type":"LATCH_WAIT",
+		"taskId":"272028b5-9cba-4730-b672-385469efa7e3",
+		"taskContextId":"ebbae46a-ad8f-4653-9225-49df327cb90e"
+	}
+
+And the reply after the timeout occurred:
+
+	{
+		"replyType":"ERROR",
+		"value":"TIMEOUT"
+	}
+
+See [CheckpointController](http://evenbeen.cz/javadoc/TODO) implementation details of other operations. 
+
+Results - *TaskResults* - [Result](http://evenbeen.cz/javadoc/TODO) along with [EntityID](http://evenbeen.cz/javadoc/TODO) wrapped in [EntityCarrier](http://evenbeen.cz/javadoc/TODO)
+
+Let us use following example result in Java:
+
+	public class ExampleResult extends Result {
+		public int data;
+		public String name;
+
+		/** Results must have non-parametric constructor.*/
+		public ExampleResult() {}
+	}
+
+
+Example result corresponding to the Java class:
+
+	{
+		"created":1378149926777,
+		"taskId":"1dc48ac8-8a7f-42aa-a57c-f38b8c449864",
+		"contextId":"762187bb-448e-42ba-9c3e-421091553c58",
+		"benchmarkId":"",
+		"data":47
+	}
+
+
+`created`
+:	is time when the result was created (UNIX time)
+
+`taskId`, `contextId`, `benchmarkId`
+: are IDs of the task
+
+`data`
+:	corresponds to the result's `data` field
+
+
+Result queries - *TaskResultQueries* - [FetchQuery](http://everbeen.cz/javadoc/TODO)
+
+Queries are a little complicated - since they allow filtering and selecting of data.
+
+Example of a query
+
+`Query query = new ResultQueryBuilder().on(GROUP_ID).with("taskId", getId()).with("name", "Name42").retrieving("data").fetch();`
+
+The query is translated into
+
+	{
+		"@class":"cz.cuni.mff.d3s.been.persistence.FetchQuery",
+		"id":"1ad39fd6-172a-47c7-908e-4acc1bb66414",
+		"entityID":{
+			"kind":"result",
+			"group":"example-data"
+	}, "selectors":{
+			"taskId":{
+				"@class":"cz.cuni.mff.d3s.been.persistence.EqAttributeFilter",
+				"values":{
+					"@eq":"e1df89e9-b893-4099-ad21-f1eb5291a48b"
+				}
+			},"name":{
+				"@class":"cz.cuni.mff.d3s.been.persistence.EqAttributeFilter",
+				"values":{
+					"@eq":"Name42"
+				}
+			}
+		},
+		"mappings":["data"]
+	}
+
+The `@class` fields are a bit unfortunate since they refer to Java implementation classes. We acknowledge that its a bit awkward, nevertheless its "doable".
+
+The important things to look at is that there is specification of [EntityID](#TODO),
+there are selector which filter fields and mappings which select which fields to fetch.
+
+Currently only equality attribute filters [EqAttributeFilter](http://everbeen.cz/javadoc/TODO) are enabled in the Task API (design decision, if a use case is presented more filters can be enabled, the code is present).
+
+Results might look something like this:
+
+	{
+		"@class":"cz.cuni.mff.d3s.been.persistence.DataQueryAnswer",
+		"status":"OK",
+		"objects":[
+			"{ \"data\" : 42}"
+		]
+	}
+
+Notice that `object` is an array of returned entities.
 
 
 #### Host Runtime monitoring {#devel.services.hostruntime.monitoring}
 Monitoring samples are taken through the [Sigar library](#devel.techno.sigar) which uses native libraries to gather system information. The period of sampling is [configurable](#user.configuration.monitoring). Samples are persisted through the Object Repository.
 
-In case Sigar native library is not available for a platform (as is currently the case for FreeBSD 8 and later) Java fallback is provided. The Java implementation does not supply as much information as Sigar does (the striking example is information about system free memory which cannot be obtained, as far as the team knows, directly from Java standard libraries).  
+In case Sigar native library is not available for a platform (as is currently the case for FreeBSD 8 and later) Java fallback is provided. The Java implementation does not supply as much information as Sigar does (the striking example is information about system free memory which cannot be obtained, as far as the team knows, directly from Java standard libraries).
  
 ### Task Manager {#devel.services.taskmanager}
 The Task Manager is at the heart of the EverBEEN framework, its responsibilities include:
@@ -99,7 +263,7 @@ The most important characteristic of the Task Manger is that the computation is 
 Distributed architecture is the major difference from previous versions of the BEEN framework.
 
 #### Implementation {#devel.services.taskmanager.implementation}
-The implementation of the Task Manager is heavily dependent on [Hazelcast](#devel.techno.hazelcast) distributed data structures and its semantics, especially the `com.hazelcast.core.IMap`.
+The implementation of the Task Manager is heavily dependent on [Hazelcast](#devel.techno.hazelcast) distributed data structures and its semantics, especially the [com.hazelcast.core.IMap](http://hazelcast.com/TODO).
 
 #### Workflow {#devel.services.taskmanager.workflow}
 The basic event-based work flow:
@@ -132,7 +296,7 @@ A [distributed query](http://hazelcast.com/docs/2.6/manual/single_html/#MapQuery
 
 An appropriate Host Runtime is also chosen based on Host Runtime utilization, less overloaded Host Runtimes are preferred. Among equal hosts a Host Runtime is chosen randomly.
 
-The lifecycle of a task is commenced by inserting a `cz.cuni.mff.d3s.been.core.task.TaskEntry` into the task map with a random UUID as the key and in the SUBMITTED state. Inserting a new entry to the map causes an event which is handled by the owner of the key - the Task Manager responsible for the key. The event is converted to the `cz.cuni.mff.d3s.been.manager.msg.NewTaskMessage` and sent to the processing thread. The handling logic is separated in order not to block the Hazelcast service threads. In this regard handling of messages is serialized on the particular node. The message then generates `cz.cuni.mff.d3s.been.manager.action.ScheduleTaskAction` which is responsible for figuring out what to do. Several things might happen 
+The lifecycle of a task is commenced by inserting a [TaskEntry](http://evenbeen.cz/javadoc/TODO) into the task map with a random UUID as the key and in the SUBMITTED state. Inserting a new entry to the map causes an event which is handled by the owner of the key - the Task Manager responsible for the key. The event is converted to the [NewTaskMessage](http://evenbeen.cz/javadoc/TODO) and sent to the processing thread. The handling logic is separated in order not to block the Hazelcast service threads. In this regard handling of messages is serialized on the particular node. The message then generates [ScheduleTaskAction](http://evenbeen.cz/javadoc/TODO) which is responsible for figuring out what to do. Several things might happen 
 
 * the task cannot be run because it's waiting on another task, the state is changed to WAITING
 * the task cannot be run because there is no suitable Host Runtime for it, the state is changed to WAITING
@@ -168,7 +332,7 @@ Future improvements may include heuristics for scheduling contexts as an entity 
 
 #### Handling exceptional events {#devel.services.taskmanager.errors}
 
-The current Hazelcast implementation (as of version 2.6) has one limitation. When a key [migrates](http://hazelcast.com/docs/2.5/manual/single_html/#InternalsDistributedMap) the new owner does not receive any event (`com.hazelcast.partition.MigrationListener` is not much useful in this regard since it does not contain enough information). This might be a problem if e.g. a node crashes and an event of type "new task added" is lost. To mitigate the problem the Task Manager periodically scans (`cz.cuni.mff.d3s.been.manager.LocalKeyScanner`) its *local keys* looking for irregularities. If it finds one it creates a message to fix it.
+The current Hazelcast implementation (as of version 2.6) has one limitation. When a key [migrates](http://hazelcast.com/docs/2.5/manual/single_html/#InternalsDistributedMap) the new owner does not receive any event ([com.hazelcast.partition.MigrationListener](http://hazelcast.com/javadoc/TODO) is not much useful in this regard since it does not contain enough information). This might be a problem if e.g. a node crashes and an event of type "new task added" is lost. To mitigate the problem the Task Manager periodically scans ([LocalKeyScanner](http://evenbeen.cz/javadoc/TODO)) its *local keys* looking for irregularities. If it finds one it creates a message to fix it.
 
 There are several situations this might happen:
 
@@ -181,14 +345,14 @@ Note that this is a safe net - most of the time the framework will receive an ev
 In the case of cluster restart there might be stale tasks which does not run anymore, but the state loaded from the [MapStore] (#devel.services.mapstore) is inconsistent. Such situation will be recognized and corrected by the scan.
 
 #### Hazelcast events {#devel.services.taskmanager.events}
-These are main sources of cluter-wide events, received from Hazelcast:
+These are main sources of cluster-wide events, received from Hazelcast:
 
-* Task Events - `cz.cuni.mff.d3s.been.manager.LocalTaskListener`
-* Host Runtime events - `cz.cuni.mff.d3s.been.manager.LocalRuntimeListener`
-* Contexts events - `cz.cuni.mff.d3s.been.manager.LocalContextListener`
+* Task Events - in [LocalTaskListener](http://evenbeen.cz/javadoc/TODO)
+* Host Runtime events - in [LocalRuntimeListener](http://evenbeen.cz/javadoc/TODO)
+* Contexts events - in [LocalContextListener](http://evenbeen.cz/javadoc/TODO)
 
 #### Task Manger messages {#devel.services.taskmanager.messages}
-Main interface `cz.cuni.mff.d3s.been.manager.msg.TaskMessage`, messages are created through the `cz.cuni.mff.d3s.been.manager.msg.Messages` factory.
+Main interface [TaskMessage](http://evenbeen.cz/javadoc/TODO), messages are created through the [Messages](http://evenbeen.cz/javadoc/TODO) factory.
 
 Overview of main messages:
 
@@ -201,7 +365,7 @@ Detailed description is part of the source code and Javadoc.
 
 
 #### Task Manager actions {#devel.services.taskmanager.actions}
-Main interface `cz.cuni.mff.d3s.been.manager.action.TaskAction`, actions are created through the `cz.cuni.mff.d3s.been.manager.action.Action` factory.
+Main interface [TaskAction](http://evenbeen.cz/javadoc/TODO), actions are created through the [Action](http://evenbeen.cz/javadoc/TODO) factory.
 
 Overview of actions
 
@@ -407,4 +571,4 @@ Tapestry uses its own implementation of dependency injection container called Ta
 All pages are inherited from `cz.cuni.mff.d3s.been.Page` class. This class contains injected BeenApiService from which you can obtain BeenApi through which you can manage the BEEN framework. Layout is defined in `cz.cuni.mff.d3s.been.web.components.Layout` component and all JavaScript and CSS can be found in `src/main/webapp` subdirectory of web-interface module.
 
 #### Connecting WI to the cluster
-Web interface is connected to the cluster using Hazelcast native client. It means that the WI does not store any data and does not manage any keys of Hazelcast maps. 
+Web interface is connected to the cluster using Hazelcast native client. It means that the WI does not store any data and does not manage any keys of Hazelcast maps. ty
