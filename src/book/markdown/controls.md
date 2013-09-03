@@ -4,8 +4,7 @@ The Web Interface is the tool to interact with the EverBEEN framework.
    
 
 ### Connecting to the cluster {#user.webinterface.connecting}
-First, the Web Interface needs to connect to the the BEEN cluster. You have to provide cluster connection credentials. If you run your nodes with default configuration, default username, port and password is prefilled in the login form. Type of the node must be *DATA*.  Click on **connect** to establish a connection with the cluster.
-
+First, the Web Interface needs to connect to the BEEN cluster. You have to provide cluster connection credentials. If you run your nodes with default configuration, default username, port and password is prefilled in the login form. Type of the node must be *DATA*.  Click on **connect** to establish a connection with the cluster.
 ![Login](images/wi/login_page_01.png)
 
 
@@ -118,7 +117,7 @@ To list results, switch to the **Results** tab. This page lists all results eval
 
 ![Listing evaluated results](images/wi/results_01.png)
 
-You can also display evaluation result directly, but it's `MIME` type must be supported. Supported MINE types are:
+You can also display evaluation result directly, but its `MIME` type must be supported. Supported MIME types are:
 
 * image/png
 * image/jpeg

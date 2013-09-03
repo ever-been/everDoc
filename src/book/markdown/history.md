@@ -30,7 +30,7 @@ The new team was therefore supposed to eliminate some of these shortcomings, whi
 
 EverBEEN is a complete rewrite of the framework. It took into account previous experience with WillBEEN deployment  <!-- TODO link to j.t. thesis --> and introduced current technologies and standards for software development.   
 
-BEEN now has a fundamentally different, decentralized architecture. Many aspects of the project were simplified by usage of popular 3rd party Java libraries which makes the whole framework more stable and standardized. However, most of the the individual BEEN subsystems, their purpose and naming were preserved, therefore users familiar with previous BEEN implementations should recognize the whole system easily.
+BEEN now has a fundamentally different, decentralized architecture. Many aspects of the project were simplified by usage of popular 3rd party Java libraries which makes the whole framework more stable and standardized. However, most of the individual BEEN subsystems, their purpose and naming were preserved, therefore users familiar with previous BEEN implementations should recognize the whole system easily.
 
 The decision to do a complete rewrite was made after careful consideration of all options - mainly state of the code and goals set for the framework.
 
