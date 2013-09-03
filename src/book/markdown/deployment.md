@@ -12,8 +12,9 @@ The exact configuration is highly dependent on the network topology. In followin
 
 We will also assume that MongoDB instance is running on `mongodb.example.com`. All nodes must use the same *group* and *group password*.
 
-*Broadcasting scenario*
-:	The cluster is formed through broadcasting.
+#### Broadcasting scenario
+
+The cluster is formed through broadcasting.
 
 	been.cluster.mapstore.db.hostname=mongodb.example.com
 	mongodb.hostname=mongodb.example.com
@@ -27,8 +28,9 @@ We will also assume that MongoDB instance is running on `mongodb.example.com`. A
 Only the first two configuration options are needed, rest of options have sane defaults.
 
 
-*Direct connect scenario*
-:	The cluster will be formed by directly connection nodes.
+#### Direct connect scenario
+
+The cluster will be formed by directly connection nodes.
 
 	been.cluster.mapstore.db.hostname=mongodb.example.com
 	mongodb.hostname=mongodb.example.com
@@ -41,8 +43,9 @@ Only the first two configuration options are needed, rest of options have sane d
 
 The `been.cluster.tcp.members` option specifies (a potentially partial) list of nodes to which the connecting node will try to connect. If no node in the list is responding a new cluster will be formed.
 
-*Connecting NATIVE nodes*
-: NATIVE nodes must be informed to which DATA nodes to connect:
+#### Connecting NATIVE nodes
+
+NATIVE nodes must be informed to which DATA nodes to connect:
 
 	been.cluster.client.members=host1.example.com:5701;host2.example.com
 	been.cluster.group=dev
@@ -52,20 +55,24 @@ The important is the `been.cluster.client.members` option, again specifying (a p
 
 The configuration can be copied directly onto the hosts or can be referenced by an URL (which is the preferred way).
 
-The next step is to decide which BEEN services will be run and where. In the simplest and most strait forward case one node will be running *Software repository*, *Object repository*, *Host Runtime* and implicitly the *Task Manager* service.
+#### Configuring BEEN services
+
+The next step is to decide which BEEN services will be run and where. In the simplest and most straight forward case one node will be running *Software repository*, *Object repository*, *Host Runtime* and implicitly the *Task Manager* service.
 
 `java -jar been.jar -r -sw -rr -cf http://been.example.com/been.properties`
 
 Other nodes thus can run only the *Host Runtime* service.
 
 `java -jar been.jar -t NATIVE -r -cf http://been.example.com/been-clients.properties`
-: for NATIVE nodes
+:	for NATIVE nodes
 
 `java -jar been.jar -r  http://been.example.com/been-broadcast.properties`
-: in case of broadcasting scenario
+:	in case of broadcasting scenario
 
 `java -jar been.jar -r -sw -rr -cf http://been.example.com/been-direct.properties`
-: in case of direct scenario
+:	in case of direct scenario
+
+#### Running Web Interface
 
 The last step consists of deploying and running *the Web Interface*. The supplied war file can be deployed to a standard Java Servlet container (e.g. Tomcat). Or can be run directly by
 
@@ -96,7 +103,7 @@ Node working directory is created on first startup.
                 
 * **.HostRuntime** directory (1) - Host Runtime global working directory. It can be configured by changing property `hostruntime.wrkdir.name`. Default name is `.HostRuntime`.
 * Each separate run of the been creates its own working directory for its tasks in the **tasks** subdirectory (2).
-* On each node restart is created new working directory for tasks running on this node (3,4,5,6). Names of these directories are based on actual time when node starts. BEEN on each start checks these directories and if their number exceeds 4 by default, the oldest one is deleted. This prevents unexpected growth of Host Runtime working directory size, but allows debugging failed tasks, when underlying Host Runtime is terminated and restarted. Count of backuped directories is cnfigurable by property `hostruntime.tasks.wrkdir.maxHistory`.
+* On each node restart is created new working directory for tasks running on this node (3,4,5,6). Names of these directories are based on actual time when node starts. BEEN on each start checks these directories and if their number exceeds 4 by default, the oldest one is deleted. This prevents unexpected growth of Host Runtime working directory size, but allows debugging failed tasks, when underlying Host Runtime is terminated and restarted. Count of backuped directories is configurable by property `hostruntime.tasks.wrkdir.maxHistory`.
 * Working directories of single tasks (7,15,16,17) contains files from extracted BPK (8,9,10,13,14) and log files for error output (11) and standard output (12).
 
 Working directory of single tasks is deleted only in case that this task finished its execution without error, otherwise the directory remains unchanged. If you want to cleanup directory manually, you can, or you can do it through web interface.

@@ -74,7 +74,7 @@ If you click on the **submit** button, you can edit selected descriptor or just 
 
 
 ### Listing tasks and task contexts {#user.webinterface.listingtasks}
-Instead of working with benchmark tree, you can list tasks and task contexts independently. Go to tap **Tasks** or **Task contexts** on the **Benchamrks & Tasks** page. 
+Instead of working with benchmark tree, you can list tasks and task contexts independently. Go to tap **Tasks** or **Task contexts** on the **Benchmarks & Tasks** page. 
 
 ![Listing tasks](images/wi/benchmark_tasks__tasks_01.png)
 

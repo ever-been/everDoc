@@ -1,6 +1,6 @@
 ## Foreword
 
-Automatic testing of software has become a integral part of software development and software engineering today heavily relies on two levels of testing and verification to ensure the quality of programs:
+Automatic testing of software has become an integral part of software development and software engineering today heavily relies on two levels of testing and verification to ensure the quality of programs:
 
 - **Unit testing** which refers to the process of testing a single isolated component if it behaves according to the specification. Unit tests are usually conducted in a white-box manner and nowadays, software is often engineered in a *test-driven development* environment, where the developers first write unit tests before actually implementing a component.
 
