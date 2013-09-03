@@ -184,7 +184,7 @@ Example result corresponding to the Java class:
 :	corresponds to the result's `data` field
 
 
-Result queries - *TaskResultQueries* - [FetchQuery](http://everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/persistence/FetchQuery.html)
+Result queries - *TaskResultQueries* - [FetchQuery](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/persistence/FetchQuery.html)
 
 Queries are a little complicated - since they allow filtering and selecting of data.
 
@@ -221,7 +221,7 @@ The `@class` fields are a bit unfortunate since they refer to Java implementatio
 The important things to look at is that there is specification of [EntityID](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/core/persistence/EntityID.html),
 there are selector which filter fields and mappings which select which fields to fetch.
 
-Currently only equality attribute filters [EqAttributeFilter](http://everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/persistence/EqAttributeFilter.html) are enabled in the Task API (design decision, if a use case is presented more filters can be enabled, the code is present).
+Currently only equality attribute filters [EqAttributeFilter](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/persistence/EqAttributeFilter.html) are enabled in the Task API (design decision, if a use case is presented more filters can be enabled, the code is present).
 
 Results might look something like this:
 
