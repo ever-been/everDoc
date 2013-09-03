@@ -1,14 +1,16 @@
 ## Deployment process
 
-
 ### Running BEEN
-The deployment process assumes a set of interconnected computers on which the framework is supposed to be run and running MongoDB instance. See [Requirements](#user.requirements) and [http://docs.mongodb.org/manual/installation/](http://docs.mongodb.org/manual/installation/)
 
-* Copy BEEN onto each machine - single executable jar file is provided
+The deployment process assumes a set of interconnected computers on which the framework is supposed to be run and a running MongoDB instance. See the [Requirements](#user.requirements) section and [MongoDB installation guide](http://docs.mongodb.org/manual/installation/) for details.
 
-* Create clustering configurations
+Deploying BEEN consists of two steps:
 
-The exact configuration is highly dependent on the network topology. In following example configuration two scenarios will be presented depending on how the cluster will be formed.
+* Copying BEEN onto each machine --- single executable jar file is provided
+
+* Creating clustering configurations
+
+The exact configuration is highly dependent on the network topology. In the following example configuration two scenarios will be presented depending on how the cluster will be formed.
 
 We will also assume that MongoDB instance is running on `mongodb.example.com`. All nodes must use the same *group* and *group password*.
 
@@ -27,10 +29,9 @@ The cluster is formed through broadcasting.
 
 Only the first two configuration options are needed, rest of options have sane defaults.
 
-
 #### Direct connect scenario
 
-The cluster will be formed by directly connection nodes.
+The cluster will be formed by directly connecting nodes.
 
 	been.cluster.mapstore.db.hostname=mongodb.example.com
 	mongodb.hostname=mongodb.example.com
@@ -101,15 +102,18 @@ Node working directory is created on first startup.
     16.             \___ ...
     17.             \___ ...
                 
-* **.HostRuntime** directory (1) - Host Runtime global working directory. It can be configured by changing property `hostruntime.wrkdir.name`. Default name is `.HostRuntime`.
-* Each separate run of the been creates its own working directory for its tasks in the **tasks** subdirectory (2).
-* On each node restart is created new working directory for tasks running on this node (3,4,5,6). Names of these directories are based on actual time when node starts. BEEN on each start checks these directories and if their number exceeds 4 by default, the oldest one is deleted. This prevents unexpected growth of Host Runtime working directory size, but allows debugging failed tasks, when underlying Host Runtime is terminated and restarted. Count of backuped directories is configurable by property `hostruntime.tasks.wrkdir.maxHistory`.
+* **.HostRuntime** directory (1) - Host Runtime global working directory. It can be configured by changing the property `hostruntime.wrkdir.name`. Default name is `.HostRuntime`.
+
+* Each separate run of BEEN creates its own working directory for its tasks in the **tasks** subdirectory (2).
+
+* On each node restart a new working directory for tasks running on this node (3,4,5,6) is created. Names of these directories are based on current time when node starts. BEEN on each start checks these directories and if their number exceeds 4 by default, the oldest one is deleted. This prevents unexpected growth of Host Runtime working directory size, but allows debugging failed tasks, when underlying Host Runtime is terminated and restarted. Number of backed up directories is configurable by property `hostruntime.tasks.wrkdir.maxHistory`.
+
 * Working directories of single tasks (7,15,16,17) contains files from extracted BPK (8,9,10,13,14) and log files for error output (11) and standard output (12).
 
 Working directory of single tasks is deleted only in case that this task finished its execution without error, otherwise the directory remains unchanged. If you want to cleanup directory manually, you can, or you can do it through web interface.
 
-
-
 ### Limitations
-* If you want to run more more Host Runtimes on same machine you can, but we **strongly recommend you** to start each node with different working directory name. Host Runtime is not intended to run on single machine multiple times at the same time.
-* Running BEEN for a long time without clearing directories after failed tasks can result in low disk space. If you tasks are failing, we can't easily know whenever we can delete them or not.
+
+* If you want to run more than one Host Runtime on the same machine, you can, but we **strongly recommend** to start each node with different working directory name. Host Runtime is not intended to run on a single machine multiple times at the same time.
+
+* Running BEEN for a long time without clearing directories after failed tasks can result in low disk space. If your tasks are failing, we can't easily know when we can delete them or not.

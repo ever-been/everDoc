@@ -5,16 +5,16 @@ Before dwelling into the deployment process a few concepts must be explained. Th
 ### BEEN services {#user.concepts.services}
 A BEEN service is a component which carries out a particular function. Essential services include:
 
-* Host Runtime - executes tasks
-* Task Manager - schedules tasks
-* Software Repository - serves packages
-* Object Repository - provides persistence layer
+* Host Runtime --- executes tasks
+* Task Manager --- schedules tasks
+* Software Repository --- serves packages
+* Object Repository ---	 provides persistence layer
 
 
 ### Tasks {#user.concepts.tasks}
 A BEEN task is basic executable unit of the framework. Tasks are run on Host Runtimes.
 
-Tasks are distributed in form of a package - which are called *BPK*s (from `BEEN package`). BPKs are uploaded to the Software Repository and are uniquely identified by *groupId*, *bpkId* and *version*.
+Tasks are distributed in form of a package -- which are called *BPK*s (from `BEEN package`). BPKs are uploaded to the Software Repository and are uniquely identified by *groupId*, *bpkId* and *version*.
 
 *Task Descriptors* are XML files describing which package to use, where and how to run a task. Task Descriptors are submitted to a Task Manager which schedules it on a Host Runtime if possible.
 
