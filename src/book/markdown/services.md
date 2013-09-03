@@ -9,7 +9,7 @@ Even though the service was completely rewritten the basic functions remain more
 
 A Host Runtime can run on any type of a [BEEN node](#user.concepts.nodes) . It makes sense to run it on a *NATIVE* node in order not to incur costs associated with running a *DATA* node. Typically, deployment will have a few DATA nodes and as many NATIVE nodes with a Host Runtime as needed.
 
-Available configuration options are listed in [Configuration](#uses.configuration)  
+Available configuration options are listed in chapter about [Configuration](#user.configuration). 
 
 #### Host Runtime overview {#devel.services.hostruntime.overview}
 
@@ -28,22 +28,22 @@ The implementation can be found in the *host-runtime* module within the `cz.cuni
 
 #### Tasks management {#devel.services.hostruntime.management}
 
-The Host Runtime interacts with the rest of the framework primarily by listening for messages ([HostRuntimeMessageListener](http://evenbeen.cz/javadoc/TODO) through a distributed topic. Messages contain request which are dispatched to appropriate message handlers ([ProcessManager](http://evenbeen.cz/javadoc/TODO)).
+The Host Runtime interacts with the rest of the framework primarily by listening for messages ([HostRuntimeMessageListener](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/hostruntime/HostRuntimeMessageListener.html) through a distributed topic. Messages contain request which are dispatched to appropriate message handlers ([ProcessManager](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/hostruntime/ProcessManager.html)).
 
-A task begins its life on a Host Runtime with incoming [RunTaskMessage](http://evenbeen.cz/javadoc/TODO) message. The Host Runtime can either accept the task or return it to the Task Manager. In former case a complete environment is prepared and a new process is spawned ([TaskProcess](http://evenbeen.cz/javadoc/TODO)). This process includes:
+A task begins its life on a Host Runtime with incoming [RunTaskMessage](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/core/protocol/messages/RunTaskMessage.html) message. The Host Runtime can either accept the task or return it to the Task Manager. In former case a complete environment is prepared and a new process is spawned ([TaskProcess](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/hostruntime/task/TaskProcess.html)). This process includes:
 
-* downloading task's BPK ([SoftwareResolver](http://evenbeen.cz/javadoc/TODO))
-* creating working directory and unpacking the BPK into it ([ProcessManager](http://evenbeen.cz/javadoc/TODO))
-* preparing environment properties and command line ([CmdLineBuilderFactory](http://evenbeen.cz/javadoc/TODO))
+* downloading task's BPK ([SoftwareResolver](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/hostruntime/SoftwareResolver.html))
+* creating working directory and unpacking the BPK into it ([ProcessManager](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/hostruntime/ProcessManager.html))
+* preparing environment properties and command line ([CmdLineBuilderFactory](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/hostruntime/task/CmdLineBuilderFactory.html))
  
 
-The task is supervised in a separate thread, waiting either for the task to finish or an user generated request to abort it. The state changes are propagated through the [TaskEntry](http://evenbeen.cz/javadoc/TODO) structure associated with the task ([TaskHandle](http://evenbeen.cz/javadoc/TODO)).
+The task is supervised in a separate thread, waiting either for the task to finish or an user generated request to abort it. The state changes are propagated through the [TaskEntry](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/core/task/TaskEntry.html) structure associated with the task ([TaskHandle](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/hostruntime/task/TaskHandle.html)).
 
 #### Interaction with tasks {#devel.services.hostruntime.tasks}
 
 Any output and communication of a task related to the framework must go through the Host Runtime, including:
 
-* logs, output from standard output and standard error ([TaskLogHandler](http://evenbeen.cz/javadoc/TODO))
+* logs, output from standard output and standard error ([TaskLogHandler](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/hostruntime/tasklogs/TaskLogHandler.html))
 * results, result queries
 * task context related operations (Checkpoints, latches, etc.)
 
@@ -57,7 +57,7 @@ Follows overview of the protocol between Host Runtime and a task.
 
 As was mentioned above the protocol is based on 0MQ with messages encoded in JSON format. 
 
-A task in order to communicate with its Host Runtime must send appropriate messages through 0MQ ports - connection details are passed as environment properties, names of the properties are specified in [NamedSockets](http://evenbeen.cz/javadoc/TODO). How are messages encoded in JSON is responsibility of the [Task API](#user.taskapi) - the current implementation uses the [Jackson](#devel.techno.jackson) library to serialize/deserialize messages from/to *Plain Old Java Objects*.
+A task in order to communicate with its Host Runtime must send appropriate messages through 0MQ ports - connection details are passed as environment properties, names of the properties are specified in [NamedSockets](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/socketworks/NamedSockets.html). How are messages encoded in JSON is responsibility of the [Task API](#user.taskapi) - the current implementation uses the [Jackson](#devel.techno.jackson) library to serialize/deserialize messages from/to *Plain Old Java Objects*.
 
 There are currently four types of messages recognized by the framework. For the sake of brevity Java implementation classes are mentioned here. If the need for different implementation of the TASK API arises message, format can be inferred from them (direct mapping to JSON).  
 
@@ -82,7 +82,7 @@ Example message:
 
 Notice that there currently is *LOG_MESSAGE#* before the actual message.
 
-CheckPoints - *TaskCheckpoints* - [CheckpointRequest](http://evenbeen.cz/javadoc/TODO) 
+CheckPoints - *TaskCheckpoints* - [CheckpointRequest](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/task/checkpoints/CheckpointRequest.html) 
 
 Examples of CheckPoint messages:
 
@@ -109,7 +109,7 @@ The format is the same for all types of CheckPoint messages:
 :	timeout in milliseconds of the request if applicable, zero means infinity
 
 `type`
-:	defines type of the request, supported types are to be found in [CheckpointRequestType](http://evenbeen.cz/javadoc/TODO)
+:	defines type of the request, supported types are to be found in [CheckpointRequestType](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/task/checkpoints/CheckpointRequestType.html)
 
 `taskId`
 :	taskId of the requesting task 
@@ -148,9 +148,9 @@ And the reply after the timeout occurred:
 		"value":"TIMEOUT"
 	}
 
-See [CheckpointController](http://evenbeen.cz/javadoc/TODO) implementation details of other operations. 
+See [CheckpointController](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/taskapi/CheckpointController.html) implementation details of other operations. 
 
-Results - *TaskResults* - [Result](http://evenbeen.cz/javadoc/TODO) along with [EntityID](http://evenbeen.cz/javadoc/TODO) wrapped in [EntityCarrier](http://evenbeen.cz/javadoc/TODO)
+Results - *TaskResults* - [Result](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/results/Result.html) along with [EntityID](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/core/persistence/EntityID.html) wrapped in [EntityCarrier](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/core/persistence/EntityCarrier.html)
 
 Let us use following example result in Java:
 
@@ -184,7 +184,7 @@ Example result corresponding to the Java class:
 :	corresponds to the result's `data` field
 
 
-Result queries - *TaskResultQueries* - [FetchQuery](http://everbeen.cz/javadoc/TODO)
+Result queries - *TaskResultQueries* - [FetchQuery](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/persistence/FetchQuery.html)
 
 Queries are a little complicated - since they allow filtering and selecting of data.
 
@@ -218,10 +218,10 @@ The query is translated into
 
 The `@class` fields are a bit unfortunate since they refer to Java implementation classes. We acknowledge that its a bit awkward, nevertheless its "doable".
 
-The important things to look at is that there is specification of [EntityID](#TODO),
+The important things to look at is that there is specification of [EntityID](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/core/persistence/EntityID.html),
 there are selector which filter fields and mappings which select which fields to fetch.
 
-Currently only equality attribute filters [EqAttributeFilter](http://everbeen.cz/javadoc/TODO) are enabled in the Task API (design decision, if a use case is presented more filters can be enabled, the code is present).
+Currently only equality attribute filters [EqAttributeFilter](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/persistence/EqAttributeFilter.html) are enabled in the Task API (design decision, if a use case is presented more filters can be enabled, the code is present).
 
 Results might look something like this:
 
@@ -263,7 +263,7 @@ The most important characteristic of the Task Manger is that the computation is 
 Distributed architecture is the major difference from previous versions of the BEEN framework.
 
 #### Implementation {#devel.services.taskmanager.implementation}
-The implementation of the Task Manager is heavily dependent on [Hazelcast](#devel.techno.hazelcast) distributed data structures and its semantics, especially the [com.hazelcast.core.IMap](http://hazelcast.com/TODO).
+The implementation of the Task Manager is heavily dependent on [Hazelcast](#devel.techno.hazelcast) distributed data structures and its semantics, especially the [com.hazelcast.core.IMap](http://www.hazelcast.com/javadoc/com/hazelcast/core/IMap.html).
 
 #### Workflow {#devel.services.taskmanager.workflow}
 The basic event-based work flow:
@@ -288,7 +288,7 @@ An important notion to remember is that an instance of the Task Manager handles 
 These distributed data structures are also backed by the [MapStore](#devel.services.mapstore) (enabled by default).
 
 #### Task scheduling {#devel.services.taskmanager.tasks}
-Task state are described in the user manual - [Basic concepts ](#user.concepts.tasks).
+Task state are described in the user manual - [Basic concepts](#user.concepts.tasks).
 
 The Task Manager is responsible for scheduling tasks - finding a Host Runtime on which the task can run. Description of possible restrictions can be found at [Host Runtime](#devel.services.hostruntime)
 
@@ -296,7 +296,7 @@ A [distributed query](http://hazelcast.com/docs/2.6/manual/single_html/#MapQuery
 
 An appropriate Host Runtime is also chosen based on Host Runtime utilization, less overloaded Host Runtimes are preferred. Among equal hosts a Host Runtime is chosen randomly.
 
-The lifecycle of a task is commenced by inserting a [TaskEntry](http://evenbeen.cz/javadoc/TODO) into the task map with a random UUID as the key and in the SUBMITTED state. Inserting a new entry to the map causes an event which is handled by the owner of the key - the Task Manager responsible for the key. The event is converted to the [NewTaskMessage](http://evenbeen.cz/javadoc/TODO) and sent to the processing thread. The handling logic is separated in order not to block the Hazelcast service threads. In this regard handling of messages is serialized on the particular node. The message then generates [ScheduleTaskAction](http://evenbeen.cz/javadoc/TODO) which is responsible for figuring out what to do. Several things might happen 
+The lifecycle of a task is commenced by inserting a [TaskEntry](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/core/task/TaskEntry.html) into the task map with a random UUID as the key and in the SUBMITTED state. Inserting a new entry to the map causes an event which is handled by the owner of the key - the Task Manager responsible for the key. The event is converted to the [NewTaskMessage](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/manager/msg/NewTaskMessage.html) and sent to the processing thread. The handling logic is separated in order not to block the Hazelcast service threads. In this regard handling of messages is serialized on the particular node. The message then generates [ScheduleTaskAction](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/manager/action/ScheduleTaskAction.html) which is responsible for figuring out what to do. Several things might happen 
 
 * the task cannot be run because it's waiting on another task, the state is changed to WAITING
 * the task cannot be run because there is no suitable Host Runtime for it, the state is changed to WAITING
@@ -332,7 +332,7 @@ Future improvements may include heuristics for scheduling contexts as an entity 
 
 #### Handling exceptional events {#devel.services.taskmanager.errors}
 
-The current Hazelcast implementation (as of version 2.6) has one limitation. When a key [migrates](http://hazelcast.com/docs/2.5/manual/single_html/#InternalsDistributedMap) the new owner does not receive any event ([com.hazelcast.partition.MigrationListener](http://hazelcast.com/javadoc/TODO) is not much useful in this regard since it does not contain enough information). This might be a problem if e.g. a node crashes and an event of type "new task added" is lost. To mitigate the problem the Task Manager periodically scans ([LocalKeyScanner](http://evenbeen.cz/javadoc/TODO)) its *local keys* looking for irregularities. If it finds one it creates a message to fix it.
+The current Hazelcast implementation (as of version 2.6) has one limitation. When a key [migrates](http://hazelcast.com/docs/2.5/manual/single_html/#InternalsDistributedMap) the new owner does not receive any event ([com.hazelcast.partition.MigrationListener](http://www.hazelcast.com/javadoc/com/hazelcast/partition/MigrationListener.html) is not much useful in this regard since it does not contain enough information). This might be a problem if e.g. a node crashes and an event of type "new task added" is lost. To mitigate the problem the Task Manager periodically scans ([LocalKeyScanner](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/manager/LocalKeyScanner.html)) its *local keys* looking for irregularities. If it finds one it creates a message to fix it.
 
 There are several situations this might happen:
 
@@ -347,12 +347,12 @@ In the case of cluster restart there might be stale tasks which does not run any
 #### Hazelcast events {#devel.services.taskmanager.events}
 These are main sources of cluster-wide events, received from Hazelcast:
 
-* Task Events - in [LocalTaskListener](http://evenbeen.cz/javadoc/TODO)
-* Host Runtime events - in [LocalRuntimeListener](http://evenbeen.cz/javadoc/TODO)
-* Contexts events - in [LocalContextListener](http://evenbeen.cz/javadoc/TODO)
+* Task Events - in [LocalTaskListener](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/manager/LocalTaskScanner.html)
+* Host Runtime events - in [LocalRuntimeListener](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/manager/LocalRuntimeScanner.html)
+* Contexts events - in [LocalContextListener](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/manager/LocalContextScanner.html)
 
 #### Task Manger messages {#devel.services.taskmanager.messages}
-Main interface [TaskMessage](http://evenbeen.cz/javadoc/TODO), messages are created through the [Messages](http://evenbeen.cz/javadoc/TODO) factory.
+Main interface [TaskMessage](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/manager/msg/TaskMessage.html), messages are created through the [Messages](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/manager/msg/Messages.html) factory.
 
 Overview of main messages:
 
@@ -365,7 +365,7 @@ Detailed description is part of the source code and Javadoc.
 
 
 #### Task Manager actions {#devel.services.taskmanager.actions}
-Main interface [TaskAction](http://evenbeen.cz/javadoc/TODO), actions are created through the [Action](http://evenbeen.cz/javadoc/TODO) factory.
+Main interface [TaskAction](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/manager/action/TaskAction.html), actions are created through the [Action](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/cluster/action/Action.html) factory.
 
 Overview of actions
 
@@ -392,30 +392,30 @@ From developers perspective, the architecture of software repository is based on
 Description of HTTP protocol:
 
 * *get* **/bpk** - download BPK from software repository 
-    * request header: **Bpk-Identifier**, value: cz.cuni.mff.d3s.been.bpk.BpkIdentifier (JSON), unique identifier of BPK to be downloaded
-    * valid response status codes: **2XX**
+    * request header: `Bpk-Identifier`, value: [cz.cuni.mff.d3s.been.bpk.BpkIdentifier](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/bpk/BpkIdentifier.html) (JSON), unique identifier of BPK to be downloaded
+    * valid response status codes: *2XX*
     * response body: binary content of the requested BPK file
 * *put* **/bpk** - upload BPK to software repository 
-    * request header: **Bpk-Identifier**, value: cz.cuni.mff.d3s.been.bpk.BpkIdentifier (JSON), unique identifier of BPK to be uploaded
+    * request header: `Bpk-Identifier`, value: `BpkIdentifier` (JSON), unique identifier of BPK to be uploaded
     * request body: binary content of the uploaded BPK file
-    * valid response status codes: **2XX**
+    * valid response status codes: *2XX*
 * *get* **/bpklist** - list all BPKs stored in software repository
-    * valid response status codes: **2XX**
-    * response body: java.util.List&lt;cz.cuni.mff.d3s.been.bpk.BpkIdentifier&gt; (JSON) 
-* *get* **/tdlist** - list all task descriptors for BPK stored in software repository and identified by given BpkIdentifier 
-    * request header: **Bpk-Identifier**, value: cz.cuni.mff.d3s.been.bpk.BpkIdentifier (JSON), unique identifier of BPK for which the list of available descriptors should be returned
-    * valid response status codes: **2XX**
-    * response body: java.util.Map&lt;java.lang.String, cz.cuni.mff.d3s.been.core.task.TaskDescriptor&gt; (JSON), key is task descriptor filename
-* *get* **/tcdlist** - list all task context descriptors for BPK stored in software repository and identified by given BpkIdentifier 
-    * request header: **Bpk-Identifier**, value: cz.cuni.mff.d3s.been.bpk.BpkIdentifier (JSON), unique identifier of BPK for which the list of available descriptors should be returned
-    * valid response status codes: **2XX**
-    * response body: java.util.Map&lt;java.lang.String, cz.cuni.mff.d3s.been.core.task.TaskContextDescriptor&gt; (JSON), key is task context descriptor filename
+    * valid response status codes: *2XX*
+    * response body: `List<BpkIdentifier>` (JSON) 
+* *get* **/tdlist** - list all [task descriptors](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/core/task/TaskDescriptor.html) for BPK stored in software repository and identified by given `BpkIdentifier` 
+    * request header: `Bpk-Identifier`, value: `BpkIdentifier` (JSON), unique identifier of BPK for which the list of available descriptors should be returned
+    * valid response status codes: *2XX*
+    * response body: `Map<String, TaskDescriptor>` (JSON), key is task descriptor filename
+* *get* **/tcdlist** - list all [task context descriptors](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/core/task/TaskContextDescriptor.html) for BPK stored in software repository and identified by given `BpkIdentifier` 
+    * request header: `Bpk-Identifier`, value: `BpkIdentifier` (JSON), unique identifier of BPK for which the list of available descriptors should be returned
+    * valid response status codes: *2XX*
+    * response body: `Map<String, TaskContextDescriptor>` (JSON), key is task context descriptor filename
 
 If response is marked with other than valid status code, standard HTTP response reason phrase will contain reason of the failure. For JSON serialization and deserialization is used ObjectMapper provided by [Jackson](#devel.techno.jackson) library.
 
-We chose HTTP protocol because it is adapted for transfer of large files and is easy and use.   
+We chose HTTP protocol because it is adapted for transfer of large files and is easy to use.   
 
-Software repository stores uploaded BPKs in subdirectory **bpks** in SR working directory. Each uploaded bpk is stored in subfolder **GROUP_ID/BPK_ID/VERSION** under the name **BPK_ID-VERSION.bpk** where GROUP_ID stands for fully qualified groupId of BPK name where dots are replaced by slashes, BPK_ID stands for bpkId of BPK and VERSION stands for version of BPK. See following example for understanding directory structure.
+Software repository stores uploaded BPKs in `bpks` subdirectory of SR working directory. Each uploaded BPK is stored in subfolder `{groupId}/{bpkId}/{version}` under the name `{bpkId}-{version}.bpk` where *{groupId}* stands for fully qualified groupId of BPK name where dots are replaced by slashes, *{bpkId}* stands for bpkId of BPK and *{version}* stands for version of BPK. Follows example of the directory structure:
 
 ```    
 SR working directory (WD): 
@@ -462,7 +462,7 @@ Because some BPKs can be used multiple times on single host runtime, each host r
 
 ### Object Repository {#devel.services.objectrepo}
 
-The purpose of the *Object Repository* is to service user data persistence. While the actual persistence and querying code is isolated from the *Object Repository* by the [Storage](<!-- TODO javadoc link -->) interface module and is database-dependent (the default MongoDB implementation can be found in the `mongo-storage` module), the *Object Repository* operates without any knowledge of user types or concrete database storage implementation. The main portion of its work is to communicate with the rest of the EverBEEN cluster, collect objects sent by other nodes for persistence, collect queries from other nodes and dispatch answers. The communication with the rest of the cluster is realized through shared queues and maps (distributed cluster-wide memory).
+The purpose of the *Object Repository* is to service user data persistence. While the actual persistence and querying code is isolated from the *Object Repository* by the [Storage](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/storage/Storage.html) interface module and is database-dependent (the default MongoDB implementation can be found in the `mongo-storage` module), the *Object Repository* operates without any knowledge of user types or concrete database storage implementation. The main portion of its work is to communicate with the rest of the EverBEEN cluster, collect objects sent by other nodes for persistence, collect queries from other nodes and dispatch answers. The communication with the rest of the cluster is realized through shared queues and maps (distributed cluster-wide memory).
 
 The *Object Repository* also features a *Janitor* sub-service, which is responsible for cleaning up old data once it's deemed unnecessary. The *Janitor* works on its local *Storage* instance and therefore doesn't partake in any cluster-wide activities.
 
@@ -474,8 +474,8 @@ As mentioned above, the *Object Repository*'s communication with the rest of the
 
 The object persisting mechanism is simple:
 
-* A node serializes its object `o` ([Entity](<!-- TODO javadoc link -->)) into JSON. Let's call the resulting string `ojson`.
-* The node creates an special wrapper ([EntityCarrier](<!-- TODO javadoc link -->)) which combines the serialized object with a destination id ([EntityID](<!-- TODO javadoc link -->)) - let's call the specific id instance `oid`.
+* A node serializes its object `o` ([Entity](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/core/persistence/Entity.html)) into JSON. Let's call the resulting string `ojson`.
+* The node creates an special wrapper ([EntityCarrier](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/core/persistence/EntityCarrier.html)) which combines the serialized object with a destination id ([EntityID](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/core/persistence/EntityID.html)) - let's call the specific id instance `oid`.
 * The wrapper, containing both `ojson` and `oid`, gets submitted into a distributed queue.
 * A few moments later, an *Object Repository* drains the wrapper from the distributed queue.
 * The repository unpacks the wrapper and passes both `ojson` and `oid` to its *Storage* implementation.
@@ -514,7 +514,9 @@ For cases when the `total_timeout` is systematically being hit (as unlikely as t
 <!-- TODO description -->
 Every instance of *Object Repository* has its own *Janitor* thread that periodically checks the *Storage* for old objects and removes them. To enable this kind of cleanup, EverBEEN stores some service entries about *task* and *context* states, which are deleted once the cleanup of all other entries related to that *task* or *context* has been performed. The cleanup rules are as follows:
 
-* EverBEEN features two configurable TTL properties: `been.objectrepository.janitor.finished-longevity` and `been.objectrepository.janitor.failed-longevity`
+* EverBEEN features two configurable TTL properties:
+    * `been.objectrepository.janitor.finished-longevity`
+    * `been.objectrepository.janitor.failed-longevity`
 * For successfully finished *tasks* and *contexts* past *finished longevity*, configurations (*descriptors*), results and evaluations thereof are kept, but service information (logs) are deleted
 * For failed *tasks* and *contexts* past *failed longevity*, all entries are deleted
 
@@ -524,7 +526,9 @@ There is a hypothetical case when the *Janitor component* performs a sweep which
 
 * Both the initial and terminal states of the *task* (*context*) get persisted, but some leftover data doesn't. That can happen due to a persist queue reorder (potentially due to a temporary *Storage* failure resulting in a requeue).
 * *Object Repository* gets disconnected after the initial and terminal state has been drained, but before the late persisted object has been drained
-* *Object Repository* doesn't get reconnected for at least `been.objectrepository.janitor.finished-longevity` (or `been.objectrepository.janitor.failed-longevity`, depending on the terminal state of the *task*/*context*), but keeps running (or gets restarted with a bad network configuration).
+* *Object Repository* doesn't get reconnected for at least  
+`been.objectrepository.janitor.finished-longevity`  
+(or `been.objectrepository.janitor.failed-longevity`, depending on the terminal state of the *task*/*context*), but keeps running (or gets restarted with a bad network configuration).
 
 This case is not handled, mainly because the default values for both longevities are in the order of days, and it would take the user not noticing an invalid cluster configuration for this long.
 
@@ -542,7 +546,7 @@ The implementation is build atop of Hazelcast Map Store - mechanism for storing/
 The main advantage of using the MapStore is transparent and easy access to Hazelcast distributed structures with the ability to persist them - no explicit actions are needed.
 
 #### Difference between the MapStore and the Object repository {#devel.services.mapstore.difference}
-Both mechanism are used to persist objects - the difference is in the type of objects being persisted. The [Object repository](#devel.services.objectrepo) stores user generated information, whereas the MapStore handles (mainly) BEEN runtime information - information essential to proper working of the framework. 
+Both mechanism are used to persist objects - the difference is in the type of objects being persisted. The [Object repository](#devel.services.objectrepo) stores user generated information, whereas the MapStore handles (mainly) EverBEEN runtime information - information essential to proper working of the framework. 
 
 The difference is also in level of transparency for users. Object persistence happens on behalf of an user explicit request, the MapStore works "behind the scene".
 
@@ -562,13 +566,13 @@ The layer can be configured to accommodate different needs:
 Detailed description of configuration can be found at [Configuration](#user.configuration).
 
 ### Web Interface {#devel.services.webinterface}
-Web interface is sophisticated utility to monitor and control the BEEN framework. It is not actually a real service but rather a standalone client, nevertheless it is an indispensable part of the BEEN. Implementation is based on [Tapestry5](http://tapestry.apache.org/) framework and its extension [Tapestry5-jquery](http://tapestry5-jquery.com/). Describing the principles and conventions of Tapestry framework is not part of the BEEN documentation but it can be found on the framework official site. We would like to include only few information which could be helpful when extending the web interface.
+Web interface is sophisticated utility to monitor and control the EverBEEN cluster. It is not actually a real service but rather a standalone client, nevertheless it is an indispensable part of the framework. Implementation is based on [Tapestry5](http://tapestry.apache.org/) framework and its extension [Tapestry5-jquery](http://tapestry5-jquery.com/). Describing the principles and conventions of Tapestry framework is not part of the EverBEEN documentation but it can be found on the framework official site. We would like to include only few information which could be helpful when extending the web interface.
 
 #### Dependency Injection
-Tapestry uses its own implementation of dependency injection container called Tapestry IoC (Inversion of Control) – this container is responsible for dependencies among pages, components, services and other parts of the application. Tapestry has several of its own services managed by IoC and we added two more. First, the most important, is `cz.cuni.mff.d3s.been.web.services.BeenApiService` and its implementation `cz.cuni.mff.d3s.been.web.services.BeenApiServiceImpl`, which is responsible for connecting to the cluster. The second is `cz.cuni.mff.d3s.been.web.services.LiveFeedService` and its implementation `cz.cuni.mff.d3s.been.web.services.LiveFeedServiceImpl`, which is responsible for communication with web browsers through Web Sockets. When defined, these services are fully integrated to the whole Tapestry web application life cycle and can be injected to pages and components through standard Tapestry annotations.
+Tapestry uses its own implementation of dependency injection container called Tapestry IoC (Inversion of Control) – this container is responsible for managing dependencies among pages, components, services and other parts of the application. Tapestry has several of its own services and we added two more. First, the most important, is [`BeenApiService`](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/web/services/BeenApiService.html) which is responsible for connecting to the cluster. The second service is [`LiveFeedService`](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/web/services/LiveFeedService.html) which is responsible for communication with web browsers through web sockets. When defined, these services are fully integrated to the whole Tapestry web application life cycle and can be injected to pages and components through standard Tapestry annotations.
 
 #### Pages and Components
-All pages are inherited from `cz.cuni.mff.d3s.been.Page` class. This class contains injected BeenApiService from which you can obtain BeenApi through which you can manage the BEEN framework. Layout is defined in `cz.cuni.mff.d3s.been.web.components.Layout` component and all JavaScript and CSS can be found in `src/main/webapp` subdirectory of web-interface module.
+All pages are inherited from base [`Page`](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/web/pages/Page.html) class. This class contains injected `BeenApiService` from which you can obtain instance of [BeenApi](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/api/BeenApi.html) through which you can manage the whole EverBEEN cluster. Global layout is defined by [`Layout`](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/web/components/Layout.html) component and all JavaScript and CSS can be found in `src/main/webapp` subdirectory of `web-interface` module.
 
 #### Connecting WI to the cluster
-Web interface is connected to the cluster using Hazelcast native client. It means that the WI does not store any data and does not manage any keys of Hazelcast maps. ty
+Web interface is connected to the cluster using Hazelcast native client. It means that the WI does not store any data and does not manage any keys of Hazelcast maps.

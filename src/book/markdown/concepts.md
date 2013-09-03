@@ -1,9 +1,9 @@
 ## Basic concepts {#user.concepts}
-Before dwelling into the deployment process a few concepts must be explained. The concepts are explored and further explained in following chapters.
+Before dwelling into the deployment process a few concepts must be explained. The concepts are explored and further explained in the following chapters.
 
 
 ### BEEN services {#user.concepts.services}
-A BEEN service is a component which carries out a particular function. Essential services include:
+A BEEN service is a component that runs indefinitely and processes requests. Essential services include:
 
 * Host Runtime --- executes tasks
 * Task Manager --- schedules tasks
@@ -12,11 +12,11 @@ A BEEN service is a component which carries out a particular function. Essential
 
 
 ### Tasks {#user.concepts.tasks}
-A BEEN task is basic executable unit of the framework. Tasks are run on Host Runtimes.
+A BEEN task is a basic executable unit of the framework. Tasks are user written code which the framework runs on Host Runtimes.
 
-Tasks are distributed in form of a package -- which are called *BPK*s (from `BEEN package`). BPKs are uploaded to the Software Repository and are uniquely identified by *groupId*, *bpkId* and *version*.
+Tasks are distributed in the form of package files called *BPK*s (from `BEEN package`). BPKs are uploaded to the Software Repository and are uniquely identified by *groupId*, *bpkId* and *version*.
 
-*Task Descriptors* are XML files describing which package to use, where and how to run a task. Task Descriptors are submitted to a Task Manager which schedules it on a Host Runtime if possible.
+*Task Descriptors* are XML files describing which package to use, where and how to run a task. Task Descriptors are submitted to a Task Manager which schedules and instantiates the task on a Host Runtime which meets user-defined constraints.
 
 Tasks have states:
 
@@ -57,14 +57,14 @@ Task context states:
 Benchmark are user-written tasks with additional capabilities (in form of the *Benchmark API*). Benchmark tasks generate task contexts which are submitted to the framework.
 
 ### Node types  {#user.concepts.nodes} 
-In EverBEEN `node` is a program capable of running BEEN services. The node must be able to interact with other nodes through a computer network. Type of a node determines mechanism used to connect to other nodes. Since EverBEEN uses [Hazelcast](#devel.techno.hazelcast) as it means of connection nodes, types resemble those in Hazelcast. Currently two types are supported:
+In EverBEEN `node` is a program capable of running BEEN services. The node must be able to interact with other nodes through a computer network. Type of a node determines the mechanism used to connect to other nodes. Since EverBEEN uses [Hazelcast](#devel.techno.hazelcast) as its means of connecting nodes, node types follow a design pattern from Hazelcast. Currently two types are supported:
 
 `DATA node`
-:	Data nodes form a cluster which *share distributed data*. The cluster can be formed either through broadcasting or by directly connection nodes, see [Cluster Configuration](#user.configuration.cluster). The Task Manager service must be run on each DATA node (This requirement is enforced by the Node Runner). Be aware that DATA nodes incur overhead due to sharing data.
+:	Data nodes form a cluster that *share distributed data*. The cluster can be formed either through broadcasting or by directly contacting existing nodes, see [Cluster Configuration](#user.configuration.cluster). The Task Manager service must be run on each DATA node (This requirement is enforced by the Node Runner). Be aware that DATA nodes incur overhead due to sharing data.
 
 `NATIVE node`
 :	Native nodes can be though of as cluster clients. They *do not* participate in sharing of distributed data and therefore do not incur overhead from it. NATIVE nodes connect directly to DATA nodes (failures are transparently handled). This also means that at all times at least one DATA node must be running in order for the framework to work. For configuration details see [Cluster Client Configuration](#user.configuration.client)  
 
 
-Except of the Task Manager currently every other service can run on both types.
+All services except the Task Manager can run on both node types.
 

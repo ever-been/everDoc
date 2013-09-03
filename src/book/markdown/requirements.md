@@ -1,13 +1,13 @@
 ## EverBEEN requirements {#user.requirements}
 
-BEEN is from the first moment of development a multi-platform software. It's possible to run an installation of BEEN on any of these platforms:
+BEEN is designed from the ground up to be a multi-platform software. Currently supported platforms include:
 
 * Linux -- most recent distributions
 * Mac OS X 10.8 and later
 * Microsoft Windows 7 and later
 * FreeBSD
 
-In order to deploy BEEN, every machine that should be connected into the BEEN cluster, needs:
+In order to deploy BEEN these software packages needs to be installed:
 
 * Java Runtime Environment (JRE) version 1.7
 
@@ -30,7 +30,7 @@ The clients that should be able to access the web interface need to have one of 
 * Google Chrome version 29 or newer
 * Mozilla Firefox version 22 or newer
 
-The project doesn't have any explicit hardware requirements, any machine that has the previously mentioned software requirements installed and working, should be able to run BEEN. However, the recommended minimum machine hardware configuration is:
+The project does not have any explicit hardware requirements, any machine that meets the software requirements listed above, should be able to run BEEN. However, the recommended minimum machine hardware configuration is:
 
 * Modern CPU with at least 2.0 GHz
 * 100Mbit network interface

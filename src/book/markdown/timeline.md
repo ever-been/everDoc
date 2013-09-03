@@ -4,7 +4,7 @@
 :	The team took over the codebase of WillBEEN and started working on a new incarnation of the project, called EverBEEN.
 
 *July 2012*
-:	We decided to use Maven as the build system instead of Apache Ant and to split the project into several modules.
+:	We decided to use Apache Maven as the build system instead of Apache Ant and to split the project into several modules.
 
 *August 2012*
 :	Attempts to `mavenize` the project discovered a lot of mutual dependencies among apparently independent parts of the codebase.
@@ -34,7 +34,7 @@
 
 *April 2013*
 :	MongoDB is to be used as the default storage engine. Though, the persistence layer is to be implemented with a universal interface that would allow any other common database storage to be use instead. Also, MongoDB has a [lot of features](http://www.youtube.com/watch?v=b2F-DItXtZs) that fit the BEEN use case.
-:	The web interface will be written in Java using [Tapestry web framework](#devel.techno.tapestry). This will allow us to reuse existing data structures and classes and will take less time to write than pure JSP.
+:	The web interface will be written in Java using Tapestry5 web framework. This will allow us to reuse existing data structures and classes and will take less time to write than pure JSP.
 
 *May 2013*
 :	The API for user-written benchmark is settled to be a special form of task that will be called by BEEN and will generate task contexts on demand.
