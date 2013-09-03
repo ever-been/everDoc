@@ -1,16 +1,16 @@
 ## Task and Benchmark API {#user.taskapi}
 
-One of the main goals of the current BEEN project was to make the task API as simple as possible and to minimize amount of work needed to create the whole benchmark. One of the biggest problems with the previous BEEN versions was that writing a complete and efficient benchmark required tremendous amount of time - both to study the provided API and to implement the benchmark itself.
+One of the main goals of the current BEEN project was to make the task API as simple as possible and to minimize the amount of work needed to create the whole benchmark.
 
 EverBEEN works with three concepts of user-supplied code and configuration:
 
-* **Task**, which is an elementary unit of code that can be submitted to and run by BEEN. Tasks are created by subclassing the abstract `Task` class and implementing the appropriate methods. Each task has to be described by a XML **task descriptor** which specifies the main class to run and parameters of the task.
+* **Task**, is an elementary unit of code that can be submitted to and run by BEEN. Tasks are created by subclassing the abstract `Task` class and implementing the appropriate methods. Each task has to be described by a XML **task descriptor** which specifies the main class to run and parameters of the task.
 
-* **Task context** is a container for multiple tasks which can interact, pass data to each other and synchronize among themselves. Tasks contexts don't contain any user-written code, they only serve as a wrapper for the contained tasks. Each task context is described by a XML **task context descriptor** that specifies which tasks should be contained within the context.
+* **Task context** is a container for multiple tasks. Containers can interact, pass data to each other and synchronize among themselves. Tasks contexts do not contain any user-written code, they only serve as as wrappers for the contained tasks. Each task context is described by a XML **task context descriptor** that specifies which tasks should be contained within the context.
 
 * **Benchmark** is a first-class object that *generates* task contexts based on its **generator task**, which is again a user-written code created by subclassing the abstract `Benchmark` class. Each benchmark is described by a XML **benchmark descriptor** which specifies the main class to run and parameters of the benchmark. A benchmark is different from a task, because its API provides features for generating task contexts and it can also persist its state so it can be re-run when an error occurs and the generator task fails.
 
-All these three concepts can be submitted to BEEN and run individually, if you only want to test a single task, you can submit it without providing a task context or a whole benchmark.
+All these three concepts can be submitted to BEEN and run individually, e.g. if you only want to test a single task, you can submit it without providing a task context or a whole benchmark.
 
 ### Maven Plugin and Packaging {#user.bpkplugin}
 
@@ -22,7 +22,7 @@ The easiest way to create a submittable item (e.g. a task) is by creating a Mave
 		<version>3.0.0-SNAPSHOT</version>
 	</dependency>
 
-Tasks, contexts and benchmark must be packaged into a BPK file, which can then be uploaded to the BEEN. Each BPK package can contain multiple submittable items and multiple XML descriptors. The problem of packaging is made easier by the supplied `bpk-plugin` Maven plugin. The preferred way to use it is to add the plugin to the `package` Maven goal in `pom.xml` of the project:
+Tasks, contexts and benchmark must be packaged into a BPK file, which can then be uploaded to BEEN. Each BPK package can contain multiple submittable items and multiple XML descriptors. The problem of packaging is made easier by the supplied `bpk-plugin` Maven plugin. The preferred way to use it is to add the plugin to the `package` Maven goal in `pom.xml` of the project:
 
 	<plugin>
 		<groupId>cz.cuni.mff.d3s.been</groupId>
@@ -40,7 +40,7 @@ Tasks, contexts and benchmark must be packaged into a BPK file, which can then b
 		</configuration>
 	</plugin>
 
-In the plugin's configuration the user must specify at least one descriptor of a task, a context or a benchmark. To add a descriptor into the BPK, it should be added as a standard Java resource file and then referenced in the plugin configuration in `pom.xml` by using `<taskDescriptors>` or `<taskContextDescriptors>` element. For example the provided sample benchmark called `nginx-benchmark` uses this configuration:
+In the plugin's configuration the user must specify at least one descriptor of a task, a context or a benchmark. To add a descriptor into the BPK, it should be added as a standard Java resource file and then referenced in the plugin configuration in `pom.xml` by using a `<taskDescriptors>` or `<taskContextDescriptors>` element. For example, the provided sample benchmark called `nginx-benchmark` uses this configuration:
 
 	<configuration>
 		<taskDescriptors>
@@ -48,11 +48,11 @@ In the plugin's configuration the user must specify at least one descriptor of a
 		</taskDescriptors>
 	</configuration>
 
-This specifies that the package should publish a single descriptor named `NginxBenchmark.td.xml` which is located in the specified resource path. With such a configuration, creating the BPK package is simply a matter of invoking `mvn package` on this project – this will produce a `.bpk` file that can be uploaded to the BEEN.
+This specifies that the package should publish a single descriptor named `NginxBenchmark.td.xml` which is located in the specified resource path. With such a configuration, creating the BPK package is simply a matter of invoking `mvn package` on this project – this will produce a `.bpk` file that can be uploaded to BEEN.
 
 #### Maven repositories
 
-Maven repositories are available. Put following declarations into `pom.xml` to transparently resolve dependencies:
+Maven repositories are available. Put the following declarations into `pom.xml` to transparently resolve dependencies:
 
 
 	<pluginRepositories>
@@ -104,7 +104,7 @@ For debugging purposes, you can specify the `<debug>` element which will enable 
  
 #### Host Runtime selection {#user.taskapi.descriptors.selection}
 
-With the `<hostRuntimes>` element you can filter on which Host Runtimes the task can be run. The value of this setting is an expression in [XML Path Language (XPath) Version 1.0](http://www.w3.org/TR/xpath).
+With the `<hostRuntimes>` element you can constrain the Host Runtimes the task can be run on. The value of this setting is an expression in [XML Path Language (XPath) Version 1.0](http://www.w3.org/TR/xpath).
 
 The most useful options for host selection are presented here. For full specification see [runtime-info.xsd](http://www.everbeen.cz/xsd/runtime-info.xsd), [hardware-info.xsd](http://www.everbeen.cz/xsd/hardware-info.xsd), [monitor.xsd](http://www.everbeen.cz/xsd/monitor.xsd)
 
@@ -167,36 +167,31 @@ The most useful options for host selection are presented here. For full specific
 
 *Examples*
 
+The following example will select the Host Runtime with host name `eduroam40.ms.mff.cuni.cz`.
 	<hostRuntimes>
 		<xpath>host = "eduroam40.ms.mff.cuni.cz"</xpath>
 	</hostRuntimes>
 
-Will select the Host Runtime with host name `eduroam40.ms.mff.cuni.cz`.
 
 	<hostRuntimes>
 		<xpath>//networkInterface[address = "195.113.16.40"]</xpath>
 	</hostRuntimes>
 
-Will select the Host Runtime with the IPv4 address `195.113.16.40`.
+Selects the Host Runtime with an IPv4 address of `195.113.16.40`.
 
 	<hostRuntimes>
 		<xpath>/hardware/networkInterface[contains(address,"195.113.16")]</xpath>
 	</hostRuntimes>
 
-Will select all Host Runtime whose IP contains "195.113.16".
+Selects all Host Runtimes whose IP address contains "195.113.16".
 
 	<hostRuntimes>
 		<xpath>contains(/operatingSystem/name, "Linux")</xpath>
 	</hostRuntimes>
 
-Will select all Linux operating systems.
+Selects all Linux operating systems.
 
-
-
-Selections can be tried out on the `runtime/list` page in the Web Interface.
-
-
-
+Selection expression can be tested on the `runtime/list` page in the Web Interface.
 
 ### Task API {#user.taskapi.api}
 
@@ -221,7 +216,7 @@ Knowing this, the simplest task that will only log a single string looks like th
 		}
 	}
 
-If this class is in a Maven project as described in the previous section, it can be packaged into a BPK package by invoking `mvn package`. This package can be uploaded and run either from the web interface or client submitter.
+If this class is in a Maven project as described in Section [Maven Plugin and Packaging](#user.bpkplugin), it can be packaged into a BPK package by invoking `mvn package`. This package can be uploaded and run from the Web Interface.
 
 BEEN provides several APIs for user-written tasks:
 
@@ -229,7 +224,7 @@ BEEN provides several APIs for user-written tasks:
 
 * *Result storing* --- Each task can persist a result that it has gathered by using the API providing access to the persistence layer. To store a result, use a `Persister` object, which can be created by using the method `createResultPersister` from the `Task` abstract class.
 
-* *Synchronization and communication* --- When multiple tasks run in a task context, they can interact with each other either for synchronization purposes or to exchange data. API for these jobs are provided by the `CheckpointController` class. BEEN provides the concepts of **checkpoints** and **latches**. Latches serve as context-wide atomic numbers with the methods for setting a value, decreasing the value by one and waiting until the latch reaches zero. Checkpoint are also waitable objects, but they can also provide a value that was previously set to the checkpoint.
+* *Synchronization and communication* --- When multiple tasks run in a task context, they can interact with each other either for synchronization purposes or to exchange data. API for these jobs are provided by the `CheckpointController` class. BEEN provides the concepts of **checkpoints** and **latches**. Latches serve as context-wide atomic numbers with the methods for setting a value, decreasing the value by one and waiting until the latch reaches zero. Checkpoints are also waitable objects that store a value.
 
 ### Task Properties {#user.taskapi.properties}
 
@@ -239,7 +234,7 @@ Every task has a key-value property storage. These properties can be set from va
 
 These properties are inherited, in the sense that that when a task context has a property, the task can see it as well. But when a task has the same property with a different value, the task's value will be override the previous one.
 
-One important property recognized by the Task API is `task.log.level` which sets log level for a task. The property can have following values (in increasing severity):
+One important property recognized by the Task API is `task.log.level` which sets the log level for a task. The property can have the following values (in increasing severity):
 
 * TRACE
 * DEBUG
@@ -251,14 +246,14 @@ The default log level is INFO.
 
 
 *Warning* for the TRACE log level
-:	Note that TRACE log level is used by the Task API (instead of the DEBUG level which is reserved for user code). Setting TRACE level will print Task API debug messages.
+:	Note that the TRACE log level is used by the Task API (instead of the DEBUG level which is reserved for user code). Setting the TRACE level will print Task API debug messages.
 
 ### Persisting Results {#user.taskapi.results}
 
 The persistence layer provided by BEEN is capable of storing user-supplied types and classes. To create a class that can be persisted, simply create a subclass of `Result` and ensure that all contained fields are serializable and public. Also make sure to include a default non-parameterized constructor so that the object can be deserialized.
 
 
-Each result type is identified with a string `Group ID` (we recommend to create a constant). The Group ID is identification of a group of related results - each benchmark should use its own (or several) `Group ID`. Also a naming convection of the Group ID should be adopted describing particular kind of results. An example of a result:
+Each result type is identified with a string `Group ID` (we recommend to create a constant). The Group ID is an identification of a group of related results - each benchmark should use its unique own `Group ID(s)`. A naming convection is recommended to distinguish between multiple types of results. An example of a result:
 
 	public class SampleResult extends Result {
 		public static final String GROUP_ID = "example-data";
@@ -278,16 +273,16 @@ Persisting the result is then only a simple matter of creating the appropriate o
 
 The `results.createResult(SampleResult.class)` call properly initializes results with *taskId*, *contextId* and (if running as part of a benchmark) *benchmarkId*. These parameters are useful in identifying results.
 
-The `Persister` can be reused, but `close()` method should be called once you are done with it. The best way to achieve it is to use try-with-resources statement (the Persister implements `AutoCloseable`):
+The `Persister` can be reused, but the `close()` method should be called once you are done with it. The best way to achieve this is to use the try-with-resources statement (the Persister implements `AutoCloseable`):
 
 	try (Persister persister = results.createResultPersister(SampleResult.GROUP_ID)) {
 		persister.persist(result);
 	} 
 
 ### Querying Results {#user.taskapi.querying}
-Task can also query stored results. Note that results storing is asynchronous and may take some time. Usually this is not a problem, blocking result persistence is a planned feature. 
+Tasks can also query stored results. Note that results storage is asynchronous and may take some time. Usually this is not a problem. Blocking results persistence is a planned feature. 
 
-First a `Query` specifying what results to select must be build using the `ResultQueryBuilder`. The ResultQueryBuilder uses fluent API to build a query.
+First a `Query` specifying what results to select must be built using the `ResultQueryBuilder`. The ResultQueryBuilder uses a fluent API to build a query.
 
 Following example creates a query which will fetch results from the SampleResult.GROUP_ID group, requesting that the *taskId* property is set to the ID of the current task and data property is 47;
 
@@ -295,29 +290,29 @@ Following example creates a query which will fetch results from the SampleResult
 		.with("taskId", getId()).with("data", 47).fetch();
 
 
-The query can be now used to fetch collection of results, again using the `results` helper object which is part of the `Task` object:
+The query can be now used to fetch a collection of results, again using the `results` helper object which is part of the `Task` object:
 
-Collection<ExampleResult> taskResults = results.query(query, ExampleResult.class);
+	Collection<ExampleResult> taskResults = results.query(query, ExampleResult.class);
 
-Currently tasks can only fetch results, not delete them (this is design decision, the code if fully capable of issuing deletes).
+Currently tasks can only fetch results, not delete them (this is design decision, the code is fully capable of issuing deletes).
 
-Follows overview of the `ResultQueryBuilder` API:
+An overview of the ResultQueryBuilder API follows:
 
 `public ResultQueryBuilder on(String group)`
-:	Sets the Group ID of results to fetch.
+:	Sets the Group ID of the results to fetch.
 
 `public ResultQueryBuilder with(String attribute, Object value)`
-:	Adds a criteria to the query, where the `attribute` is the name of the property, and `value` is expected value of the property.
+:	Adds a criteria to the query, where the `attribute` is the name of the property, and `value` is the expected value of the property.
 
 `	public ResultQueryBuilder without(String attribute)`
-:	Removes a criteria from the query, the value of `attribute` will not be fetched (beware of NullPointerExceptions).
+:	Removes a criterion from the query, the value of `attribute` will not be fetched (beware of NullPointerExceptions).
 
 `public ResultQueryBuilder retrieving(String... attributes)`
 :	 Sets attributes to fetch. Other attributes will be omitted  and will not be set.
 
 ### Checkpoints and Latches {#user.taskapi.checkpoints}
 
-Checkpoints present a powerful mechanism for synchronization and communication between tasks. When tasks run in a task context, they share all their checkpoints and they can set a value to a checkpoint and another can wait for the checkpoint. This waiting is passive and once a value is assigned to a checkpoint, the waiter will receive it.
+Checkpoints provide a powerful mechanism for synchronization and communication among tasks contained in a single context. Tasks can wait for the value of a Checkpoint (most usually set by another task). This waiting is passive and once a value is assigned to a checkpoint, the waiter will receive it.
 
 To use checkpoints, create a `CheckpointController`, which is an `AutoCloseable` object so the preferred way to use it is inside a try-catch block to ensure the object will be properly destroyed:
 
@@ -327,7 +322,7 @@ To use checkpoints, create a `CheckpointController`, which is an `AutoCloseable`
         ...
     }
 
-Each checkpoint has a name, which is context-wide. All communication between tasks can only be done inside a single task context. You don't have to explicitly create a checkpoint, it will be created automatically once a task uses it. Setting a value to a checkpoint can be done with:
+Each checkpoint has a name, which is context-wide. You don't have to explicitly create a checkpoint, it will be created automatically once a task uses it. Setting a value to a checkpoint can be done with:
 
 	requestor.checkPointSet("mycheckpoint", "the value");
 
@@ -339,7 +334,7 @@ This call passively waits (possibly indefinitely) until a value is set to the ch
 
 Checkpoints initially don't have any value, and once a value is set, it cannot be changed. They work as a proper synchronization primitive, and setting a value is an atomic operation. The semantics don't change if you start waiting before or after the value is set.
 
-Another provided synchronization primitive is a *latch*. They work best for counting values and for implementing rendez-vous synchronization. A latch provides a method to set an integer value:
+Another provided synchronization primitive is a *latch*. Latches work best for implementing rendez-vous synchronization. A latch provides a method to set an integer value:
 
 	requestor.latchSet("mylatch", 5);
 
@@ -351,7 +346,7 @@ You can then wait until the value reaches zero:
 
 	requestor.latchWait("mylatch");
 
-All operations on latches are atomic and the waiting is passive. Latches initially have a value of zero.
+All operations on latches are atomic and the waiting is passive. Latches has to be created (by the set method) before calling the count down or wait operation.
 
 ### Benchmark API {#user.taskapi.benchmarkapi}
 
