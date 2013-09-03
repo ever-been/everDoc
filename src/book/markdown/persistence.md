@@ -35,7 +35,7 @@ Additional use-cases may arise if you decide to write your own database adapter.
 
 
 #### Automatic cleanup {#user.persistence.characteristics.cleanup}
-To prevent superfluous information from clogging the data storage, the Object Repository runs a Janitor component that performs database cleanup on a regular basis. The idea is to clean all old data for failed jobs and all metadata for successful jobs after a certain lifecycle period has passed. For lifecycle period and cleanup frequency adjustment, see the [janitor configuration](#user.configuration.objectrepo.janitor) section.
+To prevent superfluous information from clogging the data storage, the persistenc layer runs a Janitor component that performs database cleanup on a regular basis. The idea is to clean all old data for failed jobs and all metadata for successful jobs after a certain lifecycle period has passed. For lifecycle period and cleanup frequency adjustment, see the [janitor configuration](#user.configuration.objectrepo.janitor) section.
 
 
 
