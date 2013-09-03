@@ -28,12 +28,12 @@ The implementation can be found in the *host-runtime* module within the `cz.cuni
 
 #### Tasks management {#devel.services.hostruntime.management}
 
-The Host Runtime interacts with the rest of the framework primarily by listening for messages ([HostRuntimeMessageListener](http://evenbeen.cz/javadoc/TODO) through a distributed topic. Messages contain request which are dispatched to appropriate message handlers ([ProcessManager](http://evenbeen.cz/javadoc/TODO)).
+The Host Runtime interacts with the rest of the framework primarily by listening for messages ([HostRuntimeMessageListener](http://www.evenbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/hostruntime/HostRuntimeMessageListener.html) through a distributed topic. Messages contain request which are dispatched to appropriate message handlers ([ProcessManager](http://evenbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/hostruntime/ProcessManager.html)).
 
 A task begins its life on a Host Runtime with incoming [RunTaskMessage](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/core/protocol/messages/RunTaskMessage.html) message. The Host Runtime can either accept the task or return it to the Task Manager. In former case a complete environment is prepared and a new process is spawned ([TaskProcess](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/hostruntime/task/TaskProcess.html)). This process includes:
 
-* downloading task's BPK ([SoftwareResolver](http://evenbeen.cz/javadoc/TODO))
-* creating working directory and unpacking the BPK into it ([ProcessManager](http://evenbeen.cz/javadoc/TODO))
+* downloading task's BPK ([SoftwareResolver](http://evenbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/hostruntime/SoftwareResolver.html))
+* creating working directory and unpacking the BPK into it ([ProcessManager](http://www.evenbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/hostruntime/ProcessManager.html))
 * preparing environment properties and command line ([CmdLineBuilderFactory](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/hostruntime/task/CmdLineBuilderFactory.html))
  
 
@@ -184,7 +184,7 @@ Example result corresponding to the Java class:
 :	corresponds to the result's `data` field
 
 
-Result queries - *TaskResultQueries* - [FetchQuery](http://everbeen.cz/javadoc/TODO)
+Result queries - *TaskResultQueries* - [FetchQuery](http://everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/persistence/FetchQuery.html)
 
 Queries are a little complicated - since they allow filtering and selecting of data.
 
@@ -221,7 +221,7 @@ The `@class` fields are a bit unfortunate since they refer to Java implementatio
 The important things to look at is that there is specification of [EntityID](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/core/persistence/EntityID.html),
 there are selector which filter fields and mappings which select which fields to fetch.
 
-Currently only equality attribute filters [EqAttributeFilter](http://everbeen.cz/javadoc/TODO) are enabled in the Task API (design decision, if a use case is presented more filters can be enabled, the code is present).
+Currently only equality attribute filters [EqAttributeFilter](http://everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/persistence/EqAttributeFilter.html) are enabled in the Task API (design decision, if a use case is presented more filters can be enabled, the code is present).
 
 Results might look something like this:
 
@@ -263,7 +263,7 @@ The most important characteristic of the Task Manger is that the computation is 
 Distributed architecture is the major difference from previous versions of the BEEN framework.
 
 #### Implementation {#devel.services.taskmanager.implementation}
-The implementation of the Task Manager is heavily dependent on [Hazelcast](#devel.techno.hazelcast) distributed data structures and its semantics, especially the [com.hazelcast.core.IMap](http://hazelcast.com/TODO).
+The implementation of the Task Manager is heavily dependent on [Hazelcast](#devel.techno.hazelcast) distributed data structures and its semantics, especially the [com.hazelcast.core.IMap](http://www.hazelcast.com/javadoc/com/hazelcast/core/IMap.html).
 
 #### Workflow {#devel.services.taskmanager.workflow}
 The basic event-based work flow:
@@ -288,7 +288,7 @@ An important notion to remember is that an instance of the Task Manager handles 
 These distributed data structures are also backed by the [MapStore](#devel.services.mapstore) (enabled by default).
 
 #### Task scheduling {#devel.services.taskmanager.tasks}
-Task state are described in the user manual - [Basic concepts ](#user.concepts.tasks).
+Task state are described in the user manual - [Basic concepts](#user.concepts.tasks).
 
 The Task Manager is responsible for scheduling tasks - finding a Host Runtime on which the task can run. Description of possible restrictions can be found at [Host Runtime](#devel.services.hostruntime)
 
@@ -296,7 +296,7 @@ A [distributed query](http://hazelcast.com/docs/2.6/manual/single_html/#MapQuery
 
 An appropriate Host Runtime is also chosen based on Host Runtime utilization, less overloaded Host Runtimes are preferred. Among equal hosts a Host Runtime is chosen randomly.
 
-The lifecycle of a task is commenced by inserting a [TaskEntry](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/core/task/TaskEntry.html) into the task map with a random UUID as the key and in the SUBMITTED state. Inserting a new entry to the map causes an event which is handled by the owner of the key - the Task Manager responsible for the key. The event is converted to the [NewTaskMessage](http://evenbeen.cz/javadoc/TODO) and sent to the processing thread. The handling logic is separated in order not to block the Hazelcast service threads. In this regard handling of messages is serialized on the particular node. The message then generates [ScheduleTaskAction](http://evenbeen.cz/javadoc/TODO) which is responsible for figuring out what to do. Several things might happen 
+The lifecycle of a task is commenced by inserting a [TaskEntry](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/core/task/TaskEntry.html) into the task map with a random UUID as the key and in the SUBMITTED state. Inserting a new entry to the map causes an event which is handled by the owner of the key - the Task Manager responsible for the key. The event is converted to the [NewTaskMessage](http://evenbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/manager/msg/NewTaskMessage.html) and sent to the processing thread. The handling logic is separated in order not to block the Hazelcast service threads. In this regard handling of messages is serialized on the particular node. The message then generates [ScheduleTaskAction](http://evenbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/manager/action/ScheduleTaskAction.html) which is responsible for figuring out what to do. Several things might happen 
 
 * the task cannot be run because it's waiting on another task, the state is changed to WAITING
 * the task cannot be run because there is no suitable Host Runtime for it, the state is changed to WAITING
@@ -332,7 +332,7 @@ Future improvements may include heuristics for scheduling contexts as an entity 
 
 #### Handling exceptional events {#devel.services.taskmanager.errors}
 
-The current Hazelcast implementation (as of version 2.6) has one limitation. When a key [migrates](http://hazelcast.com/docs/2.5/manual/single_html/#InternalsDistributedMap) the new owner does not receive any event ([com.hazelcast.partition.MigrationListener](http://www.hazelcast.com/javadoc/com/hazelcast/partition/MigrationListener.html) is not much useful in this regard since it does not contain enough information). This might be a problem if e.g. a node crashes and an event of type "new task added" is lost. To mitigate the problem the Task Manager periodically scans ([LocalKeyScanner](http://evenbeen.cz/javadoc/TODO)) its *local keys* looking for irregularities. If it finds one it creates a message to fix it.
+The current Hazelcast implementation (as of version 2.6) has one limitation. When a key [migrates](http://hazelcast.com/docs/2.5/manual/single_html/#InternalsDistributedMap) the new owner does not receive any event ([com.hazelcast.partition.MigrationListener](http://www.hazelcast.com/javadoc/com/hazelcast/partition/MigrationListener.html) is not much useful in this regard since it does not contain enough information). This might be a problem if e.g. a node crashes and an event of type "new task added" is lost. To mitigate the problem the Task Manager periodically scans ([LocalKeyScanner](http://evenbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/manager/LocalKeyScanner.html)) its *local keys* looking for irregularities. If it finds one it creates a message to fix it.
 
 There are several situations this might happen:
 
@@ -347,9 +347,9 @@ In the case of cluster restart there might be stale tasks which does not run any
 #### Hazelcast events {#devel.services.taskmanager.events}
 These are main sources of cluster-wide events, received from Hazelcast:
 
-* Task Events - in [LocalTaskListener](http://evenbeen.cz/javadoc/TODO)
-* Host Runtime events - in [LocalRuntimeListener](http://evenbeen.cz/javadoc/TODO)
-* Contexts events - in [LocalContextListener](http://evenbeen.cz/javadoc/TODO)
+* Task Events - in [LocalTaskListener](http://evenbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/manager/LocalTaskScanner.html)
+* Host Runtime events - in [LocalRuntimeListener](http://evenbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/manager/LocalRuntimeScanner.html)
+* Contexts events - in [LocalContextListener](http://evenbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/manager/LocalContextScanner.html)
 
 #### Task Manger messages {#devel.services.taskmanager.messages}
 Main interface [TaskMessage](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/manager/msg/TaskMessage.html), messages are created through the [Messages](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/manager/msg/Messages.html) factory.
