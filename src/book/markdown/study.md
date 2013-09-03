@@ -6,7 +6,7 @@ During the development of EverBEEN, several use cases were considered and this s
 
 Regression benchmarking is a technique mostly aimed at discovering negative performance impact of a newly added feature, an upgrade or a single patch in the source code. This usually involves performing the same set of benchmarks against various versions of the same software. Often, even individual revisions of the source tree are tested. When the benchmark is stable enough to result in consistent data, it is easy to immediately see which commits had an impact on performance.
 
-While performance degradation is obviously an undesired effect, unplanned performance increase can also be an indicative of a problem. This can easily happen when an expensive check (e.g. for security purposes) is unintentionally removed or bypassed. Whether performance fluctuations be positive or negative, regression benchmarking provides the development team with crucial information which not only denotes the acutal performance change, but also points to the exact code modification that caused it.
+While performance degradation is obviously an undesired effect, unplanned performance increase can also be an indicative of a problem. This can easily happen when an expensive check (e.g. for security purposes) is unintentionally removed or bypassed. Whether performance fluctuations be positive or negative, regression benchmarking provides the development team with crucial information which not only denotes the actutal performance change, but also points to the exact code modification that caused it.
 
 ### Pull-oriented benchmarking {#intro.study.pull}
 
@@ -22,4 +22,4 @@ A benchmark iterating over a predefined set of parameters is called a **pull-ori
 
 Another practical use case is the incorporation of benchmarking into a **continuous integration environment**. Such environments usually perform a large suite of unit tests whenever a commit into the repository is made. The results (especially failed tests) are then shown either on a project status web page or sent via email to the developers.
 
-Deploying a *continuous regression testing* suite into such a system would then be a matter of integrating a benchmarking framework in such a way that a suite of prepared benchmarks would be run every time a new commit is made. We call this case **push-oriented benchmarking**, because there is no predefined set of items to benchmark. Instead, a *push event* should be dispatched what would cause the newly created revision to be tested.
+Deploying a *continuous regression testing* suite into such a system would then be a matter of integrating a benchmarking framework in such a way that a suite of prepared benchmarks would be run every time a new commit is made. We call this case **push-oriented benchmarking**, because there is no predefined set of items to benchmark. Instead, a *push event* should be dispatched that would cause the newly created revision to be tested.
