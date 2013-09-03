@@ -45,29 +45,25 @@ You will need to import the following EverBEEN modules to provide a *Storage* im
 Then create a **been.version** property in your Maven module that corresponds to the EverBEEN version you checked out and installed.
 
 Now that you have your project set up, you can begin to actually code implementation. To successfully replace the *Storage* implementation, you'll need to implement the following:
-<!-- TODO javadoc link -->
-
-* [Storage](#) - the main interface providing the actual store management
-* [StorageBuilder](#) - an instantiation/configuration tool for your *Storage* implementation
-* [SuccessAction\<EntityCarrier\>](#) - an isolated action capable of persisting objects
 
 
-<!-- TODO javadoc link -->
-Additionally, you'll need to create a **META-INF/services** folder in the jar with your implementation, and place a file named **cz.cuni.mff.d3s.been.storage.StorageBuilder** in it. You'll need to put a single line in that file, containing the full class name of your [StorageBuilder](#) implementation.
+* [Storage](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/storage/Storage.html) - the main interface providing the actual store management
+* [StorageBuilder](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/storage/StorageBuilder.html) - an instantiation/configuration tool for your *Storage* implementation
+* [SuccessAction\<EntityCarrier\>](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/persistence/SuccessAction.html) - an isolated action capable of persisting objects
+
+Additionally, you'll need to create a **META-INF/services** folder in the jar with your implementation, and place a file named **cz.cuni.mff.d3s.been.storage.StorageBuilder** in it. You'll need to put a single line in that file, containing the full class name of your [StorageBuilder](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/storage/StorageBuilder.html) implementation.
 
 We also strongly recommend that you implement these as well:
 
-* [QueryRedactorFactory](#) (along with [QueryRedactor](#) implementations)
-* [QueryExecutorFactory](#) (along with [QueryExecutor](#) implementations)
+* [QueryRedactorFactory](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/storage/QueryRedactorFactory.html) (along with [QueryRedactor](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/persistence/QueryRedactor.html) implementations)
+* [QueryExecutorFactory](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/storage/QueryExecutorFactory.html) (along with [QueryExecutor](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/storage/QueryExecutor.html) implementations)
 
 The general idea is for you to implement the *Storage* component and to provide the *StorageBuilder* service, which configures and instantiates your *Storage* implementation. The **META-INF/services** entry is for the *ServiceLoader* EverBEEN uses to recognize your *StorageBuilder* implementation on the classpath. EverBEEN will then pass the *Properties* from the *been.conf* file (see [configuration](#user.configuration)) to your *StorageBuilder*. That way, you can use the common property file for your *Storage*'s configuration.
 
-<!-- TODO javadoc link -->
-The [Storage](#) interface is the main gateway between the [Object Repository]("user.extension.components.objectrepo") and the database. When overriding the Storage, there will be two major use-cases you'll have to implement: the [asynchronous persist](#user.extension.storageex.asyncper) and the [synchronous query](#user.extension.storageex.qa).
+The [Storage](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/storage/Storage.html) interface is the main gateway between the [Object Repository](#user.persistence.components.objectrepo) and the database. When overriding the Storage, there will be two major use-cases you'll have to implement: the [asynchronous persist](#user.extension.storageex.asyncper) and the [synchronous query](#user.extension.storageex.qa).
 
 #### Asynchronous persist {#user.extension.storageex.asyncper}
-<!-- TODO javadoc link -->
-All *persist* requests in EverBEEN are funneled through the [store](#) method. You'll receive two parameters in this method:
+All *persist* requests in EverBEEN are funneled through the Storage#store method. You'll receive two parameters in this method:
 
 <a id="user.extension.storageex.asyncper.eid">***entityId***</a>
 The *entityId* is meant to determine the location of the stored entity. For example, if you're writing an SQL adapter, it should determine the table where the entity will be stored. For more information on the *entityId*, see [persistent object info](#user.extension.storageex.objectinfo)
@@ -78,24 +74,19 @@ A serialized JSON representation of the object to be stored.
 
 Generally, you'll need to decide where to put the object based on its *entityId* and then somehow map and store it using its *JSON*.
 
-<!-- TODO javadoc link -->
-The [store](#) method is asynchronous. It doesn't return any outcome information, but be sure to throw a *DAOException* when the persist attempt fails. That way, you'll make sure the *ObjectRepository* knows that the operation failed and will take action to prevent data loss.
+The `Storage#store` method is asynchronous. It doesn't return any outcome information, but be sure to throw a *DAOException* when the persist attempt fails. That way, you'll make sure the *ObjectRepository* knows that the operation failed and will take action to prevent data loss.
 
 #### Query / Answer {#user.extension.storageex.qa}
-<!-- TODO javadoc link -->
-The other type of requests that *Storage* supports are queries. They are synchronous and a *Query* is always answered with a *QueryAnswer*. In order to support queries, you could implement all the querying mechanics by yourself (if you wish to do that, see the [Task API](#user.taskapi.querying) for more details), but that's not necessary. The [QueryTranslator](#) adapter is designed to help you interpret queries without having to go through all of the query structure.
+The other type of requests that *Storage* supports are queries. They are synchronous and a *Query* is always answered with a *QueryAnswer*. In order to support queries, you could implement all the querying mechanics by yourself (if you wish to do that, see the [Task API](#user.taskapi.querying) for more details), but that's not necessary. The [QueryTranslator](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/persistence/QueryTranslator.html) adapter is designed to help you interpret queries without having to go through all of the query structure.
 
-<!-- TODO javadoc link -->
-The preferred way of interpreting queries is to create a [QueryRedactor](#) and implementation (or several, in fact). The *QueryRedactor* class designed to help you construct database-specific query interpretations using callbacks. This way, you instantiate the *QueryTranslator*, call its *interpret* method passing it your instance of the *QueryRedactor* and the *QueryTranslator* calls the appropriate methods on your *QueryRedactor*. Once configured, your *QueryRedactor* can be used to assemble and perform the expected query. There are additional interfaces that can help you in the process ([QueryRedactorFactory](), [QueryExecutor]() and [QueryExecutorFactory]()).
+The preferred way of interpreting queries is to create a [QueryRedactor](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/persistence/QueryRedactor.html) and implementation (or several, in fact). The *QueryRedactor* class designed to help you construct database-specific query interpretations using callbacks. This way, you instantiate the *QueryTranslator*, call its *interpret* method passing it your instance of the *QueryRedactor* and the *QueryTranslator* calls the appropriate methods on your *QueryRedactor*. Once configured, your *QueryRedactor* can be used to assemble and perform the expected query. There are additional interfaces that can help you in the process ([QueryRedactorFactory](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/storage/QueryRedactorFactory.html), [QueryExecutor](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/storage/QueryExecutor.html) and [QueryExecutorFactory](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/storage/QueryExecutorFactory.html)).
 
-<!-- TODO javadoc link -->
-Once you execute the query, you will need to synthesize a [QueryAnswer](), which you can do using the [QueryAnswerFactory](). If there is data associated with the result of the query, you need to create a *data answer* using `QueryAnswerFactory#fetched(...)`. The other *QueryAnswerFactory* methods are used to indicate the query status. See the method in-code comments for more detail about available answer types.
+Once you execute the query, you will need to synthesize a [QueryAnswer](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/persistence/QueryAnswer.html), which you can do using the [QueryAnswerFactory](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/persistence/QueryAnswerFactory.html). If there is data associated with the result of the query, you need to create a *data answer* using `QueryAnswerFactory#fetched(...)`. The other *QueryAnswerFactory* methods are used to indicate the query status. See the method in-code comments for more detail about available answer types.
 
 #### Auxiliary methods {#user.extension.storageex.aux}
 In addition to persisting and querying, the *Storage* interface features these auxiliary methods, which you'll need to implement.
-<!-- TODO javadoc link -->
 
-* **createPersistAction** - return an instance of your implementation of [SuccessAction\<EntityCarrier\>](#); its *perform* method is presumed to call your `Storage#store()` implementation
+* **createPersistAction** - return an instance of your implementation of [SuccessAction\<EntityCarrier\>](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/persistence/SuccessAction.html); its *perform* method is presumed to call your `Storage#store()` implementation
 * **isConnected** - a situation may occur when the *Object Repository* is running, but the database it uses isn't; this simple method is designed to help EverBEEN detect such a situation by returning `false` should the database connection drop
 * **isIdle** - a database usage heuristics function that helps the *Object Repository* janitor better detect cleanup windows (to interfere less with heavy user operations)
 
@@ -108,8 +99,7 @@ The *entityId* is composed of *kind* and *group*. The *kind* is supposed to repr
 * **result** - stored task results
 * **descriptor** - *task*/*context* configurations; used to store parameters with which a *task* or *context* was run
 * **named-descriptor** - *task*/*context* configurations; user-stored configuration templates for *task* or *context* runs
-<!-- TODO javadoc link -->
-* **evaluation** - output of evaluations performed on task results; these objects contain serialized BLOBs - see [evaluations](#) for more detail
+* **evaluation** - output of evaluations performed on task results; these objects contain serialized BLOBs - see [evaluations](#TODO) for more detail
 * **outcome** - meta-information about the state and outcome of jobs in EverBEEN; these are used in automatic cleanup
 
 The *group* is supposed to provide a more granular grouping of objects and depends entirely on the object's *kind*.
@@ -119,20 +109,19 @@ If you need more detail on objects that you can encounter, be sure to also read 
 #### The ORM special {#user.extension.storageex.ormspecial}
 If you're really hell-bent on creating an ORM implementation of the *Storage*, your module will need to know several more EverBEEN classes to be able to perform the mapping. The following table covers their *entityIds*, their meaning and the dependencies you will need to get them.
 
-<!-- TODO javadoc link --><!-- lots of them actually -->
-*kind*                  *group*         meaning                                         class                                                   module
-----------------        ----------      ----------------------------------              --------------------------                              ------
-log                     task            message logged by a task                        [TaskLogMessage]()                                      core-data
-log                     service         message logged by a service                     [ServiceLogMessage]()                                   core-data
-log                     monitoring      host monitoring sample                          [MonitorSample]()                                       core-data
-descriptor              task            task runtime configuration                      [TaskDescriptor]()                                      core-data
-descriptor              context         task context runtime configuration              [TaskContextDescriptor]()                               core-data
-named-descriptor        task            saved task configuration                        [TaskDescriptor]()                                      core-data
-named-descriptor        context         saved task context configuration                [TaskContextDescriptor]()                               core-data
-result                  *\**            task result                                     any user class extending [Result]()                     *n/a* (results)
-evaluation              *\**            task result evaluation                          [EvaluatorResult]()                                     results
-outcome                 task            task state service records                      [PersistentTaskState]()                                 persistence
-outcome                 context         task context state service records              [PersistentContextState]()                              persistence
+*kind*                *group*        meaning                                class                                                                                                                                     module
+----------------      ----------     -------------------------------        -----------------------------------------------------------------------------------------------------------------------------------       --------------
+log                   task           message logged by a task               [TaskLogMessage](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/logging/TaskLogMessage.html)                                core-data
+log                   service        message logged by a service            [ServiceLogMessage](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/logging/ServiceLogMessage.html)                          core-data
+log                   monitoring     host monitoring sample                 [MonitorSample](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/core/ri/MonitorSample.html)                                  core-data
+descriptor            task           task runtime configuration             [TaskDescriptor](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/core/task/TaskDescriptor.html)                              core-data
+descriptor            context        task context runtime configuration     [TaskContextDescriptor](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/core/task/TaskContextDescriptor.html)                core-data
+named-descriptor      task           saved task configuration               [TaskDescriptor](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/core/task/TaskDescriptor.html)                              core-data
+named-descriptor      context        saved task context configuration       [TaskContextDescriptor](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/core/task/TaskContextDescriptor.html)                core-data
+result                *\**           task result                            user class extending [Result](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/results/Result.html)                           *n/a* (results)
+evaluation            *\**           task result evaluation                 [EvaluatorResult](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/evaluators/EvaluatorResult.html)                           results
+outcome               task           task state service records             [PersistentTaskState](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/persistence/task/PersistentTaskState.html)             persistence
+outcome               context        task context state service records     [PersistentContextState](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/persistence/task/PersistentContextState.html)       persistence
 
 Thus, if you need to infer the knowledge the runtime type of all of these classes to your module, you need to add the following to your module dependencies:
 
@@ -160,7 +149,8 @@ Then, you'll need to rebuild EverBEEN using your *Storage* module instead of the
 	<?xml version="1.0" encoding="UTF-8"?>
 	<project xmlns="http://maven.apache.org/POM/4.0.0"
 			 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-			 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+			 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+                         http://maven.apache.org/xsd/maven-4.0.0.xsd">
 		<modelVersion>4.0.0</modelVersion>
 		<groupId>my.group</groupId>
 		<artifactId>my-been-flavor</artifactId>

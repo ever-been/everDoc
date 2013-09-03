@@ -56,6 +56,12 @@ Task context states:
 
 Benchmark are user-written tasks with additional capabilities (in form of the *Benchmark API*). Benchmark tasks generate task contexts which are submitted to the framework.
 
+### Results {#user.concepts.results}
+Results are task generated objects representing certain values - for example measured code characteristics.
+
+### Evaluators {#user.concepts.evaluators}
+Special purpose tasks which generate *evaluator results* the framework knows how to interpret, for example a graph image.
+ 
 ### Node types  {#user.concepts.nodes} 
 In EverBEEN `node` is a program capable of running BEEN services. The node must be able to interact with other nodes through a computer network. Type of a node determines the mechanism used to connect to other nodes. Since EverBEEN uses [Hazelcast](#devel.techno.hazelcast) as its means of connecting nodes, node types follow a design pattern from Hazelcast. Currently two types are supported:
 
