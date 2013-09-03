@@ -12,6 +12,8 @@ Deploying BEEN consists of two steps:
 
 The exact configuration is highly dependent on the network topology. In the following example configuration two scenarios will be presented depending on how the cluster will be formed.
 
+Usually, there will be a few *DATA* nodes and as many *NATIVE* nodes running the Host Runtime service as needed. 
+
 We will also assume that MongoDB instance is running on `mongodb.example.com`. All nodes must use the same *group* and *group password*.
 
 #### Broadcasting scenario
