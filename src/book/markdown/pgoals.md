@@ -4,7 +4,7 @@ This section contains text copied directly from the Project Committee's web site
 [http://ksvi.mff.cuni.cz/~holan/SWP/zadani/ebeen.txt](http://ksvi.mff.cuni.cz/~holan/SWP/zadani/ebeen.txt)
 
 ### Overview {#user.pgoals.overview}
-The Been framework automatically executes software performance measurements in a heterogeneous networked environment.  The basic architecture of the Been framework consists of a host runtime capable of executing arbitrary tasks, a task manager that relies on the host runtime to distribute and execute scheduled sequences of tasks, and a benchmark manager that creates the sequences of tasks to execute and measure benchmarks.  Other components include a software repository, a results repository, and a graphical user interface.
+> *"The Been framework automatically executes software performance measurements in a heterogeneous networked environment.  The basic architecture of the Been framework consists of a host runtime capable of executing arbitrary tasks, a task manager that relies on the host runtime to distribute and execute scheduled sequences of tasks, and a benchmark manager that creates the sequences of tasks to execute and measure benchmarks.  Other components include a software repository, a results repository, and a graphical user interface."*
 
 The Been framework has been developed as a part of a student project between 2004-2006, and substantially modified as a part of another student project between 2009-2010.
 
@@ -24,45 +24,47 @@ The overall goal of this project is to modify the Been framework to facilitate t
 
 ### How we met the goals {#user.pgoals.approach}
 
-The following overview takes into account goals set for the project as submitted to the Project Commission. The overall changes were much more substantial then anticipated. 
+The following overview takes into account goals set for the project as submitted to the Project Committee. The overall changes were much more substantial than anticipated. 
 
 *Reviewing the code responsible for communication between hosts ...*
-:	Completely new architecture and way of communication was introduced based on scalable, redundant data distribution.
+:	A completely new architecture and communication protocol was introduced based on scalable, redundant data distribution.
 
 *Reviewing the code responsible for logging ...*
-:	Unified logging system was introduced based on standard Java logging mechanism, for tasks as well as the framework itself.
+:	Both user code API and framework code were ported under a unified logging system compliant to latest Java development standards.
 
 *Reviewing the code responsible for temporary data storage ...*
-: TODO
+:	A deletion policy was set up for all leftover user task data (working directories, logs, results), enforcing automatic cleanup after a configurable expiration period or possibility of easy manual deletion.
 
 *Reviewing the code responsible for measurement result storage ...*
-:	Complete overhaul of the component responsible for result storage and retrieval was made.
+:	A complete overhaul of the component responsible for result storage and retrieval was made.
 
 *Generally clean up any reliability related bugs.*
-: Adoption of standard development techniques and usage of 3rd party components resulted in much smaller and compact code base. 
+:	Adoption of standard development techniques and usage of third party components resulted in a much smaller and compact code base. 
 
 ## Project Output {#user.poutput}
 
-The assignment of the current incarnation of the BEEN project are mainly focused on delivering a more usable, stable and scalable product. This meant that the development team should work on the current codebase and refactor it instead of starting from scratch.
+The initial assignment of the EverBEEN project mainly focuses on delivering a more usable, stable and scalable product. That being said, it was assumed that the development team will work on existing codebase and refactor it instead of starting from scratch.
 
-There were however too many architectural and design points where refactoring simply couldn't get rid of the problems. The usage of RMI was too deep and too embedded into the whole codebase that replacing it with a more scalable middleware technology was not an option. The individual modules of BEEN were cross-linked and couldn't be separated by well-defined interfaces. Multiple implementations of the same functionality (e.g. logging) made the codebase scattered and inconsistent. Also, the project implemented several custom facilities that can be done better by using an external library.
+There were, however, multiple design flaws refactoring alone could not remedy. The *RMI* library was too deeply embedded into the codebase to be simply replaced. The individual modules of WillBEEN were cross-linked and couldn't be separated by well-defined interfaces. Multiple implementations of the same functionality (e.g. logging) made the codebase scattered and inconsistent. Also, the WillBEEN implemented several custom facilities which are, as of toady, standard issue among external Java libraries.
 
-This caused the team to reevaluate the requirements and they decided to rewrite BEEN from scratch, only preserving the concept and several design decision, e.g. the choice of components and their purpose. Because of this, the team could focus on creating a scalable, deployable and usable product from the first moment.
+To meet stability and scalability requirements, the team decided to rewrite BEEN from scratch, only preserving the concept and several design decision, e.g. the choice of most components and their purpose. Subsequently, the team could focus on creating a scalable, usable product from the first moment.
 
-Therefore the goals were adapted to also contain:
+Therefore the project goals were extended to include:
 
 * Preserving the basic concept of the whole environment
-* Innovation of the codebase to use modern technologies and practices
+* Innovating the codebase by use modern technologies and practices
 * Delivering a highly scalable and stable product
 * Reducing the number of *single points of failure*
-* Making the framework easily deployable
-* Improving usability to simplify writing and debugging tasks and benchmarks
+* Making the framework easy to deploy
+* Improving usability by simplifying task and benchmark creation and debugging
 
 ### Distributed nature of EverBEEN {#user.poutput.distributed}
 
-One of the biggest issues with the original BEEN project was stability of the computer network (both network itself and individual machines) and the framework required that all involved computers were running and available. Disconnecting some of the core services caused the whole network to hang or crash and recovery of this situation was often impossible. Also, the core components of BEEN had to be running for the whole time, which created a lot of *single points of failure*. Many common situation, like a short-term network outage, made the whole system fail and all of its components had to be rebooted.
+One of WillBEEN's major issues was reliance on network stability. The framework required that all involved computers be running and available. Disconnecting some of the core services caused the whole framework to hang or crash, and recovery was often impossible. Also, the core EverBEEN components were required to be running for the whole time, which created a lot of *single points of failure*. That aggravated common situations like short-term network outages to irrecoverable system failures.
 
-Such a *client-server architecture* seemed inappropriate for a framework that is supposed to run in a large and heterogeneous network. The current version of BEEN is built on *Hazelcast*, a decentralized, highly scalable platform for distributed data sharing. Hazelcast is a Java-based library that implements peer-to-peer communication over TCP/IP, with automatic discovery of other nodes. This platform offers very user-friendly implementations of distributed maps, queues, lists, locks, topics, transactions and many other data structures and synchronization mechanisms.
+Such fragile *client-server architecture* seemed inappropriate for a framework supposedly tailored for large and heterogeneous networks. That is why EverBEEN is built on *Hazelcast* -- a decentralized, highly scalable platform for distributed data sharing. Hazelcast is a Java-based library that implements peer-to-peer communication over TCP/IP, featuring redundant data sharing, transparent replication and automatic peer discovery. This platform realizes distributed maps, queues, lists, locks, topics, transactions and synchronization mechanisms using distributed hashing tables.
+
+<!-- TODO refactor following two paragraphs -->
 
 Hazelcast supports data redundancy and fail-over mechanisms. Using these, BEEN is able to present a decentralized environment for the benchmarks. Each connected node is equal to each, and the framework can run as long as each node can communicate with the rest of the network. When a node gets disconnected (for whatever reason), the cluster is notified about this and stops using this node.
 
