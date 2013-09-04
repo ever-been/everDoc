@@ -1,67 +1,67 @@
 ## EverBEEN configuration {#user.configuration}
-Configuration of the framework is done through a single, standard property file. The configuration is propagated to all services, each service is responsible for its options.
+Configuration of the framework is done through a single, standard property file. The configuration is propagated to all services, each service uses a subset of the options.
 
-An user property file is supplied to the BEEN by `-cf [file|URL]` (or `--config-file`) command line option. The value can be either a file or an URL pointing to the file. Using configuration by specifying an URL greatly enhances deployment in large environments, by reducing the need to distribute the file among machines on which the framework runs.
+A user property file is supplied to EverBEEN by the `-cf [file|URL]` (or `--config-file`) command line option. The value can be either a file or a URL pointing to the file. Using configuration by specifying a URL simplifies deployment in large environments, by reducing the need to distribute the file among the machines on which the framework runs.
 
-To check effective values use `-dc` (or `--dump-config`) command line option (possibly along with the `-cf` option). It prints the configuration which will be used - the output can serve as the basis for configuration file (options with default value are commented out with `#`).
+To check the values in effect use `-dc` (or `--dump-config`) command line option (possibly along with the `-cf` option). It prints the configuration which will be used --- the output provides a basic configuration file (options with default value are commented out with `#`).
 
-Default configuration values are supplied, before you change any of them, consult documentation and be sure you understand the implications.
+Default configuration values are supplied, before you change any of them, consult documentation and make sure you understand the implications.
 
 ### Configuration options
-Follows detailed description of available configuration options of the EverBEEN framework. Default value for each configuration option is provided.
+A detailed description of available configuration options of the EverBEEN framework follows. The default value for each configuration option is provided.
 
 #### Cluster Configuration {#user.configuration.cluster}
-Cluster configuration manages how nodes will form a cluster and how the cluster will behave. The configuration is directly mapped to [Hazelcast](#devel.techno.hazelcast) configuration. These options are applicable only to [DATA nodes](#user.concepts.nodes).
+Cluster configuration describes how nodes will form a cluster and how the cluster will behave. The configuration is directly mapped to [Hazelcast](#devel.techno.hazelcast) configuration. These options are applicable only to [DATA nodes](#user.concepts.nodes).
 
-It is *essential* that cluster nodes use the same configuration for these options, otherwise they may not form a cluster.
+It is *essential* that all cluster nodes use the same configuration for these options, otherwise they may not form a cluster.
 
 `been.cluster.group`=*dev*
-:	Group to which the nodes belong. Nodes with different group will not form a cluster.
+:	Group to which the nodes belong. Nodes whose group settings differ will not form a cluster
 
 `been.cluster.password`=*dev-pass*
-:	Password for the group. If different password is used among nodes they will not form a cluster.
+:	Password for the group. Nodes whose group password settings differ will not form a cluster
 
 `been.cluster.join`=*multicast*
-:	Manages how nodes form the cluster. Two values are possible: `multicast` which means only `been.cluster.multicast.*` options will be used, and `tcp` which means only  `been.cluster.tcp.members` option will be used.
+:	Manages how nodes form the cluster. Two values are possible: `multicast` which implies only `been.cluster.multicast.*` options will be used, and `tcp` which implies only  `been.cluster.tcp.members` option will be used.
 
 `been.cluster.multicast.group`=*224.2.2.3*
-:	Specifies multicast group to use.
+:	Specifies the multicast group to use.
 
 `been.cluster.multicast.port`=*54327*
-:	Specifies multicast port to use.
+:	Specifies the multicast port to use.
 
 `been.cluster.tcp.members`=*localhost:5701*
 :	Semicolon separated list of `[ip|host][:port]` nodes to connect to.
 
 `been.cluster.port`=*5701*
-:	Port on which the node will listen to.
+:	The port on which the node will listen.
 
 `been.cluster.interfaces`=
-:	Semicolen separated list of interfaces Hazelcast should bind to, '*' wildcard can be used, e.g. *10.0.1.*.
+:	Semicolon separated list of interfaces Hazelcast should bind to, the '*' wildcard can be used, e.g. `10.0.1.*`.
 
 `been.cluster.preferIPv4Stack`=*true*
-:	Whether to prefer IPv4 stack over IPv6.
+:	Whether to prefer the IPv4 stack over IPv6.
 
 `been.cluster.backup.count`=*1*
-:	How many backups should the cluster keep.
+:	The number of backups the cluster should keep.
 
 `been.cluster.logging`=*false*
-:	Enables/Disables logging of Hazelcast messages. Note that if enabled messages will not appear among service logs.
+:	Enables/Disables logging of Hazelcast messages. Note that Hazalcast log messages are not persisted as other service logs.
 
 `been.cluster.mapstore.use`=*true*
 :	Wheather to use [MapStore](#devel.services.mapstore) to persist cluster runtime information.
 
 `been.cluster.mapstore.write.delay`=*0*
-:	Delay in seconds with which to write to the [MapStore](#devel.services.mapstore). *0* means *write-through*, values bigger than zero mean *write-back*. MapStore implementation can optimize *write-back* mode. 
+:	Delay in seconds with which to write to the [MapStore](#devel.services.mapstore). *0* means *write-through*, values bigger than zero mean *write-back*. Certain Map Store implementations will be more efficient in write-back mode.
 
 `been.cluster.mapstore.factory`=*cz.cuni.mff.d3s.been.mapstore.mongodb.MongoMapStoreFactory*
-:	Implementation of the [MapStore](#devel.services.mapstore), must be on the classpath when starting a node.
+:	Implementation of [MapStore](#devel.services.mapstore), must be on the classpath when starting a node.
 
 `been.cluster.socket.bind.any`=*true*
 :	Whether to bind to local interfaces.
 
 #### Cluster Client Configuration {#user.configuration.client}
-Cluster client configuration options are used when a node is connection to the cluster in *NATIVE* client mode. [Cluster Configuration](#user.configuration.cluster) options are ignored.
+Cluster client configuration options are used when a node is connected to the cluster in *NATIVE* client mode. [Cluster Configuration](#user.configuration.cluster) options are ignored in that case.
 
 `been.cluster.client.members`=*localhost:5701*
 :	Semicolon separated list of `[ip|host][:port] cluster members to connect to. At least one member must be available.
@@ -82,17 +82,17 @@ Task Manager configuration options are used to tune the [Task Manager](#devel.se
 :	Initial delay in seconds of the Task Manager's [local key scanner](#devel.services.taskmanager.errors).
 
 #### Cluster Persistence Configuration {#user.configuration.objectrepo}
-Configuration for persistence transport layer. See [Persistence](#user.persistence) for more details.
+Configuration for the persistence transport layer. See [Persistence](#user.persistence) for more details.
 
 `been.cluster.persistence.query-timeout`=*10*
-:	The timeout for queries into persistence layer.
+:	The timeout for queries into the persistence layer.
 
 
 `been.cluster.persistence.query-processing-timeout`=*5*
-:	The timeout for a query's processing time in the persistence layer. Processing time contains the trip the data has to make back to the requesting host.
+:	The timeout for a query's processing time in the persistence layer. Processing time includes the trip the data has to make back to the requesting host.
 
 #### Persistence Janitor Configuration {#user.configuration.objectrepo.janitor}
-Configuration for persistence layer janitor component. See [Persistence](#user.persistence) for more details.
+Configuration for the persistence layer janitor component. See [Persistence](#user.persistence) for more details.
 
 `been.objectrepository.janitor.finished-longevity`=*168*
 :	 Number of hours objects with a `FINISHED` status stay persistent.
@@ -122,7 +122,7 @@ Host Runtime monitoring configuration options.
 :	Maximum number of tasks per Host Runtime.
 
 `hostruntime.tasks.memory.threshold`=*90*
-:	Host Runtime memory threshold in percents. If the threshold is reached no other task will be run on the Host Runtime. The value must be between 20 - 100.  The threshold is compared to the value of '(free memory/available memory)*100'.
+:	Host Runtime memory threshold in percent. If the threshold is reached no other task will be run on the Host Runtime. The value must be between 20% - 100&.  The threshold is compared to the value of '(free memory/available memory)*100'.
 
 `hostruntime.wrkdir.name`=*.HostRuntime*
 :	Relative path to the Host Runtime working directory.
@@ -134,7 +134,7 @@ Host Runtime monitoring configuration options.
 [MapStore](#devel.services.mapstore) configuration options.
 
 `been.cluster.mapstore.db.hostname`=*localhost*
-:	Hostname (full connection string including port). If no port is specified, default port is used.
+:	Host name (full connection string including port). If no port is specified, default port is used.
 
 `been.cluster.mapstore.db.dbname`=*BEEN_MAPSTORE*
 :	Name of the database instance to use.
@@ -149,7 +149,7 @@ Host Runtime monitoring configuration options.
 Configuration options for the MongoDB based [Object storage](#user.persistence).
 
 `mongodb.hostname`=*localhost*
-:	Hostname (full connection string including port). If no port is specified, default port is used.
+:	Host name (full connection string including port). If no port is specified, default port is used.
 	
 `mongodb.dbname`=*BEEN*
 :	Name of the database instance to use.
@@ -161,7 +161,6 @@ Configuration options for the MongoDB based [Object storage](#user.persistence).
 :	Password to use to connect to the database.
 
 #### Software Repository Configuration {#user.configuration.swrepo}
-Configuration for the [Software Repository](#user.swrepository)
 
 `swrepository.port`=*8000*
 :	Port on which the Software Repository should listen for requests.
@@ -169,7 +168,7 @@ Configuration for the [Software Repository](#user.swrepository)
 #### File System Based Store Configuration {#user.configuration.fsbasedstorage}
 
 `hostruntime.swcache.folder`=*.swcache*
-:	Caching directory for downloaded software on Host Runtime, relative to the working directory of a node.
+:	Caching directory for downloaded software on Host Runtimes, relative to the working directory of a node.
 
 `swrepository.persistence.folder`=*.swrepository*
 :	Default storage directory for Software Repository server, relative to the working directory of a node.

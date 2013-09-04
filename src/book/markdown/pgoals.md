@@ -52,7 +52,7 @@ To meet stability and scalability requirements, the team decided to rewrite BEEN
 Therefore the project goals were extended to include:
 
 * Preserving the basic concept of the whole environment
-* Innovating the codebase by use modern technologies and practices
+* Innovating the code base by use of modern technologies and practices
 * Delivering a highly scalable and stable product
 * Reducing the number of single points of failure
 * Making the framework easy to deploy
@@ -70,7 +70,7 @@ This architecture makes EverBEEN a fully distributed platform with high availabi
 
 ### EverBEEN's Support for Regression Benchmarking {#user.poutput.regression}
 
-EverBEEN was designed to cover both use cases discussed in the [Case Study](#user.study), while keeping the user code API to a minimum. The API for writing benchmarks is a unified means of creating and submitting sets of tasks on every invocation (realized by the framework when idle). Depending on the benchmark's control flow, it can either act like a service to support [push-oriented benchmarking](#intro.study.push), or iterate over a pre-defined set of parameters in a [*pull-oriented* way](#intro.study.pull).
+EverBEEN was designed to cover both use cases discussed in the [Case Study](#user.study), while keeping the user code API to a minimum. The API for writing benchmarks is a unified means of creating and submitting sets of tasks on every invocation (realized by the framework). Depending on the benchmark's control flow, it can either act like a service to support [*push-oriented* benchmarking](#intro.study.push), or iterate over a pre-defined set of parameters in a [*pull-oriented* way](#intro.study.pull).
 
 During development, implementation of a declarative language describing benchmarks was considered. Such language would, however only support the pull-oriented case. Subsequently, EverBEEN would require a different API for push-oriented benchmarking. The unified API offers unlimited flexibility, as the generation of task sets is in full control of the user. Additionally, the running benchmark can take the current (incomplete) results into account and modify the progress of the benchmark. This feature has many uses, for example granularity refinement in reaction to a previously detected anomaly.
 

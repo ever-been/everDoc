@@ -352,9 +352,9 @@ All operations on latches are atomic and the waiting is passive. Latches has to 
 
 ### Benchmark API {#user.taskapi.benchmarkapi}
 
-Writing a benchmark's generator task is similar to writing an ordinary task in the sense that you have to write a subclass, package it and run it on a Host Runtime. However, the benchmark API is different, because the purpose of the benchmark is to provide a long-running code that will eventually generate new task contexts.
+Writing a benchmark's generator task is similar to writing an ordinary task in the sense that you have to write a subclass, package it and run it on a Host Runtime. However, the benchmark API is different, because the purpose of the benchmark is to provide long-running code that will eventually generate new task contexts.
 
-To create a benchmark, subclass the abstract [`Benchmark`](http://everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/benchmarkapi/Benchmark.html) class and implement appropriate methods. The main method to implement is the `generateTaskContext` which is called periodically by EverBEEN `Benchmark API` and it is expected to return a newly generated task context. This context is then submitted and run. When the context finishes, this method is called again. The loop is ended whenever the method returns `null`.
+To create a benchmark, subclass the abstract [`Benchmark`](http://everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/benchmarkapi/Benchmark.html) class and implement appropriate methods. The main method to implement is the `generateTaskContext` which is called periodically by EverBEEN `Benchmark API` and it is expected to return a newly generated task context. This context is then submitted and run. When the context finishes, this method is called again. The loop ends whenever the method returns `null`.
 
 This approach is chosen to cover several possible use cases. When the benchmark does not have data for a new task context, it can simply block until it is possible to create a new context. On the other hand, the benchmark cannot overhaul the cluster by submitting too many contexts. Instead, it's up to the cluster to call the `generateTaskContext` method whenever it seems fit.
 
@@ -371,7 +371,8 @@ For creating task contexts you should use the provided [`ContextBuilder`](http:/
 	public class HelloWorldBenchmark extends Benchmark {
 		@Override
 		public TaskContextDescriptor generateTaskContext() throws BenchmarkException {
-			ContextBuilder contextBuilder = ContextBuilder.createFromResource(HelloWorldBenchmark.class, "context.tcd.xml");
+			ContextBuilder contextBuilder =
+				ContextBuilder.createFromResource(HelloWorldBenchmark.class, "context.tcd.xml");
 			TaskContextDescriptor taskContextDescriptor = contextBuilder.build();
 			return taskContextDescriptor;
 		}
@@ -391,13 +392,13 @@ You are supposed to implement the logic for generating the contexts. When your b
 
 The preferred way of creating task contexts is to use the `ContextBuilder` class to load a XML file representing the context descriptor from a resource. This class also provides various methods for modifying the context descriptor and the contained tasks.
 
-You can add tasks into the context via the `addTask` method, these tasks can be created using the `newEmptyTask`. The context descriptor can also provide *task templates* which can be used to create tasks.
+You can add tasks into the context via the `addTask` method, these tasks can be created using the `newEmptyTask` method. The context descriptor can also provide *task templates* which can be used to create tasks.
 
-However, when it's sufficient, you should create the whole descriptor in the XML file and only use `setProperty` to set the parameters to the task contexts. When the descriptor is done, you can generate it by calling `build` and return the resulting task context descriptor.
+Preferably you should create the whole descriptor in the XML file and only use the `setProperty` method to set the parameters to the task contexts. When the descriptor is ready call the `build` method to generate object representation of the descriptor which can be returned to the framwork.
 
 ### Resubmitting and Benchmark Storage
 
-Benchmarks are supposed to be long-running and EverBEEN provides a mechanism to keep benchmarks running even after a failure occurs. When a generator task exits with an error (e.g. power outage), it will get resubmitted and the benchmark will continue. To support this behavior, you should use the provided benchmark key-value storage for the internal state of the benchmark and not use any instance variables.
+Benchmarks are supposed to be long-running and EverBEEN provides a mechanism to keep benchmarks running even after a failure occurs. When a generator task exits with an error (e.g. power outage), it will get resubmitted and the benchmark will continue. To support this behavior, you should use the provided benchmark key-value storage for the internal state of the benchmark and avoid using instance variables.
 
 The `Benchmark` abstract class provides methods `storageGet` and `storageSet` which will use the cluster storage for the benchmark state. This storage will be restored whenever the generator task is resubmitted. The implementation of a benchmark that uses this storage can look like this:
 
@@ -430,4 +431,4 @@ An evaluator needs to retrieve data from the persistence layer, and it can do so
 	Query query = new QueryBuilder().on(...).with(...).fetch();
 	Collection<MyResult> data = results.query(query, MyResult.class);
 
-For example code of a simple evaluator that output a plot chart with the measured data and error intervals, see the sample `nginx-benchmark`.
+For an example of a simple evaluator that output a plot chart with the measured data and error intervals, see the sample `nginx-benchmark`.
