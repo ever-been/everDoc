@@ -51,7 +51,7 @@ Now that you have your project set up, you can start working on the implementati
 * [StorageBuilder](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/storage/StorageBuilder.html) --- an instantiation/configuration tool for your *Storage* implementation
 * [SuccessAction\<EntityCarrier\>](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/persistence/SuccessAction.html) --- an isolated action capable of persisting objects
 
-Additionally, you will need to create a **META-INF/services** folder in the jar with your implementation, and place a file named **cz.cuni.mff.d3s.been.storage.StorageBuilder** in it. You will need to put a single line in that file, containing the full class name of your [StorageBuilder](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/storage/StorageBuilder.html) implementation.
+Additionally, you will need to create a **META-INF/services** folder in the jar with your implementation, and place a file named **cz.cuni.mff.d3s.been.storage.StorageBuilder** in it. You will need to put a single line in that file, containing the full class name of your `StorageBuilder` implementation.
 
 We also strongly recommend that you implement these as well:
 
@@ -60,10 +60,10 @@ We also strongly recommend that you implement these as well:
 
 The general idea is to implement the *Storage* component and to provide the *StorageBuilder* service, which configures and instantiates your *Storage* implementation. The **META-INF/services** entry is for the *ServiceLoader* EverBEEN uses to recognize your *StorageBuilder* implementation on the classpath. EverBEEN will then pass the *Properties* from the *been.conf* file (see [\ref*{user.configuration} (configuration)](#user.configuration)) to your *StorageBuilder*. That way, you can use the common property file to configure your *Storage*.
 
-The [Storage](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/storage/Storage.html) interface is the main gateway between the Object Repository and the database. When overriding the Storage, there will be two major use-cases you will have to implement: the asynchronous persist and the synchronous query.
+The `Storage` interface is the main gateway between the Object Repository and the database. When overriding the Storage, there will be two major use-cases you will have to implement: the asynchronous persist and the synchronous query.
 
 #### Asynchronous persist {#user.extension.storageex.asyncper}
-All *persist* requests in EverBEEN are funneled through the Storage#store method. You will receive two parameters in this method:
+All *persist* requests in EverBEEN are funneled through the `Storage#store` method. You will receive two parameters in this method:
 
 <a id="user.extension.storageex.asyncper.eid">***entityId***</a>
 The *entityId* is meant to determine the location of the stored entity. For example, if you're writing an SQL adapter, it should determine the table where the entity will be stored. For more information on the *entityId*, see section [\ref*{user.extension.storageex.objectinfo} persistent object info](#user.extension.storageex.objectinfo).
@@ -109,19 +109,19 @@ If you need more detail on objects that you can encounter, be sure to also read 
 #### The ORM special {#user.extension.storageex.ormspecial}
 If you are really hell-bent on creating an ORM implementation of the *Storage*, your module will need to know several extra EverBEEN classes to be able to perform the mapping. The following table covers their *entityIds*, their meaning and the dependencies you will need to get them.
 
-*kind*                *group*        meaning                                class                                                                                                                                     module
-----------------      ----------     -------------------------------        -----------------------------------------------------------------------------------------------------------------------------------       --------------
+*kind*                *group*        meaning                                class                                                                                                                                       module
+----------------      ----------     -------------------------------        -----------------------------------------------------------------------------------------------------------------------------------         --------------
 log                   task           message logged by a task               [`TaskLogMessage`](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/logging/TaskLogMessage.html)                                core-data
 log                   service        message logged by a service            [`ServiceLogMessage`](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/logging/ServiceLogMessage.html)                          core-data
 log                   monitoring     host monitoring sample                 [`MonitorSample`](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/core/ri/MonitorSample.html)                                  core-data
 descriptor            task           task runtime configuration             [`TaskDescriptor`](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/core/task/TaskDescriptor.html)                              core-data
 descriptor            context        task context runtime configuration     [`TaskContextDescriptor`](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/core/task/TaskContextDescriptor.html)                core-data
-named-descriptor      task           saved task configuration               [`TaskDescriptor`](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/core/task/TaskDescriptor.html)                              core-data
-named-descriptor      context        saved task context configuration       [`TaskContextDescriptor`](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/core/task/TaskContextDescriptor.html)                core-data
-result                *\**           task result                            user class extending [Result](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/results/Result.html)                           *n/a* (results)
+named-descriptor      task           saved task configuration               `TaskDescriptor`                                                                                                                            core-data
+named-descriptor      context        saved task context configuration       `TaskContextDescriptor`                                                                                                                     core-data
+result                *\**           task result                            user class extending [Result](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/results/Result.html)                             *n/a* (results)
 evaluation            *\**           task result evaluation                 [`EvaluatorResult`](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/evaluators/EvaluatorResult.html)                           results
 outcome               task           task state service records             [`PersistentTaskState`](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/persistence/task/PersistentTaskState.html)             persistence
-outcome               context        task context state service records     [PersistentContextState](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/persistence/task/PersistentContextState.html)       persistence
+outcome               context        task context state service records     [PersistentContextState](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/persistence/task/PersistentContextState.html)         persistence
 
 Thus, if you need to infer the knowledge of the runtime type of all these classes to your module, you need to add the following to Maven dependencies:
 
