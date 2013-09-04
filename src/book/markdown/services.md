@@ -378,86 +378,94 @@ The recently released Hazelcast 3.0 introduced the [Entry Processor](http://haze
 
 ### Software Repository {#devel.services.swrepo}
 
-From users perspective, the software repository is a black box to which you can upload and from which you can download standalone BPK packages with task, task context and benchmark definitions and sources and all interaction is done through web interface. 
+From user perspective, the Software Repository is a black box performing storage and retrieval of standalone BPK packages with task, task context and benchmark definitions. All user interaction with the Software Repository is mediated by the Web Interface. From a developer's perspective, the architecture of the Software Repository is based on file system storage and a very simple HTTP protocol.
 
-From developers perspective, the architecture of software repository is based on file system storage and very simple message protocol over HTTP. 
-
-Description of HTTP protocol:
+#### HTTP
+The Software Repository HTTP protocol supports the following actions:
 
 * *get* **/bpk** - download BPK from software repository 
-    * request header: `Bpk-Identifier`, value: [cz.cuni.mff.d3s.been.bpk.BpkIdentifier](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/bpk/BpkIdentifier.html) (JSON), unique identifier of BPK to be downloaded
+    * request header: `Bpk-Identifier`, value: [cz.cuni.mff.d3s.been.bpk.BpkIdentifier](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/bpk/BpkIdentifier.html) (JSON), unique identifier of the BPK to be downloaded
     * valid response status codes: *2XX*
     * response body: binary content of the requested BPK file
 * *put* **/bpk** - upload BPK to software repository 
-    * request header: `Bpk-Identifier`, value: `BpkIdentifier` (JSON), unique identifier of BPK to be uploaded
+    * request header: `Bpk-Identifier`, value: `BpkIdentifier` (JSON), unique identifier uploaded BPK
     * request body: binary content of the uploaded BPK file
     * valid response status codes: *2XX*
-* *get* **/bpklist** - list all BPKs stored in software repository
+* *get* **/bpklist** - list all BPKs stored in the Software Repository
     * valid response status codes: *2XX*
     * response body: `List<BpkIdentifier>` (JSON) 
-* *get* **/tdlist** - list all [task descriptors](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/core/task/TaskDescriptor.html) for BPK stored in software repository and identified by given `BpkIdentifier` 
-    * request header: `Bpk-Identifier`, value: `BpkIdentifier` (JSON), unique identifier of BPK for which the list of available descriptors should be returned
+* *get* **/tdlist** - list all [task descriptors](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/core/task/TaskDescriptor.html) for a BPK stored in the Software Repository (identified by given `BpkIdentifier` )
+    * request header: `Bpk-Identifier`, value: `BpkIdentifier` (JSON), unique identifier of the BPK for which the list of available descriptors should be returned
     * valid response status codes: *2XX*
-    * response body: `Map<String, TaskDescriptor>` (JSON), key is task descriptor filename
-* *get* **/tcdlist** - list all [task context descriptors](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/core/task/TaskContextDescriptor.html) for BPK stored in software repository and identified by given `BpkIdentifier` 
-    * request header: `Bpk-Identifier`, value: `BpkIdentifier` (JSON), unique identifier of BPK for which the list of available descriptors should be returned
+    * response body: `Map<String, TaskDescriptor>` (JSON), the map key set are task descriptor file names
+* *get* **/tcdlist** - list all [task context descriptors](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/core/task/TaskContextDescriptor.html) for BPK stored in Software Repository (identified by given `BpkIdentifier` )
+    * request header: `Bpk-Identifier`, value: `BpkIdentifier` (JSON), unique identifier of the BPK for which the list of available descriptors should be returned
     * valid response status codes: *2XX*
-    * response body: `Map<String, TaskContextDescriptor>` (JSON), key is task context descriptor filename
+    * response body: `Map<String, TaskContextDescriptor>` (JSON), the map key set are task context descriptor file names
 
-If response is marked with other than valid status code, standard HTTP response reason phrase will contain reason of the failure. For JSON serialization and deserialization is used ObjectMapper provided by [Jackson](#devel.techno.jackson) library.
+If response is marked with an invalid status code, the standard HTTP response reason phrase will contain the reason of the failure. We chose the HTTP protocol for BPK transport, because it is adapted large file transfer.
 
-We chose HTTP protocol because it is adapted for transfer of large files and is easy to use.   
+For JSON serialization and deserialization we use the `ObjectMapper` provided by the [Jackson](#devel.techno.jackson) library.
 
-Software repository stores uploaded BPKs in `bpks` subdirectory of SR working directory. Each uploaded BPK is stored in subfolder `{groupId}/{bpkId}/{version}` under the name `{bpkId}-{version}.bpk` where *{groupId}* stands for fully qualified groupId of BPK name where dots are replaced by slashes, *{bpkId}* stands for bpkId of BPK and *{version}* stands for version of BPK. Follows example of the directory structure:
+#### File system structure
 
-```    
-SR working directory (WD): 
-    e.g. /home/been/swrepository on Linux systems
-    e.g. C:\been\swrepository on Windows systems
+Software Repository stores uploaded BPKs in the `bpks` subdirectory of its configurable working directory root. Each uploaded BPK is stored on the following path:
 
-BPK store directory: 
-    {WD}/bpks
-    
-uploaded example BPK 1:
-    filename: example.bpk
-    groupId:  cz.cuni.mff.d3s.been.example
-    bpkId:    example-bpk
-    version:  1.1.beta-02
-    
-uploaded example BPK 2:
-    filename: alpmexa.bpk
-    groupId:  cz.cuni.mff.d3s.been.example
-    bpkId:    alpmexa-bpk
-    version:  0.1-SNAPSHOT
+	{groupId}/{bpkId}/{version}/{bpkId}-{version}.bpk
 
-example BPK 1 will be stored in:
-    {WD}/bpks/cz/cuni/mff/d3s/been/example/example-bpk/
-                      1.1.beta-02/example-bpk-1.1.beta-02.bpk    
-    
-example BPK 2 will be stored in: 
-    {WD}/bpks/cz/cuni/mff/d3s/been/example/alpmexa-bpk/0.1-SNAPSHOT/
-                      alpmexa-bpk-0.1-SNAPSHOT.bpk    
-```
+* *{groupId}* stands for the fully qualified groupId of BPK with dots substitued by slashes
+* *{bpkId}* stands for the bpkId the BPK
+* *{version}* stands for BPK version
+
+To clarify, here is an example of Software Repository directory structure:
+
+	SR working directory (WD): 
+	    e.g. /home/been/swrepository on Linux systems
+	    e.g. C:\been\swrepository on Windows systems
+	
+	BPK store directory: 
+	    {WD}/bpks
+	    
+	uploaded example BPK 1:
+	    filename: example.bpk
+	    groupId:  cz.cuni.mff.d3s.been.example
+	    bpkId:    example-bpk
+	    version:  1.1.beta-02
+	    
+	uploaded example BPK 2:
+	    filename: alpmexa.bpk
+	    groupId:  cz.cuni.mff.d3s.been.example
+	    bpkId:    alpmexa-bpk
+	    version:  0.1-SNAPSHOT
+	
+	example BPK 1 will be stored in:
+	    {WD}/bpks/cz/cuni/mff/d3s/been/example/example-bpk/
+	                      1.1.beta-02/example-bpk-1.1.beta-02.bpk    
+	    
+	example BPK 2 will be stored in: 
+	    {WD}/bpks/cz/cuni/mff/d3s/been/example/alpmexa-bpk/0.1-SNAPSHOT/
+	                      alpmexa-bpk-0.1-SNAPSHOT.bpk
+
 
 Some limitations:
 
-* Software repository does not support reuploading of already uploaded BPKs with same groupId, bpkId and version except BPKs with version suffixed by **-SNAPSHOT**
-* You have to start software repository on node visible for all other nodes and on port which is not blocked by firewall.
+* Software repository does not support BPK overwriting (uploading a BPK with the same groupId, bpkId and version as a BPK already present in the Software Repository). The only exception to this rule are BPKs with a version string suffixed by **-SNAPSHOT** (e.g. 1.0.0-SNAPSHOT).
+* You have to start software repository on node visible for all other nodes and on port which is not blocked by the host's firewall.
+* The Software Repository listens on the primary network interface selected by Hazelcast for cluster communication. We realize this might inconvenience you if you are running EverBEEN on atypical networks, and intend to add some configuration options to let you specify desired behavior manually.
+* There is an **artifacts** folder in the Software Repository working directory root. This is because Software Repository implements uploading and downloading Maven artifacts, in addition to BPKs, but the feature has not yet been integrated into the rest of EverBEEN, and is staged for future development.
 
-*(You can find another directory called **artifacts** in software repository working directory. We intended to implement another type of files which can be stored. Imagine task which needs tons of resource files. Now, you have to store these resources directly in BPK package. And what if you want to upload newer task with different version but using the same resources? You have to store them again in the BPK. So this feature was intended to store shared resources between tasks, bat due to lack of time was not implemented.)*
 
+#### Software Repository client {#devel.services.swrepocache}
 
-### Software Repository client {#devel.services.swrepocache}
-
-Because some BPKs can be used multiple times on single host runtime, each host runtime has its own software repository cache. This cache uses same file store as software repository and saves bandwidth and I/O resources.
+Because some BPKs can be used multiple times on single Host Runtime, each host runtime has its own software repository cache. This cache uses the same file system structure as Software Repository does, and transparently reuses downloaded BPK bundles to save bandwidth and I/O resources.
 
 
 
 ### Object Repository {#devel.services.objectrepo}
 
-The purpose of the *Object Repository* is to service user data persistence. While the actual persistence and querying code is isolated from the *Object Repository* by the [Storage](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/storage/Storage.html) interface module and is database-dependent (the default MongoDB implementation can be found in the `mongo-storage` module), the *Object Repository* operates without any knowledge of user types or concrete database storage implementation. The main portion of its work is to communicate with the rest of the EverBEEN cluster, collect objects sent by other nodes for persistence, collect queries from other nodes and dispatch answers. The communication with the rest of the cluster is realized through shared queues and maps (distributed cluster-wide memory).
+The purpose of the *Object Repository* is to service user data persistence. While the actual persistence and querying code is isolated from the *Object Repository* by the [`Storage`](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/storage/Storage.html) interface and is database-dependent (the default MongoDB implementation can be found in the `mongo-storage` module), the *Object Repository* operates without any knowledge of user types or concrete database storage implementation. The main portion of its work is to communicate with the rest of the EverBEEN cluster, collect objects sent by other nodes for persistence, collect queries from other nodes and dispatch answers. The communication with the rest of the cluster is realized through shared queues and maps (distributed cluster-wide memory).
 
-The *Object Repository* also features a *Janitor* sub-service, which is responsible for cleaning up old data once it's deemed unnecessary. The *Janitor* works on its local *Storage* instance and therefore doesn't partake in any cluster-wide activities.
+The *Object Repository* also features a *Janitor* sub-service, which is responsible for cleaning up old data once it is deemed unnecessary. The *Janitor* works on its local *Storage* instance and therefore doesn't partake in any cluster-wide activities.
 
 #### Queue drains
 
@@ -485,7 +493,7 @@ Persist requests in EverBEEN are asynchronous, and no notification is sent back 
 A similar approach regarding queues is taken for persistence layer queries. Just as serialized persistent objects do, queries get submitted to a distributed queue, where they wait for the *Object Repository* to process them. However, queries naturally need to provide an answer to the requesting party, so an object needs to be sent back. This is realized through a distributed map with listeners. To facilitate control flow for the requesting party, we made the query calls synchronous. The querying process is as follows:
 
 * The requesting party creates a query.
-* If the requesting party is a *task*, the query is serialized, sent to the corresponding *Host Runtime*, deserialized. The *Host Runtime* becomes the new requesting party while the *task* blocks in wait for an answer from the *Host Runtime*.
+* If the requesting party is a *task*, the query is serialized, sent to the corresponding *Host Runtime* and deserialized. The *Host Runtime* becomes the new requesting party while the *task* blocks in wait for an answer from the *Host Runtime*.
 * The requesting party registers a listener on the query's ID in the distributed answer map.
 * The requesting party submits the query to the distributed query queue.
 * The requesting party blocks in wait for the answer to its query.
@@ -528,44 +536,47 @@ This case is not handled, mainly because the default values for both longevities
 
 ### Map Store {#devel.services.mapstore}
 
-The MapStore allows the EverBEEN to persist runtime information, which can be restored after restart or crash of the framework.
+The MapStore allows EverBEEN to persist runtime information, which allows for a state restore after a cluster-wide restart or crash.
 
 #### Role of the MapStore {#devel.services.mapstore.role}
 
-EverBEEN runtime information (such as tasks, contexts and benchmarks, etc.) are persisted through the MapStore. This adds overhead to working with the distributed objects, but allows restoring of the state after a cluster restart, providing an user with more concise experience.
+EverBEEN runtime information (such as task, context and benchmark states) are persisted through the MapStore. This adds overhead to working with the distributed objects, but allows restoring of the state after a cluster restart, providing a user with more concise experience.
 
-The implementation is build atop of Hazelcast Map Store - mechanism for storing/loading of Hazelcast distributed objects to/from a persistence layer. The EverBEEN team implemented a mapping to the MongoDB.
+The implementation is build atop of Hazelcast Map Store - mechanism for storing/loading of Hazelcast distributed objects to/from a persistence layer. The EverBEEN team implemented a mapping to MongoDB.
 
 The main advantage of using the MapStore is transparent and easy access to Hazelcast distributed structures with the ability to persist them - no explicit actions are needed.
 
 #### Difference between the MapStore and the Object repository {#devel.services.mapstore.difference}
-Both mechanism are used to persist objects - the difference is in the type of objects being persisted. The [Object repository](#devel.services.objectrepo) stores user generated information, whereas the MapStore handles (mainly) EverBEEN runtime information - information essential to proper working of the framework. 
+Both mechanism are used to persist objects - the difference is in the type of objects being persisted. The [Object Repository](#devel.services.objectrepo) stores user generated information, whereas the MapStore handles (mainly) EverBEEN runtime information, which is essential for proper framework functioning. 
 
-The difference is also in level of transparency for users. Object persistence happens on behalf of an user explicit request, the MapStore works "behind the scene".
-
-Even though both implementations currently us MongoDB, in future the team envisage implementations serving different needs (such as load balancing, persistence guarantees, data ownership, data access, etc.)
+The difference is also in level of transparency for users. Object persistence happens on behalf of an explicit user request, while the MapStore works "behind the scene".
 
 #### Extension point {#devel.services.mapstore.extension}
-Adapting the layer to different persistence layer (such as relational database) is relatively easy. By implementing the `com.hazelcast.core.MapStore` interface and specifying the implementation to use at runtime, an user of the framework has ability to change behavior of the layer.
+Porting the *MapStore* adapter to a different persistence layer (such as a relational database) is relatively easy. By implementing the `com.hazelcast.core.MapStore` interface and specifying the implementation class at runtime, an EverBEEN user has the ability to change the behavior of the *MapStore* layer.
 
 #### Configuration {#devel.services.mapstore.configuration}
-The layer can be configured to accommodate different needs:
+The *MapStore* layer can be configured to accommodate different needs:
 
 * specify connection options (hostname, user, etc.)
 * enable/disable
 * change implementation
 * write-through and write-back modes
 
-Detailed description of configuration can be found at [Configuration](#user.configuration).
+Detailed description of configuration can be found in the [Configuration](#user.configuration) section.
 
 ### Web Interface {#devel.services.webinterface}
-Web interface is sophisticated utility to monitor and control the EverBEEN cluster. It is not actually a real service but rather a standalone client, nevertheless it is an indispensable part of the framework. Implementation is based on [Tapestry5](http://tapestry.apache.org/) framework and its extension [Tapestry5-jquery](http://tapestry5-jquery.com/). Describing the principles and conventions of Tapestry framework is not part of the EverBEEN documentation but it can be found on the framework official site. We would like to include only few information which could be helpful when extending the web interface.
+The EverBEEN web interface is a sophisticated utility. able to monitor and control the EverBEEN cluster. It is not actually a real service but rather a standalone client. Nevertheless it is an indispensable part of the framework. Its implementation is based on the [Tapestry5](http://tapestry.apache.org/) framework and its extension, [Tapestry5-jquery](http://tapestry5-jquery.com/). Describing the principles and conventions of Tapestry framework is not a part of the EverBEEN documentation but it can be found on official site of the framework. We would, however, like to include some information which could be helpful for Web Interface extenders.
 
 #### Dependency Injection
-Tapestry uses its own implementation of dependency injection container called Tapestry IoC (Inversion of Control) – this container is responsible for managing dependencies among pages, components, services and other parts of the application. Tapestry has several of its own services and we added two more. First, the most important, is [`BeenApiService`](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/web/services/BeenApiService.html) which is responsible for connecting to the cluster. The second service is [`LiveFeedService`](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/web/services/LiveFeedService.html) which is responsible for communication with web browsers through web sockets. When defined, these services are fully integrated to the whole Tapestry web application life cycle and can be injected to pages and components through standard Tapestry annotations.
+Tapestry uses its own implementation of dependency injection called Tapestry IoC (Inversion of Control). This container is responsible for managing dependencies among pages, components, services and other parts of the application. Tapestry has several of its own services and we added two more:
+
+* The [`BeenApiService`](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/web/services/BeenApiService.html) is the most important, because it is in charge of cluster connection.
+* The [`LiveFeedService`](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/web/services/LiveFeedService.html) handles communication with web browsers through web sockets.
+
+These services are fully integrated to the Tapestry web application life cycle and can be injected to pages and components through standard Tapestry annotations.
 
 #### Pages and Components
-All pages are inherited from base [`Page`](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/web/pages/Page.html) class. This class contains injected `BeenApiService` from which you can obtain instance of [BeenApi](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/api/BeenApi.html) through which you can manage the whole EverBEEN cluster. Global layout is defined by [`Layout`](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/web/components/Layout.html) component and all JavaScript and CSS can be found in `src/main/webapp` subdirectory of `web-interface` module.
+All pages are inherited from the base [`Page`](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/web/pages/Page.html) class. This class contains an injected instance of `BeenApiService`, from which you can obtain an instance of [BeenApi](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/api/BeenApi.html). The `BeenApi` enables you to manage the whole EverBEEN cluster. The global EverBEEN layout is defined by the [`Layout`](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/web/components/Layout.html) component. And all JavaScript and CSS resources can be found in the `src/main/webapp` subdirectory of the `web-interface` module.
 
 #### Connecting WI to the cluster
-Web interface is connected to the cluster using Hazelcast native client. It means that the WI does not store any data and does not manage any keys of Hazelcast maps.
+Web interface is connected to the cluster using Hazelcast native client. It means that the WI does not store any data and does not own (manage) any Hazelcast shared objects.
