@@ -1,3 +1,3 @@
-% EverBEEN Documentation
+% EverBEEN 
 % Martin Sixta, Tadeáš Palusga, Radek Mácha, Jakub Břečka
-% 2013
+% `www.everbeen.cz`
