@@ -1,8 +1,11 @@
 ## EverBEEN architecture {#devel.architecture}
 
-Differently from its predecessor, [WillBEEN](http://been.ow2.org/), EverBEEN was designed as a fully distributed application from the start. Despite the differences this implies on the design process and the overall system architecture, we tried to stick to the time-proven [concept of the original BEEN](http://d3s.mff.cuni.cz/publications/download/Submitted_1404_BEEN.pdf) as much as possible. The EverBEEN architecture is best explained by the following schema.
+<!-- FIGREF -->
+Differently from its predecessor, [WillBEEN](http://been.ow2.org/), EverBEEN was designed as a fully distributed application from the start. Despite the differences this implies on the design process and the overall system architecture, we tried to stick to the time-proven [concept of the original BEEN](http://d3s.mff.cuni.cz/publications/download/Submitted_1404_BEEN.pdf) as much as possible. The EverBEEN architecture is best explained on [**figure 3.1**](#devel.architecture.fig_archi).
 
-![EverBEEN architecture](images/architecture/everbeen.png)
+<!-- FIGURE -->
+[devel.architecture.fig_archi]: images/architecture/everbeen.png "EverBEEN architecture"
+![EverBEEN architecture][devel.architecture.fig_archi]
 
 
 
