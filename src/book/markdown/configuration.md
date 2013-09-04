@@ -37,7 +37,7 @@ It is *essential* that cluster nodes use the same configuration for these option
 :	Port on which the node will listen to.
 
 `been.cluster.interfaces`=
-:	Semicolen separated list of interfaces Hazelcast should bind to, '*' wildcard can be used, e.g. *10.0.1.*.
+:	Semicolen separated list of interfaces Hazelcast should bind to, '*' wildcard can be used, e.g. `10.0.1.*`.
 
 `been.cluster.preferIPv4Stack`=*true*
 :	Whether to prefer IPv4 stack over IPv6.
@@ -161,7 +161,7 @@ Configuration options for the MongoDB based [Object storage](#user.persistence).
 :	Password to use to connect to the database.
 
 #### Software Repository Configuration {#user.configuration.swrepo}
-Configuration for the [Software Repository](#user.swrepository)
+Configuration for the [Software Repository](#user.swrepository).
 
 `swrepository.port`=*8000*
 :	Port on which the Software Repository should listen for requests.
