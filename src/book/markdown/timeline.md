@@ -11,38 +11,38 @@
 :	We started to consider various communication middleware frameworks as a replacement for RMI.
 
 *September 2012*
-:	`SLF4J` is chosen as a logging framework and `Logback` as the basic logging backend. The decision was made to unify all existing logging mechanisms.
+:	`SLF4J` is chosen as a logging framework and `Logback` as the basic logging backend. We decided to unify all existing logging mechanisms.
 
 *October 2012*
-:	We started to implement a basic re-implementation of the project using Hazelcast middleware, which was chosen as the best alternative from among various other candidates, such as JMS and JGroups. Hazelcast offers a great combination of both scalability and decentralization which fitted the project's concept best.
+:	We started to implement a basic re-implementation of the project using the Hazelcast middleware, which was chosen as the best alternative from various other candidates, such as JMS and JGroups. Hazelcast offers a great combination of both scalability and decentralization which matched the project's goals best.
 
 *November 2012*
-:	Attempts of incremental refactoring of the existing RMI based code to use Hazelcast were catastrophic and we decided to actually rewrite the project from scratch instead.
+:	Attempts to refactor the existing RMI-based code incrementally and switch to Hazelcast were catastrophic and we decided to actually rewrite the project from scratch instead.
 :	Current use of One-Jar plugin was dropped in favor of Maven Assembly plugin.
-:	Sigar is to be used as the implementation of hardware detectors.
+:	We chose Sigar to be used as the implementation of hardware detectors.
 
 *December 2012*
-:	We acknowledged that it's impossible to create a high-level API independent on the low-level transport and communication protocol. We decided to make Hazelcast an integral dependency of EverBEEN.
+:	We acknowledged that it is impossible to create a high-level API independent on the low-level transport and communication protocol. We decided to make Hazelcast an integral dependency of EverBEEN.
 
 *February 2013*
-:	The software repository component will be implemented as a HTTP server with a REST API. This will allow us to reuse existing libraries for HTTP communication and achieve correct streaming of large file transfers.
+:	We decided to implement the Software Repository component as a HTTP server with a RESTful API. This allows us to reuse existing libraries for HTTP communication and achieve correct streaming of large file transfers.
 
 *March 2013*
-:	For the purposes of both inter- and intra-process communication, we will use 0MQ.
-:	We decide to use JSON as a transport format for various inter-component communication, with Jackson as a serialization library. The (de-)serialization is easier and more flexible than XML.
+:	For the purposes of both inter- and intra-process communication, we chose 0MQ.
+:	We decided to use JSON as a transport format for various inter-component communication, with Jackson as a serialization library. The (de-)serialization is easier and more flexible than XML.
 
 *April 2013*
-:	MongoDB is to be used as the default storage engine. Though, the persistence layer is to be implemented with a universal interface that would allow any other common database storage to be use instead. Also, MongoDB has a [lot of features](http://www.youtube.com/watch?v=b2F-DItXtZs) that fit the EverBEEN use case.
-:	The web interface will be written in Java using Tapestry5 web framework. This will allow us to reuse existing data structures and classes and will take less time to write than pure JSP.
+:	MongoDB is to be used as the default storage engine. Nevertheless, the persistence layer is to be implemented with a universal interface that would allow any other common database storage to be used instead. Also, MongoDB has a [lot of features](http://www.youtube.com/watch?v=b2F-DItXtZs) that fit the EverBEEN use case.
+:	The web interface will be written in Java using the Tapestry5 web framework. This will allow us to reuse existing data structures and classes and will take less time to write than pure JSP.
 
 *May 2013*
-:	The API for user-written benchmark is settled to be a special form of task that will be called by EverBEEN and will generate task contexts on demand.
+:	The API for user-written benchmarks is settled to be a special form of task that will be called by EverBEEN and will generate task contexts on demand.
 
 *June 2013*
-:	We agreed to open-source the project on GitHub under a LGPL license.
+:	We agreed to open-source the project on GitHub under the LGPL license.
 
 *July 2013*
-:	The API for evaluators and showing results in the web interface is settled.
+:	The API for evaluators and presentation of results in the web interface is settled.
 
 *August 2013*
-:	The documentation will be written in Markdown documents and will be compiled using [Pandoc](http://johnmacfarlane.net/pandoc/).
+:	We chose the Markdown language and [Pandoc](http://johnmacfarlane.net/pandoc/) for writing the project documentation.

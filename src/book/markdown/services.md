@@ -5,9 +5,9 @@ EverBEEN services are functional bundles run on cluster nodes in addition to the
 ### Host Runtime {#devel.services.hostruntime}
 The Host Runtime is the service responsible for managing running tasks. It also functions as a gateway between its tasks and the rest of the framework.
 
-This service was completely rewritten since the code quality was poor. The rewrite enabled the EverBEEN team to do necessary refactoring as well as to introduce libraries, such as [Apache Commons Exec](#devel.techno.exec) producing more modular and maintainable code.
+The service was completely rewritten since the code quality was poor. The rewrite enabled the EverBEEN team to do necessary refactoring as well as to introduce libraries, such as [Apache Commons Exec](#devel.techno.exec) producing more modular and maintainable code.
 
-Even though this service was completely rewritten, its purpose and basic functions remain similar to previous BEEN versions.
+Even though the service was completely rewritten, its purpose and basic functions remain similar to previous BEEN versions.
 
 A Host Runtime can run on any type of [EverBEEN node](#user.concepts.nodes). It makes sense to run it on a *NATIVE* node in order to avoid costs associated with running a *DATA* node. Typically, deployment will have a few DATA nodes and as many NATIVE nodes with Host Runtime instances as needed.
 
@@ -17,12 +17,12 @@ Available configuration options are listed in the [Configuration](#user.configur
 
 Responsibilities of a Host Runtime include
 
-* Task environment setup (working directory, environment properties, command line etc.)
-* Downloading packages from the Software Repository (on a task's behalf)
-* Running and managing a task (spawning a process, changing task's state, exit code, etc.)
-* Mediating data transfer between tasks and the rest of the framework (logs, results, etc.)
-* Cleanup after tasks
-* Monitoring the host it runs on
+* Task environment setup (working directory, environment properties, command line etc.).
+* Downloading packages from the Software Repository (on a task's behalf).
+* Running and managing a task (spawning a process, changing task's state, exit code, etc.).
+* Mediating data transfer between tasks and the rest of the framework (logs, results, etc.).
+* Cleanup after tasks.
+* Monitoring the host it runs on.
 
 Each Host Runtime manages only its own tasks -- it remains oblivious to the rest.
 
@@ -39,7 +39,7 @@ A task begins its life on a Host Runtime with incoming [RunTaskMessage](http://w
 * Preparing environment properties and command line ([CmdLineBuilderFactory](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/hostruntime/task/CmdLineBuilderFactory.html))
  
 
-The task is supervised in a separate thread, waiting for the task to either finish or be aborted by a user generated request. Task state changes are propagated through the [TaskEntry](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/core/task/TaskEntry.html) structure associated with the given task through ([TaskHandle](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/hostruntime/task/TaskHandle.html)).
+The task is supervised in a separate thread, waiting for the task to either finish or be aborted by a user generated request. Task state changes are propagated through the [TaskEntry](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/core/task/TaskEntry.html) structure associated with the given task through [TaskHandle](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/hostruntime/task/TaskHandle.html).
 
 #### Interaction with tasks {#devel.services.hostruntime.tasks}
 
@@ -61,10 +61,10 @@ As was mentioned above the protocol is based on 0MQ with messages encoded in JSO
 
 A task must send appropriate messages through 0MQ ports in order to communicate with its Host Runtime. Connection details are passed as environment properties upon task process spawning. Names of these environment properties are specified in [NamedSockets](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/socketworks/NamedSockets.html). Message serialization to JSON is handled in the [Task API](#user.taskapi) -- the current implementation uses the [Jackson](#devel.techno.jackson) library to serialize/deserialize messages from/to *Plain Old Java Objects*.
 
-There are currently four types of messages recognized by the framework. For the sake of brevity, Java implementation classes are mentioned here. If the need for different implementation of the TASK API arises message, the message format can be inferred from their direct mapping to JSON.
+There are currently four types of messages recognized by the framework. For the sake of brevity, Java implementation classes are mentioned here. If the need for different implementation of the TASK API arises the message format can be inferred from their direct mapping to JSON.
 
 
-LogMessages - *TaskLogs* - `LogMessage`
+Log Messages - *TaskLogs* - `LogMessage`
 
 Example message:
 
@@ -84,7 +84,7 @@ Example message:
 
 Notice that there currently is *LOG_MESSAGE#* before the actual message.
 
-CheckPoints - *TaskCheckpoints* - [CheckpointRequest](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/task/checkpoints/CheckpointRequest.html) 
+Check Points - *TaskCheckpoints* - [CheckpointRequest](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/task/checkpoints/CheckpointRequest.html) 
 
 Examples of CheckPoint messages:
 
@@ -315,13 +315,13 @@ A [distributed query](http://hazelcast.com/docs/2.6/manual/single_html/#MapQuery
 
 An appropriate Host Runtime is also chosen based on Host Runtime utilization, less loaded Host Runtimes are preferred. Among equal hosts a Host Runtime is chosen randomly.
 
-The lifecycle of a task is commenced by inserting a [TaskEntry](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/core/task/TaskEntry.html) in `SUBMITTED` state into the task map under a random key. Inserting a new entry to the map causes an event which is handled by the owner of the key -- the Task Manager responsible this task. The event is converted to a [`NewTaskMessage`](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/manager/msg/NewTaskMessage.html) object and sent to the processing thread. The handling logic is separated in order not to block the Hazelcast service threads. In this regard, message handling is serialized on the particular node. The message then generates [`ScheduleTaskAction`](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/manager/action/ScheduleTaskAction.html), which is responsible for figuring out what to do. Several things might happen 
+The lifecycle of a task is commenced by inserting a [TaskEntry](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/core/task/TaskEntry.html) in `SUBMITTED` state into the task map under a random key. Inserting a new entry to the map causes an event which is handled by the owner of the key --- the Task Manager responsible for the key. The event is converted to a [`NewTaskMessage`](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/manager/msg/NewTaskMessage.html) object and sent to the processing thread. The handling logic is separated in order not to block the Hazelcast service threads. In this regard, message handling is serialized on the particular node. The message then generates [`ScheduleTaskAction`](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/manager/action/ScheduleTaskAction.html), which is responsible for figuring out what to do. Several things might happen 
 
 * the task cannot be run because it's waiting on another task, the state is changed to WAITING
 * the task cannot be run because there is no suitable Host Runtime for it, the state is changed to WAITING
 * the task can be scheduled on a chosen Host Runtime, the state is changed to SCHEDULED and the runtime is notified. 
 
-If the task is scheduled, the chosen Host Runtime is responsible for the task until it finishes or fails.
+If the task is accepted the chosen Host Runtime is responsible for the task until it finishes or fails.
 
 `WAITING` tasks remain under the responsibility of the Task Manager, which can try to reschedule when an event occurs, e.g.:
 
