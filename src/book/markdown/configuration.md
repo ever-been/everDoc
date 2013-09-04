@@ -104,7 +104,7 @@ Configuration for the persistence layer janitor component. See [\ref*{user.persi
 :	Number of hours EverBEEN service logs stay persistent.
 
 `been.objectrepository.janitor.load-sample-longevity`=*168*
-:	Number of hours EverBEEN node load monitor samples stay persistent.
+:	Number of hours EverBEEN node load monitor samples stay persistent. If set to `0`, load sample cleanup will be disabled.
 
 `been.objectrepository.janitor.cleanup-interval`=*10*
 :	Period in minutes of janitor cleanup checks.
