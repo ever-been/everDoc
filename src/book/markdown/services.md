@@ -371,7 +371,7 @@ These are main sources of cluster-wide events, received from Hazelcast:
 
 #### Locking {#devel.services.taskmanager.locking}
 
-Certain EverBEEN objects are possibly concurrently modified by different services (and possibly different nodes). One of such objects is the `TaskEntry`, which is accessed by both a Task Manager and a Host Runtime. Unfortunately, such cases must be be resolved through the usage of distributed Hazelcast locks. Such locking costly, so we tried to avoid it on performance critical paths. Moreover, the number of parties trying to obtain the lock is never high. In the case of `TaskEntry`, concurrent accesses are attempted by one Host Runtime and at most two Task Manager instances (two in case of a key migration), and the locks are owned by the task's current Task Manager.
+Certain EverBEEN objects are possibly concurrently modified by different services (and possibly different nodes). One of such objects is the `TaskEntry`, which is accessed by both a Task Manager and a Host Runtime. Unfortunately, such cases must be be resolved through the usage of distributed Hazelcast locks. Such locking is costly, so we tried to avoid it on performance critical paths. Moreover, the number of parties trying to obtain the lock is never high. In the case of `TaskEntry`, concurrent accesses are attempted by one Host Runtime and at most two Task Manager instances (two in case of a key migration), and the locks are owned by the task's current Task Manager.
 
 The recently released Hazelcast 3.0 introduced the [Entry Processor](http://hazelcast.com/docs/3.0/manual/single_html/#MapEntryProcessor) feature that could help improve throughput, should the need arise.
 
@@ -403,7 +403,7 @@ The Software Repository HTTP protocol supports the following actions:
     * valid response status codes: *2XX*
     * response body: `Map<String, TaskContextDescriptor>` (JSON), the map key set are task context descriptor file names
 
-If response is marked with an invalid status code, the standard HTTP response reason phrase will contain the reason of the failure. We chose the HTTP protocol for BPK transport, because it is adapted large file transfer.
+If response is marked with an invalid status code, the standard HTTP response reason phrase will contain the reason of the failure. We chose the HTTP protocol for BPK transport, because it is better suited for large file transfers.
 
 For JSON serialization and deserialization we use the `ObjectMapper` provided by the [Jackson](#devel.techno.jackson) library.
 
@@ -512,7 +512,7 @@ Both of these timeouts are implemented on the client side to ensure that the req
 For cases when the `total_timeout` is systematically being hit (as unlikely as they may be), there is a local eviction policy on answers submitted to the map, with `TTL = 5 * total_timeout`. That means answers submitted to the distributed answer map will be automatically deleted once the TTL expires.
 
 #### Janitor
-<!-- TODO description -->
+
 Every instance of *Object Repository* has its own *Janitor* thread that periodically checks the *Storage* for old objects and removes them. To enable this kind of cleanup, EverBEEN stores some service entries about *task* and *context* states, which are deleted once the cleanup of all other entries related to that *task* or *context* has been performed. The cleanup rules are as follows:
 
 * EverBEEN features two configurable TTL properties:
@@ -526,7 +526,7 @@ All of these deletes are implemented using queries similar to `DELETE FROM xyz A
 There is a hypothetical case when the *Janitor component* performs a sweep which successfully deletes leftover information about a *task* or *context* and is followed by a persist of leftover data for that same *task* (*context*). This would mean that the late persisted object will never be deleted. It would take the following for this case to occur:
 
 * Both the initial and terminal states of the *task* (*context*) get persisted, but some leftover data doesn't. That can happen due to a persist queue reorder (potentially due to a temporary *Storage* failure resulting in a requeue).
-* *Object Repository* gets disconnected after the initial and terminal state has been drained, but before the late persisted object has been drained
+* *Object Repository* gets disconnected after the initial and terminal state has been drained, but before the late persisted object has been drained.
 * *Object Repository* doesn't get reconnected for at least  
 `been.objectrepository.janitor.finished-longevity`  
 (or `been.objectrepository.janitor.failed-longevity`, depending on the terminal state of the *task*/*context*), but keeps running (or gets restarted with a bad network configuration).
@@ -536,7 +536,7 @@ This case is not handled, mainly because the default values for both longevities
 
 ### Map Store {#devel.services.mapstore}
 
-The MapStore allows EverBEEN to persist runtime information, which allows for a state restore after a cluster-wide restart or crash.
+MapStore allows EverBEEN to persist runtime information, which allows for a state restore after a cluster-wide restart or crash.
 
 #### Role of the MapStore {#devel.services.mapstore.role}
 
@@ -549,10 +549,10 @@ The main advantage of using the MapStore is transparent and easy access to Hazel
 #### Difference between the MapStore and the Object repository {#devel.services.mapstore.difference}
 Both mechanism are used to persist objects - the difference is in the type of objects being persisted. The [Object Repository](#devel.services.objectrepo) stores user generated information, whereas the MapStore handles (mainly) EverBEEN runtime information, which is essential for proper framework functioning. 
 
-The difference is also in level of transparency for users. Object persistence happens on behalf of an explicit user request, while the MapStore works "behind the scene".
+The difference is also in level of transparency for users. Object persistence happens on behalf of an explicit user request, while MapStore works "behind the scene".
 
 #### Extension point {#devel.services.mapstore.extension}
-Porting the *MapStore* adapter to a different persistence layer (such as a relational database) is relatively easy. By implementing the `com.hazelcast.core.MapStore` interface and specifying the implementation class at runtime, an EverBEEN user has the ability to change the behavior of the *MapStore* layer.
+Porting the *MapStore* adapter to a different persistence layer (such as a relational database) is relatively easy. By implementing the `com.hazelcast.core.MapStore` interface and specifying the implementation class at runtime.
 
 #### Configuration {#devel.services.mapstore.configuration}
 The *MapStore* layer can be configured to accommodate different needs:
@@ -562,10 +562,10 @@ The *MapStore* layer can be configured to accommodate different needs:
 * change implementation
 * write-through and write-back modes
 
-Detailed description of configuration can be found in the [Configuration](#user.configuration) section.
+Detailed description of configuration can be found in Chapter 2.8.1.8 [MapStore Configuration](#user.configuration).
 
 ### Web Interface {#devel.services.webinterface}
-The EverBEEN web interface is a sophisticated utility. able to monitor and control the EverBEEN cluster. It is not actually a real service but rather a standalone client. Nevertheless it is an indispensable part of the framework. Its implementation is based on the [Tapestry5](http://tapestry.apache.org/) framework and its extension, [Tapestry5-jquery](http://tapestry5-jquery.com/). Describing the principles and conventions of Tapestry framework is not a part of the EverBEEN documentation but it can be found on official site of the framework. We would, however, like to include some information which could be helpful for Web Interface extenders.
+The EverBEEN web interface is a sophisticated utility able to monitor and control the EverBEEN cluster. It is not actually a real service but rather a standalone client. Nevertheless it is an indispensable part of the framework. Its implementation is based on the [Tapestry5](http://tapestry.apache.org/) framework and its extension, [Tapestry5-jquery](http://tapestry5-jquery.com/). Describing the principles and conventions of Tapestry framework is not a part of the EverBEEN documentation but can be found on the official site of the framework. We would, however, like to include some information which could be helpful for Web Interface extenders.
 
 #### Dependency Injection
 Tapestry uses its own implementation of dependency injection called Tapestry IoC (Inversion of Control). This container is responsible for managing dependencies among pages, components, services and other parts of the application. Tapestry has several of its own services and we added two more:
@@ -579,4 +579,4 @@ These services are fully integrated to the Tapestry web application life cycle a
 All pages are inherited from the base [`Page`](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/web/pages/Page.html) class. This class contains an injected instance of `BeenApiService`, from which you can obtain an instance of [BeenApi](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/api/BeenApi.html). The `BeenApi` enables you to manage the whole EverBEEN cluster. The global EverBEEN layout is defined by the [`Layout`](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/web/components/Layout.html) component. And all JavaScript and CSS resources can be found in the `src/main/webapp` subdirectory of the `web-interface` module.
 
 #### Connecting WI to the cluster
-Web interface is connected to the cluster using Hazelcast native client. It means that the WI does not store any data and does not own (manage) any Hazelcast shared objects.
+Web interface is connected to the cluster using Hazelcast native client. It means that the Web Interface does not store any data and does not own (manage) any Hazelcast shared objects.
