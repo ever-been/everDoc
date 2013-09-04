@@ -7,15 +7,15 @@ BEEN is designed from the ground up to be a multi-platform software. Currently s
 * Microsoft Windows 7 and later
 * FreeBSD
 
-In order to deploy BEEN these software packages needs to be installed:
+In order to deploy BEEN these software packages need to be installed:
 
 * Java Runtime Environment (JRE) version 1.7
 
-For writing and debugging user-written tasks, the machine needs:
+For writing and debugging user-written tasks:
 
 * Apache Maven version 3
 
-For a node that will run the web interface client, the machine needs:
+For a node that will run the web interface client:
 
 * Java Servlet compatible container (e.g. Tomcat 7, Jetty)
 
