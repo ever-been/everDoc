@@ -54,32 +54,24 @@ Therefore the project goals were extended to include:
 * Preserving the basic concept of the whole environment
 * Innovating the codebase by use modern technologies and practices
 * Delivering a highly scalable and stable product
-* Reducing the number of *single points of failure*
+* Reducing the number of single points of failure
 * Making the framework easy to deploy
 * Improving usability by simplifying task and benchmark creation and debugging
 
 ### Distributed nature of EverBEEN {#user.poutput.distributed}
 
-One of WillBEEN's major issues was reliance on network stability. The framework required that all involved computers be running and available. Disconnecting some of the core services caused the whole framework to hang or crash, and recovery was often impossible. Also, the core EverBEEN components were required to be running for the whole time, which created a lot of *single points of failure*. That aggravated common situations like short-term network outages to irrecoverable system failures.
+One of WillBEEN's major issues was reliance on network stability. The framework required that all involved computers be running and available. Disconnecting some of the core services caused the whole framework to hang or crash, and recovery was often impossible. Also, the core EverBEEN components were required to be running for the whole time, which created a lot of single points of failure. That aggravated common situations like short-term network outages to irrecoverable system failures.
 
-Such fragile *client-server architecture* seemed inappropriate for a framework supposedly tailored for large and heterogeneous networks. That is why EverBEEN is built on *Hazelcast* -- a decentralized, highly scalable platform for distributed data sharing. Hazelcast is a Java-based library that implements peer-to-peer communication over TCP/IP, featuring redundant data sharing, transparent replication and automatic peer discovery. This platform realizes distributed maps, queues, lists, locks, topics, transactions and synchronization mechanisms using distributed hashing tables.
+Such fragile client-server architecture seemed inappropriate for a framework supposedly tailored for large and heterogeneous networks. That is why EverBEEN is built on *Hazelcast* -- a decentralized, highly scalable platform for distributed data sharing. Hazelcast is a Java-based library that implements peer-to-peer communication over TCP/IP, featuring redundant data sharing, transparent replication and automatic peer discovery. This platform provides distributed maps, queues, lists, locks, topics, transactions and synchronization mechanisms using distributed hashing tables.
 
-<!-- TODO refactor following two paragraphs -->
+Hazelcast supports data redundancy and fail-over mechanisms, which EverBEEN uses to provide a decentralized benchmarking environment. Its nodes are mutually equal, and the framework keeps running as long as at least one node is partaking in data sharing. When a node gets disconnected, the cluster is notified and ceases using this node until it reconnects. To fully profit from this fault-tolerant behavior, core EverBEEN components function in a decentralized manner and transparently partition work across many instances.
 
-Hazelcast supports data redundancy and fail-over mechanisms. Using these, BEEN is able to present a decentralized environment for the benchmarks. Each connected node is equal to each, and the framework can run as long as each node can communicate with the rest of the network. When a node gets disconnected (for whatever reason), the cluster is notified about this and stops using this node.
-
-For this fail-redundancy to work properly, most of the core components now function in a decentralized manner and are present in many instances. For example the *Task Manager* is present in all *DATA nodes* and each such instance manages only a subset of all present tasks. When a node is disconnected, it's instance of the Task Manager is no longer functional and it's data is redistributed to the rest of the network. Most of the used internal data is not stored autonomously on a node, but it's rather shared in Hazelcast's distributed data structures.
-
-This architecture of BEEN transformed the project into a fully distributed platform with high availability and scalability, while minimizing bottlenecks and the number of critical components.
+This architecture makes EverBEEN a fully distributed platform with high availability and scalability, while eliminating most bottlenecks and substantially reducing the number of critical components.
 
 ### EverBEEN's Support for Regression Benchmarking {#user.poutput.regression}
 
-<!-- TODO -->
+EverBEEN was designed to cover both use cases discussed in the [Case Study](#user.study), while keeping the user code API to a minimum. The API for writing benchmarks is a unified means of creating and submitting sets of tasks on every invocation (realized by the framework when idle). Depending on the benchmark's control flow, it can either act like a service to support [push-oriented benchmarking](#intro.study.push), or iterate over a pre-defined set of parameters in a [*pull-oriented* way](#intro.study.pull).
 
-BEEN's has been designed to cover both these use cases and still have only a single user-friendly API. The API for writing benchmarks is a unified mean to create and submit a benchmarkable item. Every benchmark consists of a user-written class which has a method `generateTaskContext`, which should return a new item to be benchmarked (called *task context*). When a benchmark doesn't have any item to submit, it can simply wait for an event (to support the push-oriented case). This method is called by the framework in a loop, so the benchmark can generate as many items as it wants. The benchmark can run indefinitely or it can mark itself as finished by returning `null` from the method. The BEEN cluster itself calls the method when it is capable of running a new item.
+During development, implementation of a declarative language describing benchmarks was considered. Such language would, however only support the pull-oriented case. Subsequently, EverBEEN would require a different API for push-oriented benchmarking. The unified API offers unlimited flexibility, as the generation of task sets is in full control of the user. Additionally, the running benchmark can take the current (incomplete) results into account and modify the progress of the benchmark. This feature has many uses, for example granularity refinement in reaction to a previously detected anomaly.
 
-During the development, we have considered implementing a *descriptive language* that would specify which items are to be benchmarked. This would however only support the pull-oriented case and would require a different API for push-oriented benchmarking. The unified API offers unlimited flexibility, because the code that generates the benchmarkable items is written by the user.
-
-This also means that the running benchmark can take the current (incomplete) results into account and modify the progress of the benchmark. E.g. this might be necessary to refine granularity of the benchmarked items when it detects an anomaly in the results.
-
-For details about the API for writing tasks and benchmarks, see the [Task and Benchmark API](#user.taskapi) section.
+The unified API for writing tasks and benchmarks is discussed in detail in the [Task and Benchmark API](#user.taskapi) section.

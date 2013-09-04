@@ -1,12 +1,12 @@
 ## Deployment process
 
-### Running BEEN
+### Running EverBEEN
 
 The deployment process assumes a set of interconnected computers on which the framework is supposed to run and a running MongoDB instance. See the [Requirements](#user.requirements) section and [MongoDB installation guide](http://docs.mongodb.org/manual/installation/) for details.
 
-Deploying BEEN consists of two steps:
+Deploying EverBEEN consists of two steps:
 
-* Copying BEEN onto each machine --- single executable jar file is provided
+* Copying EverBEEN onto each machine --- single executable jar file is provided
 
 * Creating clustering configurations
 
@@ -31,7 +31,7 @@ The cluster is formed through broadcasting.
 
 Only the first two configuration options are needed, rest of options have sane defaults.
 
-#### Direct connect scenario
+#### Direct connection scenario
 
 The cluster will be formed by directly connecting nodes.
 
@@ -58,7 +58,7 @@ The `been.cluster.client.members` option is important, again specifying a (poten
 
 The configuration can be copied directly onto the hosts or can be referenced by an URL (which is the preferred way).
 
-#### Configuring BEEN services
+#### Configuring EverBEEN services
 
 The next step is to decide which BEEN services will be run and where. In the simplest and most straight forward case one node will be running *Software repository*, *Object repository*, *Host Runtime* and implicitly the *Task Manager*.
 
@@ -75,6 +75,10 @@ Other nodes thus can run only the *Host Runtime* service.
 `java -jar been.jar -r -sw -rr -cf http://been.example.com/been-direct.properties`
 :	in case of the direct connection scenario
 
+To list available command line options run EverBEEN with:
+
+	`java -jar been.jar --help`
+
 #### Running the Web Interface
 
 The last step consists of deploying and running the *Web Interface*. The supplied war file can be deployed to a standard Java Servlet container (e.g. Tomcat). Or can be run directly by
@@ -84,7 +88,7 @@ The last step consists of deploying and running the *Web Interface*. The supplie
 using an embedded container.
 
 ### Node directory structure
-Node working directory is created on first startup. 
+Node working directory is created on startup. 
        
     1.  .HostRuntime/
     2.      \___ tasks/
@@ -104,18 +108,18 @@ Node working directory is created on first startup.
     16.             \___ ...
     17.             \___ ...
                 
-* **.HostRuntime** directory (1) - Host Runtime global working directory. It can be configured by changing the property `hostruntime.wrkdir.name`. The default name is `.HostRuntime`.
+* **.HostRuntime** directory (1) --- Host Runtime global working directory. It can be configured by changing the property `hostruntime.wrkdir.name`. The default name is `.HostRuntime`.
 
-* Each separate run of BEEN creates its own working directory for its tasks in the **tasks** subdirectory (2).
+* Each run of EverBEEN creates separate working directory for its tasks in the **tasks** subdirectory (2).
 
-* On each node restart a new working directory for tasks running on this node (3,4,5,6) is created. Names of these directories are based on the node startup (wall clock) time. BEEN on each start checks these directories and if their number exceeds 4 by default, the oldest one is deleted. This prevents an unexpected growth of the Host Runtime working directory size, but allows debugging failed tasks when the underlying Host Runtime is terminated and restarted. The number of backed up directories is configurable by property `hostruntime.tasks.wrkdir.maxHistory`.
+* On restart a new working directory for tasks (3,4,5,6) is created. Names of these directories are based on the node startup (wall clock) time. EverBEEN on each start checks these directories and if their number exceeds 4 (by default), the oldest one is deleted. This prevents an unexpected growth of the Host Runtime working directory size, but allows debugging failed tasks when the underlying Host Runtime is terminated and restarted. The number of backed up directories is configurable by the `hostruntime.tasks.wrkdir.maxHistory` configuration option.
 
-* Working directories of single tasks (7,15,16,17) contains files from an extracted BPK (8,9,10,13,14) and log files for error output (11) and standard output (12).
+* Working directories of tasks (7,15,16,17) contain files from an extracted BPK (8,9,10,13,14) and log files for the standard error output (11) and standard output (12).
 
-The working directory of a particular task is deleted only if the task finished its execution without error, otherwise the directory remains unchanged. Alternatively, you can either clean up the directory manually or use the Web Interface for that purpose.
+The working directory of a task is deleted only if the task finished its execution without error, otherwise the directory remains unchanged. Alternatively, you can either clean up the directory manually or use the Web Interface for that purpose.
 
 ### Limitations
 
 * If you want to run more than one Host Runtime on the same machine we **strongly recommend** to start each node with a different working directory name. Running multiple instances concurrently with the same working directory *is not supported*.
 
-* Running BEEN for a long time without clearing directories after failed tasks can result in low disk space. 
+* Running EverBEEN for a long time without clearing directories after failed tasks can result in low disk space. 
