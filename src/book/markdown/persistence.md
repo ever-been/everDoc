@@ -27,8 +27,8 @@ While running multiple nodes, please keep in mind that these storage components 
 
 Generally speaking, having multiple persistence layer nodes is only useful if you:
 
-* Have highly limited resources for each persistence node and wish to load-balance accesses to the same database
-* Have a synchronization/sharding strategy set up
+* Have highly limited resources for each persistence node and wish to load-balance accesses to the same database.
+* Have a synchronization/sharding strategy set up.
 
 Additional use-cases may arise if you decide to write your own database adapter. In that case, consult the [extension point](#user.persistence.extension) for more detail.
 
