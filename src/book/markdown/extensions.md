@@ -99,7 +99,7 @@ The *entityId* is composed of *kind* and *group*. The *kind* is supposed to repr
 * **result** - stored task results
 * **descriptor** - *task*/*context* configuration; used to store run-time parameters of a *task* or *context*
 * **named-descriptor** - *task*/*context* configuration; user-stored configuration templates for *task* or *context* runs
-* **evaluation** - output of evaluations performed on task results; these objects contain serialized BLOBs - see [evaluations](#TODO) for more detail
+* **evaluation** - output of evaluations performed on task results; these objects contain serialized BLOBs - see [Chapter 2.5.11 (Evaluators)](#user.taskapi.evaluators) for more detail
 * **outcome** - meta-information about the state and outcome of jobs in EverBEEN; these are used in automatic cleanup
 
 The *group* is supposed to provide a more granular grouping of objects and depends entirely on the object's *kind*.
