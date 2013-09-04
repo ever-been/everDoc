@@ -21,7 +21,7 @@ BPK package is represented by single file with **\*.bpk** suffix. In fact the bp
 1. ***config.xml*** file - Main configuration XML descriptor of the BPK. It consists of two main sections:
     - **metaInf** section - specifies unique identifier of the BPK. 
     - **runtime** section - specifies runtime type. Been supports two runtime types - **JavaRuntime** and **NativeRuntime**. 
-        - **JavaRuntime** - defines tasks written in JVM based inanguage (e.g. Java, Scale). The name of the jar with implementation is required.
+        - **JavaRuntime** - defines tasks written in JVM based language (e.g. Java, Scale, Groovy). The name of the jar with implementation is required.
         - **NativeRuntime** - defines tasks written in other languages. This type requires the name of a runnable object (binary or script) to be used.
 
     Following examples show valid descriptors for *java* and *native* runtimes.
@@ -80,10 +80,9 @@ Even though it is possible to create a BPK "by hand" it is not recommended. The 
 
 
 ### Software repository {#user.swrepository.swrepository}
-The main purpose of the software repository is to store BPKs for future use. Software Repository (SR) is implemented as a service which can be started on an arbitrary BEEN node. You can upload prepared BPKs to and download them from the SR. Provided implementation is based on embedded HTTP server.
-
+The main purpose of the software repository is to store BPKs for future use. The Software Repository is implemented as a service which can be started on an arbitrary EverBEEN node.
 
 ### BPK versioning {#user.swrepository.bpkversioning}
-Software repository does not allow re-uploading of BPKs with same groupId, bpkId and version. If you want to re-upload a BPK, you have to change its version. The reason for this limitation is simple - it prevents inconsistencies and unpredictable behavior of production code.
+Software repository does not allow re-uploading of BPKs with same `groupId`, `bpkId` and `version`. If you want to re-upload a BPK, you have to change its version. The reason for this limitation is simple - it prevents inconsistencies and unpredictable behavior of production code.
 
-For ease of developing of new tasks and benchmarks BPKs can be created with version suffixed by **'-SNAPSHOT'**. Such versions of BPKs can be re-uploaded to the Software Repository. Also Host Runtimes will download such versions instead of using cached packages. It is not recommended to use **'-SNAPSHOT'** in in production environment. 
+For ease of developing of new tasks and benchmarks BPKs can be created with version suffixed by **'-SNAPSHOT'**. Such versions of BPKs can be re-uploaded to the Software Repository. Also Host Runtimes will download such versions instead of using cached packages. It is not recommended to use **'-SNAPSHOT'** in production environment. 
