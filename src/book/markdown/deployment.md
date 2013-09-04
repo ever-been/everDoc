@@ -108,7 +108,7 @@ Node working directory is created on startup.
     16.             \___ ...
     17.             \___ ...
                 
-* **.HostRuntime** directory (1) - Host Runtime global working directory. It can be configured by changing the property `hostruntime.wrkdir.name`. The default name is `.HostRuntime`.
+* **.HostRuntime** directory (1) --- Host Runtime global working directory. It can be configured by changing the property `hostruntime.wrkdir.name`. The default name is `.HostRuntime`.
 
 * Each run of EverBEEN creates separate working directory for its tasks in the **tasks** subdirectory (2).
 
@@ -122,4 +122,4 @@ The working directory of a task is deleted only if the task finished its executi
 
 * If you want to run more than one Host Runtime on the same machine we **strongly recommend** to start each node with a different working directory name. Running multiple instances concurrently with the same working directory *is not supported*.
 
-* Running BEEN for a long time without clearing directories after failed tasks can result in low disk space. 
+* Running EverBEEN for a long time without clearing directories after failed tasks can result in low disk space. 
