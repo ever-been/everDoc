@@ -44,7 +44,7 @@ The cluster will be formed by directly connecting nodes.
 	been.cluster.group=dev
 	been.cluster.password=dev-pass
 
-The `been.cluster.tcp.members` option specifies a ( potentially partial) list of nodes to which the connecting node will try to connect. If no node in the list is responding a new cluster will be formed.
+The `been.cluster.tcp.members` option specifies a (potentially partial) list of nodes to which the connecting node will try to connect. If no node in the list is responding a new cluster will be formed.
 
 #### Connecting NATIVE nodes
 
@@ -54,7 +54,7 @@ NATIVE nodes must be informed to which DATA nodes to connect:
 	been.cluster.group=dev
 	been.cluster.password=dev-pass
  
-The `been.cluster.client.members` option is important, again specifying a ( potentially partial) list of DATA nodes to connect to. 
+The `been.cluster.client.members` option is important, again specifying a (potentially partial) list of DATA nodes to connect to. 
 
 The configuration can be copied directly onto the hosts or can be referenced by an URL (which is the preferred way).
 

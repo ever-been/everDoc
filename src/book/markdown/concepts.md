@@ -1,5 +1,5 @@
 ## Basic concepts {#user.concepts}
-Before dwelling into the deployment process a few concepts must be explained. The concepts are explored and further explained in the following chapters.
+Before delving into the deployment process a few concepts must be explained. The concepts are explored and further explained in the following chapters.
 
 
 ### BEEN services {#user.concepts.services}
@@ -50,7 +50,7 @@ Task context states:
 :	All contained tasks finished without an error.
 
  *FAILED*
-:	At least one task from the context failed
+:	At least one task from the context failed.
 
 ### Benchmarks {#user.concepts.benchmarks}
 
