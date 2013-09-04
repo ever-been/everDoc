@@ -224,10 +224,3 @@ EverBEEN features a pair of modules that provide command-line debugging tools.
 `client-submitter`
 :	An executable jar designed to quickly connect to the EverBEEN cluster and submit a task. Useful for debugging task code.
 
-
-
-
-
-### Module interactions
-
-<!-- TODO describe dependencies between modules (probably a picture) -->
