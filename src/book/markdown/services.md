@@ -9,9 +9,9 @@ The service was completely rewritten since the code quality was poor. The rewrit
 
 Even though the service was completely rewritten, its purpose and basic functions remain similar to previous BEEN versions.
 
-A Host Runtime can run on any type of [EverBEEN node](#user.concepts.nodes). It makes sense to run it on a *NATIVE* node in order to avoid costs associated with running a *DATA* node. Typically, deployment will have a few DATA nodes and as many NATIVE nodes with Host Runtime instances as needed.
+A Host Runtime can run on any type of EverBEEN node. It makes sense to run it on a *NATIVE* node in order to avoid costs associated with running a *DATA* node. Typically, deployment will have a few DATA nodes and as many NATIVE nodes with Host Runtime instances as needed.
 
-Available configuration options are listed in the [Configuration](#user.configuration) chapter.
+Available configuration options are listed in the chapter [\ref*{user.configuration} Configuration](#user.configuration).
 
 #### Host Runtime overview {#devel.services.hostruntime.overview}
 
@@ -49,7 +49,7 @@ Any communication between a task and the rest of the framework is mediated by th
 * Results, result queries
 * Task context related operations (Checkpoints, latches, etc.)
 
-The communication protocol is based on [0MQ](#devel.techno.zmq) and messages are encoded in JSON. This allows implementing the [Task API](#user.taskapi) in different languages. The EverBEEN project currently implements extensive support for JVM based languages.
+The communication protocol is based on 0MQ and messages are encoded in JSON. This allows implementing the Task API in different languages. The EverBEEN project currently implements extensive support for JVM based languages.
 
 The output a of task is dispatched to the appropriate destination through Hazelcast distributed structures. The Host Runtime routes this information to its correct destination, but is otherwise oblivious to how such data is actually processed.
 
@@ -307,9 +307,9 @@ An important concept to remember is that an instance of the Task Manager only ha
 These distributed data structures are also backed by the [MapStore](#devel.services.mapstore) (enabled by default).
 
 #### Task scheduling {#devel.services.taskmanager.tasks}
-The following section discusses task states, which are described in detail in ["Basic concepts"](#user.concepts.tasks) section of the user manual.
+The following section discusses task states, which are described in detail in section [\ref*{user.concepts.tasks} (Basic concepts)](#user.concepts.tasks) of the user manual.
 
-The Task Manager is responsible for scheduling tasks, which boils down to finding a Host Runtime on which the task can run. The description of possible restrictions can be found in the [Host Runtime](#devel.services.hostruntime) section.
+The Task Manager is responsible for scheduling tasks, which boils down to finding a Host Runtime on which the task can run. The description of possible restrictions can be found in the [\ref*{devel.services.hostruntime} Host Runtime](#devel.services.hostruntime) section.
 
 A [distributed query](http://hazelcast.com/docs/2.6/manual/single_html/#MapQuery) is used to find suitable Host Runtimes, spreading the load among `DATA` nodes.
 
@@ -360,7 +360,7 @@ There are several situations where similar problems might arise:
 
 Note that the `LocalKeyScanner` solution is mainly a safety net -- most of the time the framework will receive an event on which it can react appropriately (e.g. Host Runtime failed).
 
-In the case of cluster restart, there might be stale tasks which do not run anymore. In such cases, the task state information loaded from the [MapStore] (#devel.services.mapstore) will be inconsistent. Such situation are recognized and corrected by the scan.
+In the case of cluster restart, there might be stale tasks which do not run anymore. In such cases, the task state information loaded from the [MapStore](#devel.services.mapstore) will be inconsistent. Such situation are recognized and corrected by the scan.
 
 #### Hazelcast events {#devel.services.taskmanager.events}
 These are main sources of cluster-wide events, received from Hazelcast:
@@ -562,7 +562,7 @@ The *MapStore* layer can be configured to accommodate different needs:
 * change implementation
 * write-through and write-back modes
 
-Detailed description of configuration can be found in Chapter 2.8.1.8 [MapStore Configuration](#user.configuration).
+Detailed description of configuration can be found in section [\ref*{user.configuration} MapStore Configuration](#user.configuration).
 
 ### Web Interface {#devel.services.webinterface}
 The EverBEEN web interface is a sophisticated utility able to monitor and control the EverBEEN cluster. It is not actually a real service but rather a standalone client. Nevertheless it is an indispensable part of the framework. Its implementation is based on the [Tapestry5](http://tapestry.apache.org/) framework and its extension, [Tapestry5-jquery](http://tapestry5-jquery.com/). Describing the principles and conventions of Tapestry framework is not a part of the EverBEEN documentation but can be found on the official site of the framework. We would, however, like to include some information which could be helpful for Web Interface extenders.

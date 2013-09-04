@@ -11,7 +11,7 @@ Default configuration values are supplied, before you change any of them, consul
 A detailed description of available configuration options of the EverBEEN framework follows. The default value for each configuration option is provided.
 
 #### Cluster Configuration {#user.configuration.cluster}
-Cluster configuration describes how nodes will form a cluster and how the cluster will behave. The configuration is directly mapped to [Hazelcast](#devel.techno.hazelcast) configuration. These options are applicable only to [DATA nodes](#user.concepts.nodes).
+Cluster configuration describes how nodes will form a cluster and how the cluster will behave. The configuration is directly mapped to Hazelcast configuration. These options are applicable only to DATA nodes.
 
 It is *essential* that all cluster nodes use the same configuration for these options, otherwise they may not form a cluster.
 
@@ -49,19 +49,19 @@ It is *essential* that all cluster nodes use the same configuration for these op
 :	Enables/Disables logging of Hazelcast messages. Note that Hazalcast log messages are not persisted as other service logs.
 
 `been.cluster.mapstore.use`=*true*
-:	Wheather to use [MapStore](#devel.services.mapstore) to persist cluster runtime information.
+:	Wheather to use MapStore to persist cluster runtime information.
 
 `been.cluster.mapstore.write.delay`=*0*
-:	Delay in seconds with which to write to the [MapStore](#devel.services.mapstore). *0* means *write-through*, values bigger than zero mean *write-back*. Certain Map Store implementations will be more efficient in write-back mode.
+:	Delay in seconds with which to write to the MapStore. *0* means *write-through*, values bigger than zero mean *write-back*. Certain Map Store implementations will be more efficient in write-back mode.
 
 `been.cluster.mapstore.factory`=*cz.cuni.mff.d3s.been.mapstore.mongodb.MongoMapStoreFactory*
-:	Implementation of [MapStore](#devel.services.mapstore), must be on the classpath when starting a node.
+:	Implementation of MapStore, must be on the classpath when starting a node.
 
 `been.cluster.socket.bind.any`=*true*
 :	Whether to bind to local interfaces.
 
 #### Cluster Client Configuration {#user.configuration.client}
-Cluster client configuration options are used when a node is connected to the cluster in *NATIVE* client mode. [Cluster Configuration](#user.configuration.cluster) options are ignored in that case.
+Cluster client configuration options are used when a node is connected to the cluster in *NATIVE* client mode. Cluster Configuration options are ignored in that case.
 
 `been.cluster.client.members`=*localhost:5701*
 :	Semicolon separated list of `[ip|host][:port] cluster members to connect to. At least one member must be available.
@@ -70,19 +70,19 @@ Cluster client configuration options are used when a node is connected to the cl
 :	Inactivity timeout in seconds. The client will disconnect after the timeout.
 
 #### Task Manager Configuration {#user.configuration.taskmanager}
-Task Manager configuration options are used to tune the [Task Manager](#devel.services.taskmanager). Use with care!
+Task Manager configuration options are used to tune the Task Manager. Use with care!
 
 `been.tm.benchmark.resubmit.maximum-allowed`=*10*
 :	Maximum number of resubmits of a failed benchmark task the Task Manager will allow.
 
 `been.tm.scanner.period`=*30*
-:	Period in second of the Task Manager's [local key scanner](#devel.services.taskmanager.errors).
+:	Period in second of the Task Manager's local key scanner.
 
 `been.tm.scanner.delay`=*15*
-:	Initial delay in seconds of the Task Manager's [local key scanner](#devel.services.taskmanager.errors).
+:	Initial delay in seconds of the Task Manager's local key scanner.
 
 #### Cluster Persistence Configuration {#user.configuration.objectrepo}
-Configuration for the persistence transport layer. See [Persistence](#user.persistence) for more details.
+Configuration for the persistence transport layer. See chapter [\ref*{user.persistence} (Persistence)](#user.persistence) for more details.
 
 `been.cluster.persistence.query-timeout`=*10*
 :	The timeout for queries into the persistence layer.
@@ -92,7 +92,7 @@ Configuration for the persistence transport layer. See [Persistence](#user.persi
 :	The timeout for a query's processing time in the persistence layer. Processing time includes the trip the data has to make back to the requesting host.
 
 #### Persistence Janitor Configuration {#user.configuration.objectrepo.janitor}
-Configuration for the persistence layer janitor component. See [Persistence](#user.persistence) for more details.
+Configuration for the persistence layer janitor component. See [\ref*{user.persistence} (Persistence)](#user.persistence) for more details.
 
 `been.objectrepository.janitor.finished-longevity`=*168*
 :	 Number of hours objects with a `FINISHED` status stay persistent.
@@ -116,7 +116,7 @@ Host Runtime monitoring configuration options.
 :	Interval of Host Runtime system monitoring samples, in milliseconds.
 
 #### Host Runtime Configuration {#user.configuration.hostruntime}
-[Host Runtime](#user.hostruntime) configuration options.
+Host Runtime configuration options.
 
 `hostruntime.tasks.max`=*15*
 :	Maximum number of tasks per Host Runtime.
@@ -131,7 +131,7 @@ Host Runtime monitoring configuration options.
 :	 Maximum number of task working directories a Host Runtime will keep. When this number is exceeded at the boot of a Host Runtime service, the oldest existing directory is deleted.
 
 #### MapStore Configuration {#user.configuration.mapstore}
-[MapStore](#devel.services.mapstore) configuration options.
+MapStore configuration options.
 
 `been.cluster.mapstore.db.hostname`=*localhost*
 :	Host name (full connection string including port). If no port is specified, default port is used.
@@ -146,7 +146,7 @@ Host Runtime monitoring configuration options.
 :	Password to use to connect to the database.
 
 #### Mongo Storage Configuration {#user.configuration.mongostorage}
-Configuration options for the MongoDB based [Object storage](#user.persistence).
+Configuration options for the MongoDB based Object Storage.
 
 `mongodb.hostname`=*localhost*
 :	Host name (full connection string including port). If no port is specified, default port is used.

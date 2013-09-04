@@ -26,7 +26,7 @@ Probably the most notable fact in the above schema is the presence of clustered 
 
 These services are run on EverBEEN cluster nodes, by configuring the node at launch time. While EverBEEN relies on the eventual availability of its services, it remains oblivious to their actual location, as long as they're reachable within the cluster. The only exception to this is the *Software Repository*, which emits its location to the cluster to provide software packages via a simple HTTP protocol.
 
-However, the overview of EverBEEN services would not be complete without *Task Manager*, not seen on this diagram. The *Task Manager* is a component responsible for all the house-keeping around scheduling user code execution. As such, it plays an essential role in the EverBEEN coordination. This led us to make its decision-making process decentralized and ensure that multiple *Task Manager* instances could co-exist in the cluster. The *Task Manager* is run on every [DATA node](#devel.architecture.nodes), which represents a transparent fail-over strategy in case one of the multiple data nodes has to terminate.
+However, the overview of EverBEEN services would not be complete without *Task Manager*, not seen on this diagram. The *Task Manager* is a component responsible for all the house-keeping around scheduling user code execution. As such, it plays an essential role in the EverBEEN coordination. This led us to make its decision-making process decentralized and ensure that multiple *Task Manager* instances could co-exist in the cluster. The *Task Manager* is run on every DATA node, which represents a transparent fail-over strategy in case one of the multiple data nodes has to terminate.
 
 
 

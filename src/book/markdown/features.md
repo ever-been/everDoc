@@ -1,6 +1,6 @@
 ## Principal features {#devel.features}
 
-There are several EverBEEN features we are particularly proud of, mostly because we believe them to be a good match to the [project goals](#user.pgoals.goals) assigned to us at the beginning of the project, or the [design goals](#devel.dgoals) we set up ourselves when considering the deficiencies of previous project incarnations.
+There are several EverBEEN features we are particularly proud of, mostly because we believe them to be a good match to the project goals assigned to us at the beginning of the project, or the design goals we set up ourselves when considering the deficiencies of previous project incarnations.
 
 *Scalability*
 :	Adding nodes to the EverBEEN cluster transparently increases the scale of benchmarks you can perform. There is no master node to bottleneck the decision-making even if you create a large cluster. The assumed (although untested) advantage of using `MongoDB` is its sharding ability, which should provide a database back-end scaling strategy implicitly compatible with EverBEEN.

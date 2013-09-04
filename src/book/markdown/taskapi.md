@@ -199,7 +199,7 @@ Selection expression can be tested on the `runtime/list` page in the Web Interfa
 
 To create a task submittable into EverBEEN, you should start by subclassing the [`Task`](http://everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/taskapi/Task.html) abstract class. The `run` method needs to be overridden.
 
-EverBEEN uses [SLF4J](#devel.techno.slf4j) as its logging mechanism and provides a logging backend for all user-written code. This means that you can simply use the standard loggers and any logs will be automatically stored through EverBEEN.
+EverBEEN uses [SLF4J](http://www.slf4j.org/) as its logging mechanism and provides a logging backend for all user-written code. This means that you can simply use the standard loggers and any logs will be automatically stored through EverBEEN.
 
 Knowing this, the simplest task that will only log a message looks like this:
 
@@ -218,7 +218,7 @@ Knowing this, the simplest task that will only log a message looks like this:
 		}
 	}
 
-If this class is in a Maven project as described in the [Maven Plugin and Packaging](#user.bpkplugin) section, it can be packaged into a BPK package by invoking `mvn package`. This package can be uploaded and run from the Web Interface.
+If this class is in a Maven project as described in the [\ref*{user.bpkplugin} (Maven Plugin and Packaging)](#user.bpkplugin) section, it can be packaged into a BPK package by invoking `mvn package`. This package can be uploaded and run from the Web Interface.
 
 BEEN provides several APIs for user-written tasks:
 

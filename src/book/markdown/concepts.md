@@ -63,14 +63,12 @@ Results are task generated objects representing certain values --- for example m
 Evaluators are special purpose tasks which generate *evaluator results* the framework knows how to interpret, for example a graph image.
  
 ### Node types  {#user.concepts.nodes} 
-In EverBEEN `node` is a program capable of running BEEN services. The node must be able to interact with other nodes through a computer network. Type of a node determines the mechanism used to connect to other nodes. Since EverBEEN uses [Hazelcast](#devel.techno.hazelcast) as its means of connecting nodes, node types follow a design pattern from Hazelcast. Currently two types are supported:
+In EverBEEN `node` is a program capable of running BEEN services. The node must be able to interact with other nodes through a computer network. Type of a node determines the mechanism used to connect to other nodes. Since EverBEEN uses Hazelcast as its means of connecting nodes, node types follow a design pattern from Hazelcast. Currently two types are supported:
 
 `DATA node`
-:	Data nodes form a cluster that *share distributed data*. The cluster can be formed either through broadcasting or by directly contacting existing nodes, see [Cluster Configuration](#user.configuration.cluster). The Task Manager service must be run on each DATA node (this requirement is enforced by the framework). Be aware that DATA nodes incur overhead due to sharing data.
+:	Data nodes form a cluster that *share distributed data*. The cluster can be formed either through broadcasting or by directly contacting existing nodes, see section [\ref*{user.configuration.cluster} (Cluster Configuration)](#user.configuration.cluster). The Task Manager service must be run on each DATA node (this requirement is enforced by the framework). Be aware that DATA nodes incur overhead due to sharing data.
 
 `NATIVE node`
-:	Native nodes can be though of as cluster clients. They *do not* participate in sharing of distributed data and therefore do not incur overhead from it. NATIVE nodes connect directly to DATA nodes (failures are transparently handled). This also means that at all times at least one DATA node must be running in order for the framework to work. For configuration details see [Cluster Client Configuration](#user.configuration.client)  
-
+:	Native nodes can be though of as cluster clients. They *do not* participate in sharing of distributed data and therefore do not incur overhead from it. NATIVE nodes connect directly to DATA nodes (failures are transparently handled). This also means that at all times at least one DATA node must be running in order for the framework to work. For configuration details see section [\ref*{user.configuration.client} (Cluster Client Configuration)](#user.configuration.client).
 
 All services except the Task Manager can run on both node types.
-

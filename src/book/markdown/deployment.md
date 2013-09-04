@@ -2,7 +2,7 @@
 
 ### Running EverBEEN
 
-The deployment process assumes a set of interconnected computers on which the framework is supposed to run and a running MongoDB instance. See the [Requirements](#user.requirements) section and [MongoDB installation guide](http://docs.mongodb.org/manual/installation/) for details.
+The deployment process assumes a set of interconnected computers on which the framework is supposed to run and a running MongoDB instance. See section [\ref*{user.requirements} (Requirements)](#user.requirements) and [MongoDB installation guide](http://docs.mongodb.org/manual/installation/) for details.
 
 Deploying EverBEEN consists of two steps:
 

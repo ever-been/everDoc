@@ -10,13 +10,13 @@ These findings made us focus not only on a complete reimplementation of WillBEEN
 As we were deciding which networking technology EverBEEN will use, we were driven to make EverBEEN as robust as possible in face of network failures and OS freezes. The choice of Hazelcast as a networking technology took this idea to new heights, enabling us to build EverBEEN as a truly distributed system, rather than just a network of interconnected nodes.
 
 <!-- TODO check link addr -->
-As a result, we decentralized all the decision-making in EverBEEN. Decisions are made on the basis of distributed shared memory and as long as multiple [data nodes](#user.concepts.nodes) are running, there is no single point of failure. The failure of a single partaking host was seen as an eventuality, rather than an unrecoverable error, and was counted with from the start of EverBEEN development, as was the case of a temporary disconnection of the persistence layer.
+As a result, we decentralized all the decision-making in EverBEEN. Decisions are made on the basis of distributed shared memory and as long as multiple data nodes are running, there is no single point of failure. The failure of a single partaking host was seen as an eventuality, rather than an unrecoverable error, and was counted with from the start of EverBEEN development, as was the case of a temporary disconnection of the persistence layer.
 
 ### Modularity {#devel.dgoals.modular}
 
 Modularity was the first code characteristic we noted as lacking in WillBEEN. Although some pseudo-modules were present, the entire codebase was compiled together, leading to frequent cross-references in the project. Not only does this pose an issue with code maintainability, but it also makes component overrides very demanding in terms of the user's knowledge of the entire system. With the aid of modern building tools (mostly Apache Maven), we made EverBEEN a modular project where component overriding is possible.
 
-In reaction to previous problems with WillBEEN's result storage, we specifically interfaced the *Object Repository* (formerly *Results Repository*) database connector out of the project, thus making it easily replaceable if need be (see [extension points](#user.extension) for a guide).
+In reaction to previous problems with WillBEEN's result storage, we specifically interfaced the *Object Repository* (formerly *Results Repository*) database connector out of the project, thus making it easily replaceable if need be (see [\ref*{user.extension} extension points](#user.extension) for a guide).
 
 ### Ease of use {#devel.goals.easy}
 

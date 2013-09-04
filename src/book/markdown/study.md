@@ -16,7 +16,7 @@ If this software were a standalone desktop application, the obvious solution wou
 
 This task can be generalized into a problem of running a benchmark over a set of parameters. The parameters are known in advance and the benchmark is by necessity a user-written code. A generic benchmarking framework should therefore simplify both parameter specification *and* the process of writing benchmark code. The user's options must be flexible enough to support many possible configurations of the benchmark --- one might want to benchmark a single piece of software with various configurations.
 
-A benchmark iterating over a predefined set of parameters is called a **pull-oriented benchmark**. The details of EverBEEN's support for this use case are discussed later along with [project goals](#user.poutput.regression).
+A benchmark iterating over a predefined set of parameters is called a **pull-oriented benchmark**. The details of EverBEEN's support for this use case are discussed later along with the project goals.
 
 ### Push-oriented benchmarking {#intro.study.push}
 

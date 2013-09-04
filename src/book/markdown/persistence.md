@@ -35,16 +35,12 @@ Additional use-cases may arise if you decide to write your own database adapter.
 
 
 #### Automatic cleanup {#user.persistence.characteristics.cleanup}
-To prevent superfluous information from clogging the data storage, the persistence layer runs a Janitor component that performs database cleanup on a regular basis. The idea is to clean all old data for failed jobs and all metadata for successful jobs after a certain lifecycle period has passed. For lifecycle period and cleanup frequency adjustment, see the [janitor configuration](#user.configuration.objectrepo.janitor) section.
+To prevent superfluous information from clogging the data storage, the persistence layer runs a Janitor component that performs database cleanup on a regular basis. The idea is to clean all old data for failed jobs and all metadata for successful jobs after a certain lifecycle period has passed. For lifecycle period and cleanup frequency adjustment, see the [\ref*{user.configuration.objectrepo.janitor} (janitor configuration)](#user.configuration.objectrepo.janitor) section.
 
 
 
 ### Components {#user.persistence.components}
 A brief description of components that contribute to forming the EverBEEN persistence layer follows.
-
-* [Object Repository](#user.persistence.components.objectrepo)
-* [Storage](#user.persistence.components.storage)
-* [MapStore](#user.persistence.components.mapstore)
 
 
 
@@ -61,5 +57,5 @@ The Storage component gets loaded dynamically by the Object Repository at startu
 
 
 #### MapStore {#user.persistence.components.mapstore}
-Where the ObjectRepository stores user data, the MapStore is used to map EverBEEN cluster memory to a persistent storage, which enables EverBEEN to preserve job state memory through cluster-wide restarts. The MapStore runs on all [DATA nodes](#user.concepts.nodes).
+Where the ObjectRepository stores user data, the MapStore is used to map EverBEEN cluster memory to a persistent storage, which enables EverBEEN to preserve job state memory through cluster-wide restarts. The MapStore runs on all DATA nodes.
 

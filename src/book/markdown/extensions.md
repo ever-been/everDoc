@@ -1,9 +1,9 @@
 ## EverBEEN extension points {#user.extension}
 As mentioned above, EverBEEN comes with a default persistence solution for MongoDB. We realize, however, that this might not be the ideal use-case for everyone. Therefore, the MongoDB persistence layer is fully replaceable if you provide your own database connector implementation.
 
-There are two persistence components you might want to override - the [Storage](#user.extension.storageex) and the [MapStore](#user.extension.mapstoreex).
+There are two persistence components you might want to override - the Storage and the MapStore.
 
-If your goal is to relocate EverBEEN user data (benchmark results, logs etc.) to your own database and don't mind running a MongoDB as well for EverBEEN service data, you will be fine just overriding the [Storage](#user.extension.storageex). If you want to port the entire EverBEEN's persistence layer, you will have to reimplement [`MapStore`](#user.extension.extension.mapstore) as well.
+If your goal is to relocate EverBEEN user data (benchmark results, logs etc.) to your own database and don't mind running a MongoDB as well for EverBEEN service data, you will be fine just overriding the Storage. If you want to port the entire EverBEEN's persistence layer, you will have to reimplement `MapStore` as well.
 
 ### Storage extension {#user.extension.storageex}
 As declared above, the *Storage* component is fully replaceable by an implementation different from the default MongoDB adapter. However, we would like to avoid letting you plunge into this extension point override without the necessary guidelines and warnings.
@@ -58,15 +58,15 @@ We also strongly recommend that you implement these as well:
 * [QueryRedactorFactory](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/storage/QueryRedactorFactory.html) (along with [QueryRedactor](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/persistence/QueryRedactor.html) implementations)
 * [QueryExecutorFactory](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/storage/QueryExecutorFactory.html) (along with [QueryExecutor](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/storage/QueryExecutor.html) implementations)
 
-The general idea is to implement the *Storage* component and to provide the *StorageBuilder* service, which configures and instantiates your *Storage* implementation. The **META-INF/services** entry is for the *ServiceLoader* EverBEEN uses to recognize your *StorageBuilder* implementation on the classpath. EverBEEN will then pass the *Properties* from the *been.conf* file (see [configuration](#user.configuration)) to your *StorageBuilder*. That way, you can use the common property file to configure your *Storage*.
+The general idea is to implement the *Storage* component and to provide the *StorageBuilder* service, which configures and instantiates your *Storage* implementation. The **META-INF/services** entry is for the *ServiceLoader* EverBEEN uses to recognize your *StorageBuilder* implementation on the classpath. EverBEEN will then pass the *Properties* from the *been.conf* file (see [\ref*{user.configuration} (configuration)](#user.configuration)) to your *StorageBuilder*. That way, you can use the common property file to configure your *Storage*.
 
-The [Storage](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/storage/Storage.html) interface is the main gateway between the [Object Repository](#user.persistence.components.objectrepo) and the database. When overriding the Storage, there will be two major use-cases you will have to implement: the [asynchronous persist](#user.extension.storageex.asyncper) and the [synchronous query](#user.extension.storageex.qa).
+The [Storage](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/storage/Storage.html) interface is the main gateway between the Object Repository and the database. When overriding the Storage, there will be two major use-cases you will have to implement: the asynchronous persist and the synchronous query.
 
 #### Asynchronous persist {#user.extension.storageex.asyncper}
 All *persist* requests in EverBEEN are funneled through the Storage#store method. You will receive two parameters in this method:
 
 <a id="user.extension.storageex.asyncper.eid">***entityId***</a>
-The *entityId* is meant to determine the location of the stored entity. For example, if you're writing an SQL adapter, it should determine the table where the entity will be stored. For more information on the *entityId*, see [persistent object info](#user.extension.storageex.objectinfo)
+The *entityId* is meant to determine the location of the stored entity. For example, if you're writing an SQL adapter, it should determine the table where the entity will be stored. For more information on the *entityId*, see section [\ref*{user.extension.storageex.objectinfo} persistent object info](#user.extension.storageex.objectinfo).
 
 
 <a id="user.extension.storageex.asyncper.json">***JSON***</a>
@@ -77,7 +77,7 @@ Generally, you will need to decide where to put the object based on its *entityI
 The `Storage#store` method is asynchronous. It doesn't return any outcome information, but always throws a *DAOException* when the persist attempt fails. This informs the *ObjectRepository* that the operation failed and an action to prevent data loss must be taken.
 
 #### Query / Answer {#user.extension.storageex.qa}
-The other type of requests supported by *Storage* are queries. They are synchronous and a *Query* is always answered with a *QueryAnswer*. In order to support queries, you could implement all the querying mechanics by yourself (if you wish to do that, see the [Task API](#user.taskapi.querying) for more details), but this is unnecessary. The [`QueryTranslator`](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/persistence/QueryTranslator.html) adapter is designed to help you interpret queries without having to iterate through the entire query structure.
+The other type of requests supported by *Storage* are queries. They are synchronous and a *Query* is always answered with a *QueryAnswer*. In order to support queries, you could implement all the querying mechanics by yourself (if you wish to do that, see the [\ref*{user.taskapi.querying} (Task API)](#user.taskapi.querying) for more details), but this is unnecessary. The [`QueryTranslator`](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/persistence/QueryTranslator.html) adapter is designed to help you interpret queries without having to iterate through the entire query structure.
 
 The preferred way of interpreting queries is to create a [`QueryRedactor`](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/persistence/QueryRedactor.html) implementation (or several, in fact). The *QueryRedactor* class is designed to help you construct database-specific query interpretations using callbacks. This way, you instantiate the *QueryTranslator*, call its *interpret* method passing in your instance of the *QueryRedactor* and the *QueryTranslator* calls the appropriate methods on your *QueryRedactor*. Once configured, your *QueryRedactor* can be used to assemble and perform the expected query. There are additional interfaces that can help you in the process ([`QueryRedactorFactory`](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/storage/QueryRedactorFactory.html), [`QueryExecutor`](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/storage/QueryExecutor.html) and [`QueryExecutorFactory`](http://www.everbeen.cz/javadoc/everBeen/cz/cuni/mff/d3s/been/storage/QueryExecutorFactory.html)).
 
@@ -104,7 +104,7 @@ The *entityId* is composed of *kind* and *group*. The *kind* is supposed to repr
 
 The *group* is supposed to provide a more granular grouping of objects and depends entirely on the object's *kind*.
 
-If you need more detail on objects that you can encounter, be sure to also read the [ORM special](#user.extension.storageex.ormspecial), which denotes where various EverBEEN classes can be expected and what *entityIds* can carry user types.
+If you need more detail on objects that you can encounter, be sure to also read the next section, which denotes where various EverBEEN classes can be expected and what *entityIds* can carry user types.
 
 #### The ORM special {#user.extension.storageex.ormspecial}
 If you are really hell-bent on creating an ORM implementation of the *Storage*, your module will need to know several extra EverBEEN classes to be able to perform the mapping. The following table covers their *entityIds*, their meaning and the dependencies you will need to get them.
