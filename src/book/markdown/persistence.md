@@ -1,27 +1,27 @@
 ## Persistence layer {#user.persistence}
-EverBEEN persistence layer functions as a bridge between EverBEEN distributed memory and a database of choice, rather than a direct storage component. This enables EverBEEN to run without a persistence layer, at the cost of heap space and a risk of data loss in case of an unexpected cluster-wide shutdown. EverBEEN doesn't *need* a persistence layer per se at any given point in time. User tasks, however, might attempt to work with previously acquired results. Such attempts will result in task-scope failures if the persistence layer is not running. Log archives, too, will be made unavailable if the persistence layer is offline.
+EverBEEN persistence layer serves as a bridge between EverBEEN distributed memory and a database of choice, rather than a direct storage component. This enables EverBEEN to run without a persistence layer, at the cost of heap space and a risk of data loss in case of an unexpected cluster-wide shutdown. EverBEEN doesn't *need* a persistence layer per se at any given point in time. User tasks, however, might attempt to work with previously acquired results. Such attempts will result in task-scope failures if the persistence layer is not running. Log archives, too, will be made unavailable if the persistence layer is offline.
 
 
 
 ### Characteristics {#user.persistence.characteristics}
-Follows an overview of the main characteristics of EverBEEN's persistence layer.
+An overview of the main characteristics of EverBEEN's persistence layer follows.
 
 
 
 #### Bridging {#user.persistence.characteristics.bridging}
-The EverBEEN persistence layer doesn't offer any means of storing the objects per se. It only functions as an abstract access layer to an existing storage component (e.g. a database). EverBEEN comes with a default implementation of this bridge for the MongoDB database, but it is possible to port it to a different database (see [extension point](#user.persistence.extension) notes for more details). The user is responsible for setting up, running and maintaining the actual storage software.
+The EverBEEN persistence layer doesn't offer any means of storing objects. It only functions as an abstract access layer to an existing storage component (e.g. a database). EverBEEN comes with a default implementation of this bridge for the MongoDB database, but it is possible to port it to a different database (see [extension point](#user.persistence.extension) notes for more details). The user is responsible for setting up, running and maintaining the actual storage software.
 
 
 
 #### Eventual persistence {#user.persistence.characteristics.eventual}
 As mentioned above, object-persisting commands (result stores, logging) do not, by themselves, execute insertions into the persistence layer. They submit objects into EverBEEN's distributed memory. When a persistence layer node is running, it continually drains this distributed memory, enacting the actual persistence of drained objects. This offers the advantage of being able to pursue persisting operations even in case the persistence layer is currently unavailable.
 
-The downside of the bridging approach is that persisted objects might not find their way into the actual persistence layer immediately. It also means that should a cluster-wide shutdown occur while some objects are still in the shared memory, these objects will get lost. All that can be guaranteed is that submitted objects will eventually be persisted, provided that some data nodes and a persistence layer are running. This being said, experience shows that the transport of objects through the cluster and to the persistence layer is a matter of fractions of a second.
+The downside of the bridging approach is that persisted objects might not find their way into the actual persistence layer immediately. It also means that should a cluster-wide shutdown occur while some objects are still in the shared memory, these objects will get lost. All that can be guaranteed is that submitted objects will eventually be persisted, provided that some data nodes and a persistence layer are running. Experience shows that the transport of objects through the cluster and to the persistence layer is a matter of fractions of a second.
 
 
 
 #### Scalability {#user.persistence.characteristics.scalability}
-As mentioned above, EverBEEN does not strictly rely on the existence of a persistence node for running user code, only to present the user with the data he requires. That being said, EverBEEN can also run multiple persistence nodes. In such case, it is the user's responsibility to set up these nodes in a way that makes sense.
+As mentioned above, EverBEEN does not strictly rely on the existence of a persistence node for running user code, only to present the required data to the user. That being said, EverBEEN can also run multiple persistence nodes. In such case, it is the user's responsibility to set up these nodes in a way that makes sense.
 
 While running multiple nodes, please keep in mind that these storage components will be draining the shared data structures concurrently and independently. It is entirely possible to setup EverBEEN to run two persistence nodes on two completely separate databases, but it will probably not result in any sensibly expectable behavior, as potentially related data will be scattered randomly across two isolated database instances.
 
@@ -35,12 +35,12 @@ Additional use-cases may arise if you decide to write your own database adapter.
 
 
 #### Automatic cleanup {#user.persistence.characteristics.cleanup}
-To prevent superfluous information from clogging the data storage, the persistenc layer runs a Janitor component that performs database cleanup on a regular basis. The idea is to clean all old data for failed jobs and all metadata for successful jobs after a certain lifecycle period has passed. For lifecycle period and cleanup frequency adjustment, see the [janitor configuration](#user.configuration.objectrepo.janitor) section.
+To prevent superfluous information from clogging the data storage, the persistence layer runs a Janitor component that performs database cleanup on a regular basis. The idea is to clean all old data for failed jobs and all metadata for successful jobs after a certain lifecycle period has passed. For lifecycle period and cleanup frequency adjustment, see the [janitor configuration](#user.configuration.objectrepo.janitor) section.
 
 
 
 ### Components {#user.persistence.components}
-Follows a brief description of components that contribute to forming the EverBEEN persistence layer.
+A brief description of components that contribute to forming the EverBEEN persistence layer follows.
 
 * [Object Repository](#user.persistence.components.objectrepo)
 * [Storage](#user.persistence.components.storage)
@@ -49,14 +49,14 @@ Follows a brief description of components that contribute to forming the EverBEE
 
 
 #### Object Repository {#user.persistence.components.objectrepo}
-It goes without saying that EverBEEN needs some place to store all the data your tasks will produce. That's what the Object Repository is for. Each time a task issues a command to submit a result, or logs a message, this information gets dispatched to the cluster, along with the associated object. The Object Repository provides a functional endpoint for this information. It effectively concentrates distributed data to its intended destination (a database, most likely). In addition, the Object Repository is also in charge of dispatching requested user data back.
+It goes without saying that EverBEEN needs some place to store all the data your tasks will produce. That's what the Object Repository does. Each time a task issues a command to submit a result, or logs a message, this information gets dispatched to the cluster, along with the associated object. The Object Repository provides a functional endpoint for this information. It effectively concentrates distributed data to its intended destination (a database, most likely). In addition, the Object Repository is also in charge of dispatching requested user data back.
 
 
 
 #### Storage {#user.persistence.components.storage}
-The Storage component supplies the concrete database connector implementation. All communication between the Object Repository and the database is done through the Storage API.
+The Storage component supplies a database connector implementation. All communication between the Object Repository and the database is done through the Storage API.
 
-The Storage component gets loaded dynamically by the Object Repository at startup. If you want to use a different database than MongoDB, this is the component you'll be replacing (along with the MapStore, potentially).
+The Storage component gets loaded dynamically by the Object Repository at startup. If you want to use a different database than MongoDB, this is the component you'll be replacing (potentially along with the MapStore component).
 
 
 
