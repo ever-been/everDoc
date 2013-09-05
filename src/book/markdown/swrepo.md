@@ -72,7 +72,7 @@ BPK package is represented by a single file with a **\*.bpk** suffix. In fact th
 5. ***tds/*** directory --- must contain at least one Task descriptor.
 
 
-When a task is started, *lib/*, *files*, *tds/* and *tcds/* directories are copied into the working directory of the task.
+When a task is started, *lib/*, *files/*, *tds/* and *tcds/* directories are copied into the working directory of the task.
 
 Even though it is possible to create a BPK "by hand", this is not recommended. The standard way of assembling a BPK file is to use the Been Bpk Plugin for Maven which does all the hard work.
 
