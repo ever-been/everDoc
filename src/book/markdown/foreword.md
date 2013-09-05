@@ -31,3 +31,5 @@ Despite the fact that performance measuring is definitely useful, it still has q
 [Automated Benchmarking and Analysis Tool](http://d3s.mff.cuni.cz/publications/download/Submitted_1404_BEEN.pdf) (PDF, 149 kB), VALUETOOLS 2006
 
 * Kalibera, T., Bulej, L., Tuma, P.: [Generic Environment for Full Automation of Benchmarking](http://d3s.mff.cuni.cz/publications/download/KaliberaBulejTuma-FullAutomationOfBenchmarking.pdf) (PDF, 84 kB), SOQUA 2004
+
+* Täuber, J.: [Deployment of Performance Evaluation Tools in Industrial Use Case](https://is.cuni.cz/webapps/zzp/detail/78663/4417375) (PDF, 614 kB), MFF 2013
