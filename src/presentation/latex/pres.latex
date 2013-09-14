@@ -80,6 +80,8 @@
 \usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
 \usepackage[utf8]{inputenc}
 
+\usepackage{chronosys}
+
 %----------------------------------------------------------------------------------------
 %	TITLE PAGE
 %----------------------------------------------------------------------------------------
@@ -138,7 +140,7 @@ Univerzita Karlova v Praze, Matematicko-fyzikální fakulta\\ % Your institution
 
 	\begin{itemize}
 		\item{Robustnost}
-		\item{Změna síťovací technologie}
+		\item{Asynchronní síťová komunikace}
 		\item{Úprava stávajícího logování}
 		\item{Refactoring (20 kLOC)}
 	\end{itemize}
@@ -197,10 +199,14 @@ Univerzita Karlova v Praze, Matematicko-fyzikální fakulta\\ % Your institution
 
 % actual dev process (and goals)
 \begin{frame}
-	\frametitle{Výsledné cíle projektu EverBEEN}
+	\frametitle{Cíle nad rámec původního projektu}
 
 	\begin{itemize}
-		\item{}
+		\item{Distribuovaný systém}
+		\item{Snazší nasazení}
+		\item{Jednodušší rozhraní pro vývoj benchmarků}
+		\item{Moderní metodika vývoje}
+		\item{Modulární kód}
 	\end{itemize}
 \end{frame}
 
@@ -212,9 +218,7 @@ Univerzita Karlova v Praze, Matematicko-fyzikální fakulta\\ % Your institution
 \begin{frame}
 	\frametitle{Průběh vývoje}
 
-	\begin{itemize}
-		\item{}
-	\end{itemize}
+	TODO - timeline
 \end{frame}
 
 % work progress - code domains per author
@@ -269,9 +273,7 @@ Univerzita Karlova v Praze, Matematicko-fyzikální fakulta\\ % Your institution
 \begin{frame}
 	\frametitle{Statistiky vývoje}
 
-	\begin{itemize}
-		\item{Postup kLOC s časem}
-	\end{itemize}
+	TODO - GitStats
 \end{frame}
 
 % work progress - overview
@@ -279,7 +281,9 @@ Univerzita Karlova v Praze, Matematicko-fyzikální fakulta\\ % Your institution
 	\frametitle{Přehled}
 
 	\begin{itemize}
-		\item{}
+		\item{odhadem 3000+ hodin}
+		\item{cca. 70 kLOC}
+		\item{1233 commitů v hlavním projektu}
 	\end{itemize}
 \end{frame}
 
@@ -292,7 +296,13 @@ Univerzita Karlova v Praze, Matematicko-fyzikální fakulta\\ % Your institution
 	\frametitle{Výsledky}
 
 	\begin{itemize}
-		\item{}
+		\item{Distribuovaný systém}
+		\item{Přímočaré nasazení}
+		\item{Příznivá učící křivka} % simple tasks easy
+		\item{Ladění uživatelského kódu} % JVM
+		\item{Jednoduché sestavování benchmarků} % bpk plugin
+		\item{Rozšiřitelnost} % modular
+		\item{Udržovatelnost} % 70 kLOC, 3d-party libraries
 	\end{itemize}
 \end{frame}
 
@@ -302,11 +312,36 @@ Univerzita Karlova v Praze, Matematicko-fyzikální fakulta\\ % Your institution
 
 % demo
 \begin{frame}
-		\frametitle{DEMO}
+	\frametitle{DEMO}
+
+	\begin{itemize}
+		\item{Deployment}
+		\item{Nahrání balíčku}
+		\item{Spuštění benchmarku}
+		\item{Sledování} % task tree
+		\item{Zpracování výsledků} % evaluator
+	\end{itemize}
 \end{frame}
 
 
 \end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+%------------------------------------------------
+% TEMPLATES
+%------------------------------------------------
+
 
 \begin{frame}
 \frametitle{Paragraphs of Text}
