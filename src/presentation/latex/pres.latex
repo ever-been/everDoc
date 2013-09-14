@@ -113,21 +113,57 @@ Univerzita Karlova v Praze, Matematicko-fyzikální fakulta\\ % Your institution
 % BYYN
 \begin{frame}
 	\frametitle{Co je EverBEEN}
+
+	\begin{itemize}
+		\item{Distribuovaný framework}
+		\item{Regression benchmarking}
+		\item{Měření middleware a síťových aplikací}
+		\item{OpenSource}
+	\end{itemize}
 \end{frame}
 
 % target audience
 \begin{frame}
 	\frametitle{Pro koho je EverBEEN určen}
+
+	\begin{itemize}
+		\item{Interní benchmarking}
+		\item{Vývojáři síťových aplikací}
+	\end{itemize}
 \end{frame}
 
 % expected dev process
 \begin{frame}
 	\frametitle{Původní cíle projektu}
+
+	\begin{itemize}
+		\item{Robustnost}
+		\item{Změna síťovací technologie}
+		\item{Úprava stávajícího logování}
+		\item{Refactoring (20 kLOC)}
+	\end{itemize}
 \end{frame}
 
 % lack of compliance of existing impl. to actual needs (user exp)
 \begin{frame}
 	\frametitle{Uživatelské zkušenosti s WillBEEN}
+
+	Funguje, ale...
+
+	\begin{itemize}
+		\item{Složité nasazení
+		}
+
+		\item{Zdlouhavý vývoj benchmarků
+			\begin{itemize}
+				\item{Komplikované API}
+				\item{Nemožnost ladění}
+			\end{itemize}
+		}
+
+		\item{Problematický přístup k datům
+		}
+	\end{itemize}
 \end{frame}
 
 
@@ -137,16 +173,35 @@ Univerzita Karlova v Praze, Matematicko-fyzikální fakulta\\ % Your institution
 % attempts on refactoring
 \begin{frame}
 	\frametitle{Pokus o refactoring}
+
+	\begin{itemize}
+		\item{Odstranění křížových závislostí}
+		\item{Modularizace (Maven)}
+		\item{Extrakce rozhraní}
+		\item{Extrakce protokolu}
+		\item{Pokus o sjednocení logování (slf4j)}
+	\end{itemize}
 \end{frame}
 
 % impossible compliance to expected dev process
 \begin{frame}
 	\frametitle{Technická omezení systému WillBEEN}
+
+	\begin{itemize}
+		\item{RMI codebase}
+		\item{Mnoho křížových závislostí}
+		\item{Redundance kódu}
+		\item{Nulová rozšiřitelnost}
+	\end{itemize}
 \end{frame}
 
 % actual dev process (and goals)
 \begin{frame}
 	\frametitle{Výsledné cíle projektu EverBEEN}
+
+	\begin{itemize}
+		\item{}
+	\end{itemize}
 \end{frame}
 
 
@@ -156,21 +211,76 @@ Univerzita Karlova v Praze, Matematicko-fyzikální fakulta\\ % Your institution
 % work progress - timeline
 \begin{frame}
 	\frametitle{Průběh vývoje}
+
+	\begin{itemize}
+		\item{}
+	\end{itemize}
 \end{frame}
 
 % work progress - code domains per author
+% with reserves, everyone worked on almost everything
+% mention code reviews
 \begin{frame}
 	\frametitle{Zásluhy}
+
+	\begin{columns}[t]
+		\column{.5\textwidth}
+			\begin{block}{Jakub Břečka}
+				\begin{itemize}
+					\item{Uživatelská API}
+					\item{Webové rozhraní}
+					\item{Detekce hardware}
+					\item{Benchmark (nginx)}
+				\end{itemize}
+			\end{block}
+		
+			\begin{block}{Radek Mácha}
+				\begin{itemize}
+					\item{Persistence}
+					\item{Distribuce balíčků}
+					\item{Meziprocesová komunikace}
+				\end{itemize}
+			\end{block}
+		
+		\column{.5\textwidth}
+		
+			\begin{block}{Martin Sixta}
+				\begin{itemize}
+					\item{Plánování}
+					\item{Spouštění úloh}
+					\item{Benchmark (Hazelcast)}
+					\item{Meziprocesová komunikace}
+				\end{itemize}
+			\end{block}
+		
+			\begin{block}{Tadeáš Palusga}
+				\begin{itemize}
+					\item{Spouštění úloh}
+					\item{Webové rozhraní}
+					\item{Maven}
+				\end{itemize}
+			\end{block}
+
+	\end{columns}
+
 \end{frame}
 
 % work progress - stats
 \begin{frame}
 	\frametitle{Statistiky vývoje}
+
+	\begin{itemize}
+		\item{Postup kLOC s časem}
+	\end{itemize}
 \end{frame}
 
 % work progress - overview
 \begin{frame}
 	\frametitle{Přehled}
+
+	\begin{itemize}
+		\item{}
+	\end{itemize}
 \end{frame}
 
 
@@ -180,6 +290,10 @@ Univerzita Karlova v Praze, Matematicko-fyzikální fakulta\\ % Your institution
 % results
 \begin{frame}
 	\frametitle{Výsledky}
+
+	\begin{itemize}
+		\item{}
+	\end{itemize}
 \end{frame}
 
 
@@ -188,7 +302,7 @@ Univerzita Karlova v Praze, Matematicko-fyzikální fakulta\\ % Your institution
 
 % demo
 \begin{frame}
-	\frametitle{DEMO}
+		\frametitle{DEMO}
 \end{frame}
 
 
