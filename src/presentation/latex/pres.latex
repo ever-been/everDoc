@@ -100,13 +100,15 @@ Univerzita Karlova v Praze, Matematicko-fyzikální fakulta\\ % Your institution
 \end{frame}
 
 \begin{frame}
-\frametitle{Overview} % Table of contents slide, comment this block out to remove it
+\frametitle{Přehled}
 \tableofcontents % Throughout your presentation, if you choose to use \section{} and \subsection{} commands, these will automatically be printed on this slide as an overview of your presentation
 \end{frame}
 
 %----------------------------------------------------------------------------------------
 %	PRESENTATION SLIDES
 %----------------------------------------------------------------------------------------
+
+\section{Úvod}
 
 % BYYN
 \begin{frame}
@@ -123,6 +125,15 @@ Univerzita Karlova v Praze, Matematicko-fyzikální fakulta\\ % Your institution
 	\frametitle{Původní cíle projektu}
 \end{frame}
 
+% lack of compliance of existing impl. to actual needs (user exp)
+\begin{frame}
+	\frametitle{Uživatelské zkušenosti s WillBEEN}
+\end{frame}
+
+
+
+\section{Vývoj}
+
 % attempts on refactoring
 \begin{frame}
 	\frametitle{Pokus o refactoring}
@@ -133,15 +144,14 @@ Univerzita Karlova v Praze, Matematicko-fyzikální fakulta\\ % Your institution
 	\frametitle{Technická omezení systému WillBEEN}
 \end{frame}
 
-% lack of compliance of existing impl. to actual needs (user exp)
-\begin{frame}
-	\frametitle{Uživatelské zkušenosti s WillBEEN}
-\end{frame}
-
 % actual dev process (and goals)
 \begin{frame}
 	\frametitle{Výsledné cíle projektu EverBEEN}
 \end{frame}
+
+
+
+\section{Přehled prací}
 
 % work progress - timeline
 \begin{frame}
@@ -163,12 +173,26 @@ Univerzita Karlova v Praze, Matematicko-fyzikální fakulta\\ % Your institution
 	\frametitle{Přehled}
 \end{frame}
 
+
+
+\section{Výsledky}
+
 % results
 \begin{frame}
 	\frametitle{Výsledky}
 \end{frame}
 
 
+
+\section{Ukázka}
+
+% demo
+\begin{frame}
+	\frametitle{DEMO}
+\end{frame}
+
+
+\end{document}
 
 \begin{frame}
 \frametitle{Paragraphs of Text}
@@ -329,4 +353,3 @@ This statement requires citation \cite{p1}.
 
 %----------------------------------------------------------------------------------------
 
-\end{document}
