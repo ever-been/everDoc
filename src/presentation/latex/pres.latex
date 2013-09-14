@@ -78,19 +78,18 @@
 
 \usepackage{graphicx} % Allows including images
 \usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage[utf8]{inputenc}
 
 %----------------------------------------------------------------------------------------
 %	TITLE PAGE
 %----------------------------------------------------------------------------------------
 
-\title[Short title]{Full Title of the Talk} % The short title appears at the bottom of every slide, the full title is only on the title page
+\title[EverBEEN]{www.everbeen.cz} % The short title appears at the bottom of every slide, the full title is only on the title page
 
-\author{John Smith} % Your name
-\institute[UCLA] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
+\author{Jakub Břečka, Radek Mácha, Tadeáš Palusga, Martin Sixta}
+\institute[MFF UK] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
 {
-University of California \\ % Your institution for the title page
-\medskip
-\textit{john@smith.com} % Your email address
+Univerzita Karlova v Praze, Matematicko-fyzikální fakulta\\ % Your institution for the title page
 }
 \date{\today} % Date, can be changed to a custom date
 
@@ -109,11 +108,67 @@ University of California \\ % Your institution for the title page
 %	PRESENTATION SLIDES
 %----------------------------------------------------------------------------------------
 
-%------------------------------------------------
-\section{First Section} % Sections can be created in order to organize your presentation into discrete blocks, all sections and subsections are automatically printed in the table of contents as an overview of the talk
-%------------------------------------------------
+% BYYN
+\begin{frame}
+	\frametitle{Co je EverBEEN}
+\end{frame}
 
-\subsection{Subsection Example} % A subsection can be created just before a set of slides with a common theme to further break down your presentation into chunks
+% target audience
+\begin{frame}
+	\frametitle{Pro koho je EverBEEN určen}
+\end{frame}
+
+% expected dev process
+\begin{frame}
+	\frametitle{Původní cíle projektu}
+\end{frame}
+
+% attempts on refactoring
+\begin{frame}
+	\frametitle{Pokus o refactoring}
+\end{frame}
+
+% impossible compliance to expected dev process
+\begin{frame}
+	\frametitle{Technická omezení systému WillBEEN}
+\end{frame}
+
+% lack of compliance of existing impl. to actual needs (user exp)
+\begin{frame}
+	\frametitle{Uživatelské zkušenosti s WillBEEN}
+\end{frame}
+
+% actual dev process (and goals)
+\begin{frame}
+	\frametitle{Výsledné cíle projektu EverBEEN}
+\end{frame}
+
+% work progress - timeline
+\begin{frame}
+	\frametitle{Průběh vývoje}
+\end{frame}
+
+% work progress - code domains per author
+\begin{frame}
+	\frametitle{Zásluhy}
+\end{frame}
+
+% work progress - stats
+\begin{frame}
+	\frametitle{Statistiky vývoje}
+\end{frame}
+
+% work progress - overview
+\begin{frame}
+	\frametitle{Přehled}
+\end{frame}
+
+% results
+\begin{frame}
+	\frametitle{Výsledky}
+\end{frame}
+
+
 
 \begin{frame}
 \frametitle{Paragraphs of Text}
@@ -121,6 +176,8 @@ Sed iaculis dapibus gravida. Morbi sed tortor erat, nec interdum arcu. Sed id lo
 
 Sed diam enim, sagittis nec condimentum sit amet, ullamcorper sit amet libero. Aliquam vel dui orci, a porta odio. Nullam id suscipit ipsum. Aenean lobortis commodo sem, ut commodo leo gravida vitae. Pellentesque vehicula ante iaculis arcu pretium rutrum eget sit amet purus. Integer ornare nulla quis neque ultrices lobortis. Vestibulum ultrices tincidunt libero, quis commodo erat ullamcorper id.
 \end{frame}
+
+
 
 %------------------------------------------------
 
@@ -134,6 +191,8 @@ Sed diam enim, sagittis nec condimentum sit amet, ullamcorper sit amet libero. A
 \item Vestibulum faucibus velit a augue condimentum quis convallis nulla gravida
 \end{itemize}
 \end{frame}
+
+
 
 %------------------------------------------------
 
@@ -151,6 +210,8 @@ Pellentesque sed tellus purus. Class aptent taciti sociosqu ad litora torquent p
 Suspendisse tincidunt sagittis gravida. Curabitur condimentum, enim sed venenatis rutrum, ipsum neque consectetur orci, sed blandit justo nisi ac lacus.
 \end{block}
 \end{frame}
+
+
 
 %------------------------------------------------
 
@@ -172,9 +233,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lectus nisl, ul
 \end{columns}
 \end{frame}
 
-%------------------------------------------------
-\section{Second Section}
-%------------------------------------------------
+
 
 \begin{frame}
 \frametitle{Table}
@@ -192,6 +251,8 @@ Treatment 3 & 0.0009271 & 0.296 \\
 \end{table}
 \end{frame}
 
+
+
 %------------------------------------------------
 
 \begin{frame}
@@ -200,6 +261,8 @@ Treatment 3 & 0.0009271 & 0.296 \\
 $E = mc^2$
 \end{theorem}
 \end{frame}
+
+
 
 %------------------------------------------------
 
@@ -216,6 +279,8 @@ $E = mc^2$
 \end{example}
 \end{frame}
 
+
+
 %------------------------------------------------
 
 \begin{frame}
@@ -226,6 +291,8 @@ Uncomment the code on this slide to include your own image from the same directo
 %\end{figure}
 \end{frame}
 
+
+
 %------------------------------------------------
 
 \begin{frame}[fragile] % Need to use the fragile option when verbatim is used in the slide
@@ -234,6 +301,8 @@ An example of the \verb|\cite| command to cite within the presentation:\\~
 
 This statement requires citation \cite{p1}.
 \end{frame}
+
+
 
 %------------------------------------------------
 
@@ -248,11 +317,15 @@ This statement requires citation \cite{p1}.
 }
 \end{frame}
 
+
+
 %------------------------------------------------
 
 \begin{frame}
 \Huge{\centerline{The End}}
 \end{frame}
+
+
 
 %----------------------------------------------------------------------------------------
 
