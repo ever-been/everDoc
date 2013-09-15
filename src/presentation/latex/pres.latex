@@ -79,6 +79,7 @@
 \usepackage{graphicx} % Allows including images
 \usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
 \usepackage[utf8]{inputenc}
+\usepackage[czech]{babel}
 
 \usepackage{tikz}
 \usetikzlibrary{calc,patterns,decorations.pathmorphing,decorations.markings}
@@ -217,45 +218,31 @@ Univerzita Karlova v Praze, Matematicko-fyzikální fakulta\\ % Your institution
 
 % work progress - timeline
 \begin{frame}
-	\frametitle{Průběh vývoje}
+	\frametitle{Průběh vývoje systému EverBEEN}
 
 	\begin{figure}[h]
-		\caption{Průběh vývoje systému EverBEEN}
-		\begin{tikzpicture}[scale=0.65]
+		\begin{tikzpicture}[scale=0.7]
 			\small \sf 
-			\tikzset{alabel/.style={draw=gray, ultra thin, rounded corners=.25ex, fill=gray!20,text width=3cm, text badly centered,  inner sep=.5ex, above = 1ex, anchor=west,rotate=45}}
-			\tikzset{blabel/.style={draw=gray, ultra thin, rounded corners=.25ex, fill=gray!20,text width=3cm, text badly centered,  inner sep=.5ex, below = 1ex, anchor=west,rotate=-45}}
-			\tikzstyle{ticklabel}=[font=\tiny, rounded corners=.1ex, fill=gray!20, text width=22ex, inner sep=0.1ex, above=2.5ex, anchor=west, rotate=45]
-			\tikzstyle{tocklabel}=[font=\tiny, rounded corners=.1ex, fill=gray!20, text width=22ex, inner sep=0.1ex, below=2.5ex, anchor=west, rotate=-45]
+			\tikzstyle{ticklabel}=[font=\tiny, rounded corners=.1ex, fill=gray!30, align=left, inner sep=0.5ex, above=2.5ex, anchor=west, rotate=50]
+			\tikzstyle{tocklabel}=[font=\tiny, rounded corners=.1ex, fill=gray!30, align=left, inner sep=0.5ex, below=2.5ex, anchor=west, rotate=-50]
 
 			\tikzstyle{tick}=[font=\tiny, above=0.1ex, scale=.7, inner sep=0ex]
 			\tikzstyle{tock}=[font=\tiny, below=0.2ex, scale=.7, inner sep=0ex]
 		
-			\draw (-6.5,0)[->, -latex] -- (9,0);
-			\draw (-6.5,0)	node[tick]{14/6/12}		node(L0)[ticklabel]{Převzetí WillBEEN};
-			\draw (-5.5,0)	node[tock]{7-8/12}		node(L1)[tocklabel]{Nasazení Apache Maven};
-			\draw (-4.5,0)	node[tick]{8-9/12}		node(L3)[ticklabel]{Výběr technologie pro nahrazení RMI};
-			\draw (-4,0)	node[tock]{9/12}		node(L4)[tocklabel]{Vybráno slf4j/LOGBack};
-			\draw (-3,0)	node[tick]{10/12}		node(L5)[ticklabel]{Pokus o návrh náhradní síťové vrstvy odspoda};
-			\draw (-2,0)	node[tock]{11/12}		node(L6)[tocklabel]{Rozhodnutí o kompletní reimplementaci};
-			\draw (-0.5,0)	node[tick]{12/12 -- 01/13}	node(L7)[ticklabel]{Nasazení Hazelcast bez abstrakce};
-			\draw (1.5,0)	node[tock]{2-3/13}		node(L7)[tocklabel]{Vývoj komponent stěžejních pro spuštění};
-			\draw (3,0)	node[tick]{4/13}		node(L7)[ticklabel]{První spuštěný uživatelský kód};
-			\draw (4,0)	node[tock]{5/13}		node(L7)[tocklabel]{Základy abstraktní persistence s MongoDB back-endem};
-			\draw (5,0)	node[tick]{6/13}		node(L7)[ticklabel]{GitHub organization, LGPL 3.0};
-			\draw (6,0)	node[tock]{7/13}		node(L7)[tocklabel]{Finalizace konceptu uživatelských API};
-			\draw (7,0)	node[tick]{8/13}		node(L7)[ticklabel]{Spuštění www.everbeen.cz a artifactory};
-
-			%\draw (1.2,0)	node[tick] {1} node(B1) [alabel]  {end of initial investigations};
-			%\draw (2.2,0)	node[tick] {2} node(B2) [alabel]  {start of \LaTeX{} spare time investigations};
-			%\draw (3.2,0)	node[tick] {3} node [] {};
-			%\draw (4.2,0)	node[tick]  {4} node[alabel]  {installation of \LaTeX{} on one office computer};
-			%\draw (5.2,0)	node[tick] {5} node [alabel] {second \LaTeX{} user};
-			%\draw (6.2,0)	node[tick] {6} node [alabel] {first \LaTeX{} document moved to remote server};
-			%\draw (7.2,0)	node[tick] {7} node []  {};
-			%\draw (8.2,0)	node[tick]{8} node [alabel]  {third \LaTeX{} user};
-			%\draw (9.2,0)	node[tick]{9} node [label]  {several documents moved on remote server};
-			%\draw (10.2,0)	node[tick] {10} node [label] {fourth \LaTeX{} user};
+			\draw (-6.5,0)	[->, -latex] -- (9,0);
+			\draw (-6.5,0)	node[tick]{14/6/12}		node(L00)[ticklabel]{Převzetí WillBEEN};
+			\draw (-5.5,0)	node[tock]{7-8/12}		node(L01)[tocklabel]{Nasazení Apache Maven};
+			\draw (-4.5,0)	node[tick]{8-9/12}		node(L03)[ticklabel]{Výběr technologie \\ pro nahrazení RMI};
+			\draw (-4,0)	node[tock]{9/12}		node(L04)[tocklabel]{Vybráno slf4j/LOGBack};
+			\draw (-3,0)	node[tick]{10/12}		node(L05)[ticklabel]{Pokus o návrh náhradní \\ síťové vrstvy odspoda};
+			\draw (-2,0)	node[tock]{11/12}		node(L06)[tocklabel]{Rozhodnutí o kompletní reimplementaci};
+			\draw (-0.5,0)	node[tick]{12/12 -- 01/13}	node(L07)[ticklabel]{Nasazení Hazelcast bez abstrakce};
+			\draw (1.5,0)	node[tock]{2-3/13}		node(L08)[tocklabel]{Vývoj komponent stěžejních pro spuštění};
+			\draw (3,0)	node[tick]{4/13}		node(L09)[ticklabel]{První spuštěný uživatelský kód};
+			\draw (4,0)	node[tock]{5/13}		node(L10)[tocklabel]{Základy abstraktní persistence \\ s MongoDB back-endem};
+			\draw (5,0)	node[tick]{6/13}		node(L11)[ticklabel]{GitHub organization, LGPL 3.0};
+			\draw (6,0)	node[tock]{7/13}		node(L12)[tocklabel]{Finalizace konceptu \\ uživatelských API};
+			\draw (7,0)	node[tick]{8/13}		node(L13)[ticklabel]{Spuštění www.everbeen.cz \\ a artifactory};
 		\end{tikzpicture}
 
 	\end{figure}
