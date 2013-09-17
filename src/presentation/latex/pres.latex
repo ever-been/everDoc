@@ -46,17 +46,17 @@
 %\usetheme{Montpellier}
 %\usetheme{PaloAlto}
 %\usetheme{Pittsburgh}
-%\usetheme{Rochester}
+\usetheme{Rochester}
 %\usetheme{Singapore}
 %\usetheme{Szeged}
-%\usetheme{Warsaw}
+%usetheme{Warsaw}
 
 % As well as themes, the Beamer class has a number of color themes
 % for any slide theme. Uncomment each of these in turn to see how it
 % changes the colors of your current slide theme.
 
 %\usecolortheme{albatross}
-%\usecolortheme{beaver}
+\usecolortheme{beaver}
 %\usecolortheme{beetle}
 %\usecolortheme{crane}
 %\usecolortheme{dolphin}
@@ -88,16 +88,23 @@
 %	TITLE PAGE
 %----------------------------------------------------------------------------------------
 
-\title[EverBEEN]{www.everbeen.cz} % The short title appears at the bottom of every slide, the full title is only on the title page
+\title[EverBEEN]{EverBEEN\\www.everbeen.cz} % The short title appears at the bottom of every slide, the full title is only on the title page
 
 \author{Jakub Břečka, Radek Mácha, Tadeáš Palusga, Martin Sixta}
 \institute[MFF UK] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
 {
 Univerzita Karlova v Praze, Matematicko-fyzikální fakulta\\ % Your institution for the title page
 }
-\date{\today} % Date, can be changed to a custom date
+\date{}
+
+
 
 \begin{document}
+
+%----------------------------------------------------------------------------------------
+%	TOC AND TITLEPAGE
+%----------------------------------------------------------------------------------------
+
 
 \begin{frame}
 \titlepage % Print the title page as the first slide
@@ -112,6 +119,8 @@ Univerzita Karlova v Praze, Matematicko-fyzikální fakulta\\ % Your institution
 %	PRESENTATION SLIDES
 %----------------------------------------------------------------------------------------
 
+
+
 \section{Úvod}
 
 % BYYN
@@ -120,101 +129,101 @@ Univerzita Karlova v Praze, Matematicko-fyzikální fakulta\\ % Your institution
 
 	\begin{itemize}
 		\item{Distribuovaný framework}
-		\item{Regression benchmarking}
 		\item{Měření middleware a síťových aplikací}
 		\item{OpenSource}
+		\item{Volně navazuje na projekt WillBEEN}
 	\end{itemize}
 \end{frame}
 
 % target audience
 \begin{frame}
-	\frametitle{Pro koho je EverBEEN určen}
+	\frametitle{K čemu a pro koho je EverBEEN určen}
 
 	\begin{itemize}
 		\item{Interní benchmarking}
+		\item{Regression benchmarking}
 		\item{Vývojáři síťových aplikací}
 	\end{itemize}
 \end{frame}
 
-% expected dev process
+
+
+\section{Ukázka}
+
+% describe sample problem
 \begin{frame}
-	\frametitle{Původní cíle projektu}
+	\frametitle{Use-case: Scénář}
 
 	\begin{itemize}
-		\item{Robustnost}
-		\item{Asynchronní síťová komunikace}
-		\item{Úprava stávajícího logování}
-		\item{Refactoring (20 kLOC)}
+		\item{Iterativně vyvíjený software}
+		\item{Bez testování výkonnosti}
+		\item{Potíže s výkonem}
+		\item{Co teď?}
 	\end{itemize}
 \end{frame}
 
-% lack of compliance of existing impl. to actual needs (user exp)
+% describe probable approach
 \begin{frame}
-	\frametitle{Uživatelské zkušenosti s WillBEEN}
+	\frametitle{Use-case: Přístup}
 
-	Funguje, ale...
+	\begin{columns}[t]
+		\column{.5\textwidth}
+			Obecně:
+			\begin{itemize}
+				\item{Specifikovat výkonnostní kritéria}
+				\item{Sestavit testovací prostředí}
+				\item{Navrhnout a implementovat měření}
+				\item{Back-to-back testing jednotlivých revizí}
+				\item{Analýza zpomalujícího kódu}
+			\end{itemize}
+
+		\column{.5\textwidth}
+	\end{columns}
+\end{frame}
+
+% describe probable approach
+\begin{frame}
+	\frametitle{Use-case: EverBEEN}
+
+	\begin{columns}[t]
+		\column{.5\textwidth}
+			Obecně:
+			\begin{itemize}
+				\item{Specifikovat výkonnostní kritéria}
+				\item{Sestavit testovací prostředí}
+				\item{Navrhnout a implementovat měření}
+				\item{Back-to-back testing jednotlivých revizí}
+				\item{Analýza zpomalujícího kódu}
+			\end{itemize}
+
+		\column{.5\textwidth}
+			EverBEEN:
+			\begin{itemize}
+				\item{Naimplementovat lokální úseky měření}
+				\item{Definovat měřící sadu}
+				\item{Naimplementovat generátor měřících sad}
+				\item{Naimplementovat vyhodnocení výsledků}
+			\end{itemize}
+	\end{columns}
+\end{frame}
+
+% demonstrate EverBEEN use on above case
+\begin{frame}
+	\frametitle{DEMO}
 
 	\begin{itemize}
-		\item{Složité nasazení
-		}
-
-		\item{Zdlouhavý vývoj benchmarků
-			\begin{itemize}
-				\item{Komplikované API}
-				\item{Nemožnost ladění}
-			\end{itemize}
-		}
-
-		\item{Problematický přístup k datům
-		}
+		\item{Tvorba benchmarku}
+		\item{Nahrání balíčku}
+		\item{Spuštění benchmarku}
+		\item{Sledování} % task tree
+		\item{Zpracování výsledků} % evaluator
+		\item{Debugging} % short jpda demo
 	\end{itemize}
 \end{frame}
 
 
 
 \section{Vývoj}
-
-% attempts on refactoring
-\begin{frame}
-	\frametitle{Pokus o refactoring}
-
-	\begin{itemize}
-		\item{Odstranění křížových závislostí}
-		\item{Modularizace (Maven)}
-		\item{Extrakce rozhraní}
-		\item{Extrakce protokolu}
-		\item{Pokus o sjednocení logování (slf4j)}
-	\end{itemize}
-\end{frame}
-
-% impossible compliance to expected dev process
-\begin{frame}
-	\frametitle{Technická omezení systému WillBEEN}
-
-	\begin{itemize}
-		\item{RMI codebase}
-		\item{Mnoho křížových závislostí}
-		\item{Redundance kódu}
-		\item{Nulová rozšiřitelnost}
-	\end{itemize}
-\end{frame}
-
-% actual dev process (and goals)
-\begin{frame}
-	\frametitle{Cíle nad rámec původního projektu}
-
-	\begin{itemize}
-		\item{Distribuovaný systém}
-		\item{Snazší nasazení}
-		\item{Jednodušší rozhraní pro vývoj benchmarků}
-		\item{Moderní metodika vývoje}
-		\item{Modulární kód}
-	\end{itemize}
-\end{frame}
-
-
-
-\section{Přehled prací}
 
 % work progress - timeline
 \begin{frame}
@@ -316,6 +325,7 @@ Univerzita Karlova v Praze, Matematicko-fyzikální fakulta\\ % Your institution
 
 
 
+
 \section{Výsledky}
 
 % results
@@ -323,32 +333,15 @@ Univerzita Karlova v Praze, Matematicko-fyzikální fakulta\\ % Your institution
 	\frametitle{Výsledky}
 
 	\begin{itemize}
-		\item{Distribuovaný systém}
 		\item{Přímočaré nasazení}
-		\item{Příznivá učící křivka} % simple tasks easy
-		\item{Ladění uživatelského kódu} % JVM
-		\item{Jednoduché sestavování benchmarků} % bpk plugin
+		\item{Distribuovaná rozhodovací logika}
+		\item{Robustnost}
+		\item{Modularita}
 		\item{Rozšiřitelnost} % modular
 		\item{Udržovatelnost} % 70 kLOC, 3d-party libraries
 	\end{itemize}
 \end{frame}
 
-
-
-\section{Ukázka}
-
-% demo
-\begin{frame}
-	\frametitle{DEMO}
-
-	\begin{itemize}
-		\item{Deployment}
-		\item{Nahrání balíčku}
-		\item{Spuštění benchmarku}
-		\item{Sledování} % task tree
-		\item{Zpracování výsledků} % evaluator
-	\end{itemize}
-\end{frame}
 
 
 \end{document}
