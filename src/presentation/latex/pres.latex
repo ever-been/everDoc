@@ -129,7 +129,7 @@ Univerzita Karlova v Praze, Matematicko-fyzikální fakulta\\ % Your institution
 
 	\begin{itemize}
 		\item{Distribuovaný framework}
-		\item{Měření middleware a síťových aplikací}
+		\item{Měření výkonnosti middleware a síťových aplikací}
 		\item{OpenSource}
 		\item{Volně navazuje na projekt WillBEEN}
 	\end{itemize}
@@ -140,7 +140,7 @@ Univerzita Karlova v Praze, Matematicko-fyzikální fakulta\\ % Your institution
 	\frametitle{K čemu a pro koho je EverBEEN určen}
 
 	\begin{itemize}
-		\item{Interní benchmarking}
+		\item{Interní hodnocení výkonnosti}
 		\item{Regression benchmarking}
 		\item{Vývojáři síťových aplikací}
 	\end{itemize}
@@ -148,7 +148,7 @@ Univerzita Karlova v Praze, Matematicko-fyzikální fakulta\\ % Your institution
 
 
 
-\section{Ukázka}
+\section{Use-case}
 
 % describe sample problem
 \begin{frame}
@@ -174,7 +174,7 @@ Univerzita Karlova v Praze, Matematicko-fyzikální fakulta\\ % Your institution
 				\item{Sestavit testovací prostředí}
 				\item{Navrhnout a implementovat měření}
 				\item{Back-to-back testing jednotlivých revizí}
-				\item{Analýza zpomalujícího kódu}
+				\item{Analýza výsledků měření}
 			\end{itemize}
 
 		\column{.5\textwidth}
@@ -193,33 +193,52 @@ Univerzita Karlova v Praze, Matematicko-fyzikální fakulta\\ % Your institution
 				\item{Sestavit testovací prostředí}
 				\item{Navrhnout a implementovat měření}
 				\item{Back-to-back testing jednotlivých revizí}
-				\item{Analýza zpomalujícího kódu}
+				\item{Analýza výsledků měření}
 			\end{itemize}
 
 		\column{.5\textwidth}
 			EverBEEN:
 			\begin{itemize}
 				\item{Naimplementovat lokální úseky měření}
+				\item{Naimplementovat vyhodnocení výsledků}
 				\item{Definovat měřící sadu}
 				\item{Naimplementovat generátor měřících sad}
-				\item{Naimplementovat vyhodnocení výsledků}
 			\end{itemize}
 	\end{columns}
 \end{frame}
+
+
+
+\section{Ukázka}
 
 % demonstrate EverBEEN use on above case
 \begin{frame}
 	\frametitle{DEMO}
 
 	\begin{itemize}
-		\item{Tvorba benchmarku}
 		\item{Nahrání balíčku}
 		\item{Spuštění benchmarku}
 		\item{Sledování} % task tree
 		\item{Zpracování výsledků} % evaluator
-		\item{Debugging} % short jpda demo
 	\end{itemize}
 \end{frame}
+
+
+
+\section{Podpora}
+
+\begin{frame}
+	\frametitle{Podpora uživatelského kódu}
+
+	\begin{itemize}
+		\item{Transparentní plánování}
+		\item{Ukládání a dotazování}
+		\item{Synchronizace}
+		\item{Logging}
+		\item{Debugging}
+	\end{itemize}
+\end{frame}
+
 
 
 
@@ -302,7 +321,6 @@ Univerzita Karlova v Praze, Matematicko-fyzikální fakulta\\ % Your institution
 			\end{block}
 
 	\end{columns}
-
 \end{frame}
 
 % work progress - stats
