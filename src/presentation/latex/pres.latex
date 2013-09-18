@@ -326,8 +326,9 @@ Univerzita Karlova v Praze, Matematicko-fyzikální fakulta\\ % Your institution
 % work progress - stats
 \begin{frame}
 	\frametitle{Statistiky vývoje}
-
-	TODO - GitStats
+	\begin{figure}
+	\includegraphics[width=1.0\linewidth]{src/presentation/images/github-commits.png}
+	\end{figure}
 \end{frame}
 
 % work progress - overview
