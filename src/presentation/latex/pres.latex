@@ -156,8 +156,8 @@ Univerzita Karlova v Praze, Matematicko-fyzikální fakulta\\ % Your institution
 
 	\begin{itemize}
 		\item{Iterativně vyvíjený software}
-		\item{Bez testování výkonnosti}
-		\item{Potíže s výkonem}
+		\item{Bez benchmarkingu}
+		\item{Vznik potřeby vyhodnotit výkonnost}
 		\item{Co teď?}
 	\end{itemize}
 \end{frame}
@@ -170,7 +170,6 @@ Univerzita Karlova v Praze, Matematicko-fyzikální fakulta\\ % Your institution
 		\column{.5\textwidth}
 			Obecně:
 			\begin{itemize}
-				\item{Specifikovat výkonnostní kritéria}
 				\item{Sestavit testovací prostředí}
 				\item{Navrhnout a implementovat měření}
 				\item{Back-to-back testing jednotlivých revizí}
@@ -216,6 +215,7 @@ Univerzita Karlova v Praze, Matematicko-fyzikální fakulta\\ % Your institution
 	\frametitle{DEMO}
 
 	\begin{itemize}
+		\item{Úvod do webového rozhraní}
 		\item{Nahrání balíčku}
 		\item{Spuštění benchmarku}
 		\item{Sledování} % task tree
@@ -234,8 +234,8 @@ Univerzita Karlova v Praze, Matematicko-fyzikální fakulta\\ % Your institution
 		\item{Transparentní plánování}
 		\item{Ukládání a dotazování}
 		\item{Synchronizace}
-		\item{Logging}
-		\item{Debugging}
+		\item{Logování}
+		\item{Ladění}
 	\end{itemize}
 \end{frame}
 
@@ -243,38 +243,6 @@ Univerzita Karlova v Praze, Matematicko-fyzikální fakulta\\ % Your institution
 
 
 \section{Vývoj}
-
-% work progress - timeline
-\begin{frame}
-	\frametitle{Průběh vývoje systému EverBEEN}
-
-	\begin{figure}[h]
-		\begin{tikzpicture}[scale=0.7]
-			\small \sf 
-			\tikzstyle{ticklabel}=[font=\tiny, rounded corners=.1ex, fill=gray!30, align=left, inner sep=0.5ex, above=2.5ex, anchor=west, rotate=50]
-			\tikzstyle{tocklabel}=[font=\tiny, rounded corners=.1ex, fill=gray!30, align=left, inner sep=0.5ex, below=2.5ex, anchor=west, rotate=-50]
-
-			\tikzstyle{tick}=[font=\tiny, above=0.1ex, scale=.7, inner sep=0ex]
-			\tikzstyle{tock}=[font=\tiny, below=0.2ex, scale=.7, inner sep=0ex]
-		
-			\draw (-6.5,0)	[->, -latex] -- (9,0);
-			\draw (-6.5,0)	node[tick]{14/6/12}		node(L00)[ticklabel]{Převzetí WillBEEN};
-			\draw (-5.5,0)	node[tock]{7-8/12}		node(L01)[tocklabel]{Nasazení Apache Maven};
-			\draw (-4.5,0)	node[tick]{8-9/12}		node(L03)[ticklabel]{Výběr technologie \\ pro nahrazení RMI};
-			\draw (-4,0)	node[tock]{9/12}		node(L04)[tocklabel]{Vybráno slf4j/LOGBack};
-			\draw (-3,0)	node[tick]{10/12}		node(L05)[ticklabel]{Pokus o návrh náhradní \\ síťové vrstvy odspoda};
-			\draw (-2,0)	node[tock]{11/12}		node(L06)[tocklabel]{Rozhodnutí o kompletní reimplementaci};
-			\draw (-0.5,0)	node[tick]{12/12 -- 01/13}	node(L07)[ticklabel]{Nasazení Hazelcast bez abstrakce};
-			\draw (1.5,0)	node[tock]{2-3/13}		node(L08)[tocklabel]{Vývoj komponent stěžejních pro spuštění};
-			\draw (3,0)	node[tick]{4/13}		node(L09)[ticklabel]{První spuštěný uživatelský kód};
-			\draw (4,0)	node[tock]{5/13}		node(L10)[tocklabel]{Základy abstraktní persistence \\ s MongoDB back-endem};
-			\draw (5,0)	node[tick]{6/13}		node(L11)[ticklabel]{GitHub organization, LGPL 3.0};
-			\draw (6,0)	node[tock]{7/13}		node(L12)[tocklabel]{Finalizace konceptu \\ uživatelských API};
-			\draw (7,0)	node[tick]{8/13}		node(L13)[ticklabel]{Spuštění www.everbeen.cz \\ a artifactory};
-		\end{tikzpicture}
-
-	\end{figure}
-\end{frame}
 
 % work progress - code domains per author
 % with reserves, everyone worked on almost everything
@@ -333,11 +301,11 @@ Univerzita Karlova v Praze, Matematicko-fyzikální fakulta\\ % Your institution
 
 % work progress - overview
 \begin{frame}
-	\frametitle{Přehled}
+	\frametitle{Přehled prací}
 
 	\begin{itemize}
 		\item{odhadem 3000+ hodin}
-		\item{cca. 70 kLOC}
+		\item{cca. 70 kLOC (GitStats)}
 		\item{1233 commitů v hlavním projektu}
 	\end{itemize}
 \end{frame}
@@ -363,181 +331,37 @@ Univerzita Karlova v Praze, Matematicko-fyzikální fakulta\\ % Your institution
 
 
 
+% work progress - timeline
+\begin{frame}
+	\frametitle{Průběh vývoje systému EverBEEN}
+
+	\begin{figure}[h]
+		\begin{tikzpicture}[scale=0.7]
+			\small \sf 
+			\tikzstyle{ticklabel}=[font=\tiny, rounded corners=.1ex, fill=gray!30, align=left, inner sep=0.5ex, above=2.5ex, anchor=west, rotate=50]
+			\tikzstyle{tocklabel}=[font=\tiny, rounded corners=.1ex, fill=gray!30, align=left, inner sep=0.5ex, below=2.5ex, anchor=west, rotate=-50]
+
+			\tikzstyle{tick}=[font=\tiny, above=0.1ex, scale=.7, inner sep=0ex]
+			\tikzstyle{tock}=[font=\tiny, below=0.2ex, scale=.7, inner sep=0ex]
+		
+			\draw (-6.5,0)	[->, -latex] -- (9,0);
+			\draw (-6.5,0)	node[tick]{14/6/12}		node(L00)[ticklabel]{Převzetí WillBEEN};
+			\draw (-5.5,0)	node[tock]{7-8/12}		node(L01)[tocklabel]{Nasazení Apache Maven};
+			\draw (-4.5,0)	node[tick]{8-9/12}		node(L03)[ticklabel]{Výběr technologie \\ pro nahrazení RMI};
+			\draw (-4,0)	node[tock]{9/12}		node(L04)[tocklabel]{Vybráno slf4j/LOGBack};
+			\draw (-3,0)	node[tick]{10/12}		node(L05)[ticklabel]{Pokus o návrh náhradní \\ síťové vrstvy odspoda};
+			\draw (-2,0)	node[tock]{11/12}		node(L06)[tocklabel]{Rozhodnutí o kompletní reimplementaci};
+			\draw (-0.5,0)	node[tick]{12/12 -- 01/13}	node(L07)[ticklabel]{Nasazení Hazelcast bez abstrakce};
+			\draw (1.5,0)	node[tock]{2-3/13}		node(L08)[tocklabel]{Vývoj komponent stěžejních pro spuštění};
+			\draw (3,0)	node[tick]{4/13}		node(L09)[ticklabel]{První spuštěný uživatelský kód};
+			\draw (4,0)	node[tock]{5/13}		node(L10)[tocklabel]{Základy abstraktní persistence \\ s MongoDB back-endem};
+			\draw (5,0)	node[tick]{6/13}		node(L11)[ticklabel]{GitHub organization, LGPL 3.0};
+			\draw (6,0)	node[tock]{7/13}		node(L12)[tocklabel]{Finalizace konceptu \\ uživatelských API};
+			\draw (7,0)	node[tick]{8/13}		node(L13)[ticklabel]{Spuštění www.everbeen.cz \\ a artifactory};
+		\end{tikzpicture}
+
+	\end{figure}
+\end{frame}
+
 \end{document}
-
-
-
-
-
-
-
-
-
-
-
-
-
-%------------------------------------------------
-% TEMPLATES
-%------------------------------------------------
-
-
-\begin{frame}
-\frametitle{Paragraphs of Text}
-Sed iaculis dapibus gravida. Morbi sed tortor erat, nec interdum arcu. Sed id lorem lectus. Quisque viverra augue id sem ornare non aliquam nibh tristique. Aenean in ligula nisl. Nulla sed tellus ipsum. Donec vestibulum ligula non lorem vulputate fermentum accumsan neque mollis.\\~\\
-
-Sed diam enim, sagittis nec condimentum sit amet, ullamcorper sit amet libero. Aliquam vel dui orci, a porta odio. Nullam id suscipit ipsum. Aenean lobortis commodo sem, ut commodo leo gravida vitae. Pellentesque vehicula ante iaculis arcu pretium rutrum eget sit amet purus. Integer ornare nulla quis neque ultrices lobortis. Vestibulum ultrices tincidunt libero, quis commodo erat ullamcorper id.
-\end{frame}
-
-
-
-%------------------------------------------------
-
-\begin{frame}
-\frametitle{Bullet Points}
-\begin{itemize}
-\item Lorem ipsum dolor sit amet, consectetur adipiscing elit
-\item Aliquam blandit faucibus nisi, sit amet dapibus enim tempus eu
-\item Nulla commodo, erat quis gravida posuere, elit lacus lobortis est, quis porttitor odio mauris at libero
-\item Nam cursus est eget velit posuere pellentesque
-\item Vestibulum faucibus velit a augue condimentum quis convallis nulla gravida
-\end{itemize}
-\end{frame}
-
-
-
-%------------------------------------------------
-
-\begin{frame}
-\frametitle{Blocks of Highlighted Text}
-\begin{block}{Block 1}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lectus nisl, ultricies in feugiat rutrum, porttitor sit amet augue. Aliquam ut tortor mauris. Sed volutpat ante purus, quis accumsan dolor.
-\end{block}
-
-\begin{block}{Block 2}
-Pellentesque sed tellus purus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Vestibulum quis magna at risus dictum tempor eu vitae velit.
-\end{block}
-
-\begin{block}{Block 3}
-Suspendisse tincidunt sagittis gravida. Curabitur condimentum, enim sed venenatis rutrum, ipsum neque consectetur orci, sed blandit justo nisi ac lacus.
-\end{block}
-\end{frame}
-
-
-
-%------------------------------------------------
-
-\begin{frame}
-\frametitle{Multiple Columns}
-\begin{columns}[c] % The "c" option specifies centered vertical alignment while the "t" option is used for top vertical alignment
-
-\column{.45\textwidth} % Left column and width
-\textbf{Heading}
-\begin{enumerate}
-\item Statement
-\item Explanation
-\item Example
-\end{enumerate}
-
-\column{.5\textwidth} % Right column and width
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lectus nisl, ultricies in feugiat rutrum, porttitor sit amet augue. Aliquam ut tortor mauris. Sed volutpat ante purus, quis accumsan dolor.
-
-\end{columns}
-\end{frame}
-
-
-
-\begin{frame}
-\frametitle{Table}
-\begin{table}
-\begin{tabular}{l l l}
-\toprule
-\textbf{Treatments} & \textbf{Response 1} & \textbf{Response 2}\\
-\midrule
-Treatment 1 & 0.0003262 & 0.562 \\
-Treatment 2 & 0.0015681 & 0.910 \\
-Treatment 3 & 0.0009271 & 0.296 \\
-\bottomrule
-\end{tabular}
-\caption{Table caption}
-\end{table}
-\end{frame}
-
-
-
-%------------------------------------------------
-
-\begin{frame}
-\frametitle{Theorem}
-\begin{theorem}[Mass--energy equivalence]
-$E = mc^2$
-\end{theorem}
-\end{frame}
-
-
-
-%------------------------------------------------
-
-\begin{frame}[fragile] % Need to use the fragile option when verbatim is used in the slide
-\frametitle{Verbatim}
-\begin{example}[Theorem Slide Code]
-\begin{verbatim}
-\begin{frame}
-\frametitle{Theorem}
-\begin{theorem}[Mass--energy equivalence]
-$E = mc^2$
-\end{theorem}
-\end{frame}\end{verbatim}
-\end{example}
-\end{frame}
-
-
-
-%------------------------------------------------
-
-\begin{frame}
-\frametitle{Figure}
-Uncomment the code on this slide to include your own image from the same directory as the template .TeX file.
-%\begin{figure}
-%\includegraphics[width=0.8\linewidth]{test}
-%\end{figure}
-\end{frame}
-
-
-
-%------------------------------------------------
-
-\begin{frame}[fragile] % Need to use the fragile option when verbatim is used in the slide
-\frametitle{Citation}
-An example of the \verb|\cite| command to cite within the presentation:\\~
-
-This statement requires citation \cite{p1}.
-\end{frame}
-
-
-
-%------------------------------------------------
-
-\begin{frame}
-\frametitle{References}
-\footnotesize{
-\begin{thebibliography}{99} % Beamer does not support BibTeX so references must be inserted manually as below
-\bibitem[Smith, 2012]{p1} John Smith (2012)
-\newblock Title of the publication
-\newblock \emph{Journal Name} 12(3), 45 -- 678.
-\end{thebibliography}
-}
-\end{frame}
-
-
-
-%------------------------------------------------
-
-\begin{frame}
-\Huge{\centerline{The End}}
-\end{frame}
-
-
-
-%----------------------------------------------------------------------------------------
 
