@@ -170,7 +170,7 @@ Univerzita Karlova v Praze, Matematicko-fyzikální fakulta\\ % Your institution
 		\column{.5\textwidth}
 			Obecně:
 			\begin{itemize}
-				\item{Sestavit testovací prostředí}
+				\item{Sestavit testovací infrastrukturu}
 				\item{Navrhnout a implementovat měření}
 				\item{Back-to-back testing jednotlivých revizí}
 				\item{Analýza výsledků měření}
@@ -188,8 +188,7 @@ Univerzita Karlova v Praze, Matematicko-fyzikální fakulta\\ % Your institution
 		\column{.5\textwidth}
 			Obecně:
 			\begin{itemize}
-				\item{Specifikovat výkonnostní kritéria}
-				\item{Sestavit testovací prostředí}
+				\item{Sestavit testovací infrastrukturu}
 				\item{Navrhnout a implementovat měření}
 				\item{Back-to-back testing jednotlivých revizí}
 				\item{Analýza výsledků měření}
@@ -198,10 +197,10 @@ Univerzita Karlova v Praze, Matematicko-fyzikální fakulta\\ % Your institution
 		\column{.5\textwidth}
 			EverBEEN:
 			\begin{itemize}
-				\item{Naimplementovat lokální úseky měření}
-				\item{Naimplementovat vyhodnocení výsledků}
-				\item{Definovat měřicí sadu}
-				\item{Naimplementovat generátor měřicích sad}
+				\item{Naimplementovat lokální úseky měření {\it (task)}}
+				\item{Naimplementovat vyhodnocení {\it (evaluator)}}
+				\item{Definovat měřicí sadu {\it (context descriptor)}}
+				\item{Naimplementovat generátor měřicích sad {\it (benchmark)}}
 			\end{itemize}
 	\end{columns}
 \end{frame}
@@ -218,7 +217,6 @@ Univerzita Karlova v Praze, Matematicko-fyzikální fakulta\\ % Your institution
 		\item{Úvod do webového rozhraní}
 		\item{Nahrání balíčku}
 		\item{Spuštění benchmarku}
-		\item{Sledování} % task tree
 		\item{Zpracování výsledků} % evaluator
 	\end{itemize}
 \end{frame}
