@@ -201,8 +201,8 @@ Univerzita Karlova v Praze, Matematicko-fyzikální fakulta\\ % Your institution
 			\begin{itemize}
 				\item{Naimplementovat lokální úseky měření}
 				\item{Naimplementovat vyhodnocení výsledků}
-				\item{Definovat měřící sadu}
-				\item{Naimplementovat generátor měřících sad}
+				\item{Definovat měřicí sadu}
+				\item{Naimplementovat generátor měřicích sad}
 			\end{itemize}
 	\end{columns}
 \end{frame}
